@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#000000"/>
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Financial pattern -->
+  <g opacity="1">
+    <!-- Abstract chart lines -->
+    <path d="M100 400 L200 300 L300 350 L400 200 L500 250 L600 150 L700 100" 
+          stroke="white" stroke-width="3" fill="none" opacity="1" filter="url(#glow)"/>
+    
+    <!-- Grid pattern -->
+    <g opacity="0.4">
+      <path d="M0 150 H800" stroke="white" stroke-width="1"/>
+      <path d="M0 250 H800" stroke="white" stroke-width="1"/>
+      <path d="M0 350 H800" stroke="white" stroke-width="1"/>
+      <path d="M0 450 H800" stroke="white" stroke-width="1"/>
+      
+      <path d="M200 0 V600" stroke="white" stroke-width="1"/>
+      <path d="M400 0 V600" stroke="white" stroke-width="1"/>
+      <path d="M600 0 V600" stroke="white" stroke-width="1"/>
+    </g>
+    
+    <!-- Data points -->
+    <circle cx="200" cy="300" r="4" fill="white"/>
+    <circle cx="300" cy="350" r="4" fill="white"/>
+    <circle cx="400" cy="200" r="4" fill="white"/>
+    <circle cx="500" cy="250" r="4" fill="white"/>
+    <circle cx="600" cy="150" r="4" fill="white"/>
+  </g>
+  
+  <!-- Geometric shapes -->
+  <g opacity="0.7">
+    <rect x="150" y="150" width="100" height="100" 
+          stroke="white" stroke-width="1" fill="none"/>
+    <circle cx="400" cy="400" r="50" 
+            stroke="white" stroke-width="1" fill="none"/>
+    <path d="M600 300 L650 350 L600 400 L550 350 Z" 
+          stroke="white" stroke-width="1" fill="none"/>
+    </g>
+
+  <!-- Animated elements -->
+  <circle cx="200" cy="300" r="6" fill="white" opacity="1" filter="url(#glow)">
+    <animate attributeName="cx" values="200; 300; 400; 500; 600" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="cy" values="300; 250; 200; 150; 100" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="6; 4; 6" dur="1s" repeatCount="indefinite"/>
+  </circle>
+  
+  <circle cx="300" cy="350" r="6" fill="white" opacity="1" filter="url(#glow)">
+    <animate attributeName="cx" values="300; 400; 500; 600; 300" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="cy" values="350; 300; 250; 200; 350" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="6; 4; 6" dur="1s" repeatCount="indefinite"/>
+  </circle>
+  
+  <circle cx="400" cy="200" r="6" fill="white" opacity="1" filter="url(#glow)">
+    <animate attributeName="cx" values="400; 500; 600; 400" dur="5s" repeatCount="indefinite"/>
+    <animate attributeName="cy" values="200; 150; 100; 200" dur="5s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="6; 4; 6" dur="1s" repeatCount="indefinite"/>
+  </circle>
+</svg>

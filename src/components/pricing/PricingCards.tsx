@@ -1,0 +1,112 @@
+'use client'
+
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Button } from '@/components/ui/button'
+
+const creditOptions = [40, 80, 120, 160, 200]
+const pricePerCredit = 65.5
+
+interface Feature {
+  title: string
+  included: boolean
+}
+
+const features: Feature[] = [
+  { title: 'ACCESS TO ALL CREATIVE SERVICES', included: true },
+  { title: 'DEDICATED CREATIVE TEAM', included: true },
+  { title: 'PROJECT MANAGEMENT TEAM', included: true },
+  { title: 'UNLIMITED PROJECTS & BRANDS', included: true },
+  { title: 'UNLIMITED USERS & STORAGE', included: true },
+  { title: 'AI-ENHANCED CAPABILITIES', included: true },
+  { title: '30-DAY FREE TRIAL', included: true },
+]
+
+export function PricingCards() {
+  const [selectedCredits, setSelectedCredits] = useState(120)
+  const price = selectedCredits * pricePerCredit
+
+  return (
+    <div>
+
+        <div className="h-full max-w-3xl mx-auto bg-black border border-white/20 hover:border-white/40 p-8 relative group transition-all duration-300">
+          <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
+          <div className="text-center mb-10">
+            <div 
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-3 leading-none text-white"
+              style={{ fontFamily: 'var(--font-druk-text-wide)' }}
+            >
+              €{price.toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+              <span className="text-base sm:text-lg font-normal text-white/50 ml-1 sm:ml-2 tracking-normal">/month</span>
+            </div>
+            <div className="text-white font-mono text-sm uppercase tracking-wide">
+              {selectedCredits} CREDITS PER MONTH
+            </div>
+          </div>
+
+          <div className="grid grid-cols-5 gap-1.5 mb-12 px-2">
+            {creditOptions.map((credits) => (
+              <motion.button
+                key={credits}
+                onClick={() => setSelectedCredits(credits)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className={`
+                  py-2 text-sm font-mono transition-all duration-300 cursor-pointer hover:cursor-pointer
+                  ${
+                    selectedCredits === credits
+                      ? 'bg-[#00ff00] text-black border-[#00ff00]'
+                      : 'border-2 border-white/40 text-white hover:border-white hover:bg-white/5'
+                  }
+                `}
+              >
+                {credits}
+              </motion.button>
+            ))}
+          </div>
+
+          <div className="space-y-4 mb-12">
+            {features.map((feature, index) => (
+              <motion.div 
+                key={feature.title} 
+                className="flex items-center"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ 
+                  duration: 0.5,
+                  delay: index * 0.1
+                }}
+              >
+                <svg
+                  className="w-4 h-4 text-white mr-3 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span className="text-white font-mono text-sm tracking-tight">{feature.title}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          <Button 
+            size="lg" 
+            className="w-full h-14 text-base font-mono rounded-none bg-white hover:bg-white/90 text-black transition-all duration-300 tracking-wide uppercase"
+          >
+            Comenzar ahora
+          </Button>
+
+          <p className="text-center text-xs text-white/50 mt-4 font-mono uppercase tracking-wider">
+            Sin compromiso de permanencia
+          </p>
+        </div>
+
+    </div>
+  )
+}
