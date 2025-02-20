@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { getPricePerCredit, getCurrency, getDiscountForCredits, volumeDiscounts } from '@/lib/pricing'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 
 const creditOptions = [40, 80, 120, 160, 200]
-const pricePerCredit = 65.5
 
 interface Feature {
   title: string
@@ -23,8 +23,24 @@ const features: Feature[] = [
 ]
 
 export function PricingCards() {
+  const [mounted, setMounted] = useState(false)
   const [selectedCredits, setSelectedCredits] = useState(120)
-  const price = selectedCredits * pricePerCredit
+  const [pricePerCredit, setPricePerCredit] = useState(getPricePerCredit())
+  const [currency, setCurrency] = useState(getCurrency())
+
+  useEffect(() => {
+    setMounted(true)
+    setPricePerCredit(getPricePerCredit())
+    setCurrency(getCurrency())
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
+  const discount = getDiscountForCredits(selectedCredits)
+  const originalPrice = selectedCredits * pricePerCredit
+  const discountedPrice = originalPrice * (1 - discount / 100)
+  const savings = originalPrice - discountedPrice
 
   return (
     <div>
@@ -36,10 +52,13 @@ export function PricingCards() {
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-3 leading-none text-white"
               style={{ fontFamily: 'var(--font-druk-text-wide)' }}
             >
-              €{price.toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+              {currency.symbol}{discountedPrice.toLocaleString(currency.locale, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
               <span className="text-base sm:text-lg font-normal text-white/50 ml-1 sm:ml-2 tracking-normal">/month</span>
             </div>
-            <div className="text-white font-mono text-sm uppercase tracking-wide">
+            <div 
+              className="text-white text-sm uppercase tracking-wide"
+              style={{ fontFamily: 'var(--font-geist-mono)' }}
+            >
               {selectedCredits} CREDITS PER MONTH
             </div>
           </div>
@@ -90,19 +109,26 @@ export function PricingCards() {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span className="text-white font-mono text-sm tracking-tight">{feature.title}</span>
+                <span 
+                  className="text-white text-sm tracking-tight"
+                  style={{ fontFamily: 'var(--font-geist-mono)' }}
+                >{feature.title}</span>
               </motion.div>
             ))}
           </div>
 
           <Button 
             size="lg" 
-            className="w-full h-14 text-base font-mono rounded-none bg-white hover:bg-white/90 text-black transition-all duration-300 tracking-wide uppercase"
+            className="w-full h-14 text-base rounded-none bg-white hover:bg-white/90 text-black transition-all duration-300 tracking-wide uppercase"
+            style={{ fontFamily: 'var(--font-geist-mono)' }}
           >
             Comenzar ahora
           </Button>
 
-          <p className="text-center text-xs text-white/50 mt-4 font-mono uppercase tracking-wider">
+          <p 
+            className="text-center text-xs text-white/50 mt-4 uppercase tracking-wider"
+            style={{ fontFamily: 'var(--font-geist-mono)' }}
+          >
             Sin compromiso de permanencia
           </p>
         </div>

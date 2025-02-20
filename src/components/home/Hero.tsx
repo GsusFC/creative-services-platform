@@ -5,37 +5,19 @@ import Image from 'next/image'
 
 export function Hero() {
   return (
-    <div className="relative min-h-[100svh] bg-black overflow-hidden">
+    <div className="flex flex-col min-h-[100svh] bg-black overflow-hidden w-full">
       {/* Background Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem] md:bg-[size:6rem_6rem] opacity-30" />
 
-      {/* Background Image */}
-      <motion.div 
-        className="absolute inset-0"
-        initial={{ scale: 1.1, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 1.5, ease: 'easeOut' }}
-      >
-        <Image 
-          src="/bg.jpg"
-          alt="Background"
-          width={1920}
-          height={1080}
-          className="absolute inset-0 w-full h-full object-cover brightness-[0.6] select-none"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/40 to-transparent" />
-      </motion.div>
-
       {/* Main Content */}
-      <div className="relative z-10 min-h-[100svh] w-full">
-        <div className="h-[100svh] md:h-auto md:pt-[160px] px-[40px]">
+      <div className="flex-1 w-full bg-black">
+        <div className="pt-[120px] md:pt-[180px] pb-8 md:pb-12 px-[40px]">
           {/* Mobile Layout */}
-          <div className="md:hidden h-full flex flex-col justify-between pb-12">
+          <div className="md:hidden">
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="pt-[120px]"
             >
               <motion.p
                 initial={{ y: 20, opacity: 0 }}
@@ -46,32 +28,15 @@ export function Hero() {
               >
                 STRATEGIC DESIGN THAT SHAPES TOMORROW
               </motion.p>
-              <h1 
-                className="text-[clamp(2rem,6vw,6rem)] text-white leading-[1] tracking-[0.02em] uppercase m-0 whitespace-nowrap" 
+              <motion.p 
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="text-center text-white text-3xl md:text-5xl leading-tight mx-auto"
                 style={{ fontFamily: 'var(--font-druk-text-wide)' }}
               >
                 TRANSFORM BY DESIGN
-              </h1>
-            </motion.div>
-
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="flex flex-col gap-8"
-            >
-              <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-              <div 
-                className="text-white/60 text-sm"
-                style={{ fontFamily: 'var(--font-geist-mono)' }}
-              >
-                SCROLL
-                <motion.div
-                  animate={{ x: [0, 8, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
-                  className="h-0.5 w-12 bg-gradient-to-r from-white/60 to-transparent mt-2"
-                />
-              </div>
+              </motion.p>
             </motion.div>
           </div>
 
@@ -98,10 +63,23 @@ export function Hero() {
             >
               STRATEGIC DESIGN THAT SHAPES TOMORROW
             </motion.p>
-
-
           </motion.div>
         </div>
+
+        {/* Video Section */}
+        <motion.div 
+          className="w-full"
+          initial={{ scale: 1.1, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.5, ease: 'easeOut' }}
+        >
+          <div className="relative w-full aspect-video overflow-hidden">
+            <video className="w-full h-full object-contain" autoPlay loop muted>
+              <source src="/video.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </motion.div>
       </div>
 
       {/* Desktop Scroll Indicator */}

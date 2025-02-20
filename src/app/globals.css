@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes slide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - 4rem));
+  }
+}
+
+.animate-slide {
+  animation: slide 20s linear infinite;
+}
+
 /* Custom range input styles */
 input[type='range'] {
   -webkit-appearance: none;

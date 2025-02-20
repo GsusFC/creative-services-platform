@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { getPricePerCredit, getCurrency, getDiscountForCredits } from '@/lib/pricing'
 
 interface ServiceType {
   name: string
@@ -46,8 +47,21 @@ const serviceTypes: ServiceType[] = [
 ]
 
 export function CreditCalculator() {
+  const [mounted, setMounted] = useState(false)
   const [selectedType, setSelectedType] = useState<ServiceType>(serviceTypes[0])
   const [hours, setHours] = useState(10)
+  const [pricePerCredit, setPricePerCredit] = useState(getPricePerCredit())
+  const [currency, setCurrency] = useState(getCurrency())
+
+  useEffect(() => {
+    setMounted(true)
+    setPricePerCredit(getPricePerCredit())
+    setCurrency(getCurrency())
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
 
   const totalCredits = Math.ceil(hours * selectedType.credits)
 
@@ -150,7 +164,7 @@ export function CreditCalculator() {
                   className="text-sm md:text-base text-[#00FF00]"
                   style={{ fontFamily: 'var(--font-geist-mono)' }}
                 >
-                  €{(totalCredits * 65.5).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  {currency.symbol}{(totalCredits * pricePerCredit * (1 - getDiscountForCredits(totalCredits) / 100)).toLocaleString(currency.locale, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                 </div>
               </div>
             </div>

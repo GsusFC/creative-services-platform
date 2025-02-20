@@ -4,12 +4,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+
 import { motion, AnimatePresence } from 'framer-motion';
+import { ShortcutsMenu } from './ShortcutsMenu';
+import { Tooltip } from './Tooltip';
 
 const navLinks = [
   { href: '/services', label: 'SERVICES' },
-  { href: '/work', label: 'WORK' },
-  { href: '/process', label: 'PROCESS' }
+  { href: '/cases', label: 'CASES' },
+  { href: '/process', label: 'PROCESS' },
+  { href: '/pricing', label: 'PRICING' }
 ];
 
 const rgbGradient = 'linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(255, 0, 0) 14.12%, rgb(0, 255, 0) 51.80%, rgb(0, 0, 255) 89.37%, rgb(0, 0, 0) 101.35%)';
@@ -18,6 +22,9 @@ const Navbar = () => {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -78,9 +85,20 @@ const Navbar = () => {
         </button>
 
         {/* Logo */}
-        <Link 
-          href="/" 
-          className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-transform duration-300 ${isMenuOpen ? 'md:scale-100 scale-0' : 'scale-100'}`}
+        <button 
+          onClick={() => window.location.href = '/'}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setShortcutsOpen(!shortcutsOpen);
+          }}
+          onMouseEnter={(e) => {
+            setTooltipVisible(true);
+            setTooltipPosition({ x: e.clientX, y: e.clientY });
+          }}
+          onMouseLeave={() => {
+            setTooltipVisible(false);
+          }}
+          className={`logo-button absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-transform duration-300 ${isMenuOpen ? 'md:scale-100 scale-0' : 'scale-100'} hover:scale-110 hover:bg-white/10`}
         >
           <Image
             src="/assets/icons/logo.svg"
@@ -90,10 +108,24 @@ const Navbar = () => {
             priority
             className="transition-transform duration-300 hover:scale-110"
           />
-        </Link>
+          {tooltipVisible && <Tooltip text="Click for shortcuts" x={tooltipPosition.x} y={tooltipPosition.y - 50} />}
+        </button>
+
+        <AnimatePresence>
+          <ShortcutsMenu
+            isOpen={shortcutsOpen}
+            onClose={() => setShortcutsOpen(false)}
+          />
+        </AnimatePresence>
 
         {/* Start Button */}
         <div className="flex items-center gap-4">
+          <Link
+            href="/settings"
+            className="hidden md:flex items-center text-[13px] font-medium text-white/75 hover:text-white font-mono uppercase transition-colors duration-300"
+          >
+            SETTINGS
+          </Link>
           <Link
             href="/start"
             className="hidden md:flex justify-center items-center w-[200px] h-[80px] bg-[#00ff00] text-[13px] font-medium text-black font-mono uppercase gap-[10px] hover:bg-[#00ff00]/90 transition-all duration-300 hover:tracking-wider"

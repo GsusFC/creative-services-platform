@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState } from 'react'
 
 const projects = [
   {
@@ -29,6 +30,16 @@ const projects = [
 ]
 
 export function CaseStudies() {
+  const [activeProject, setActiveProject] = useState(0);
+
+  const handleNext = () => {
+    setActiveProject((prev) => (prev + 1) % projects.length);
+  };
+
+  const handlePrev = () => {
+    setActiveProject((prev) => (prev - 1 + projects.length) % projects.length);
+  };
+
   return (
     <section className="py-24 bg-black relative overflow-hidden transition-all duration-300">
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:6rem_6rem] opacity-70"></div>
@@ -57,55 +68,43 @@ export function CaseStudies() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        >
           {projects.map((project, index) => (
-            <Link 
-              href={project.link}
-              key={project.title}
+            <motion.div
+              key={index}
+              className="relative group overflow-hidden rounded-lg"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
             >
-              <motion.article
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ 
-                  duration: 0.8,
-                  delay: index * 0.1,
-                  ease: [0.22, 1, 0.36, 1]
-                }}
-                className="group relative bg-black border border-white/20 hover:border-white/40 transition-all duration-300 h-[420px] flex flex-col"
-              >
-                <div className="aspect-[4/3] relative overflow-hidden">
-                  <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-colors duration-300 z-10" />
-                  <Image
-                    src={project.image}
-                    alt={project.title}
-                    fill
-                    className="object-cover transform group-hover:scale-105 transition-transform duration-500"
-                  />
+              <Link href={`/cases/${project.link}`}>
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  width={500}
+                  height={300}
+                  className="w-full h-64 object-cover"
+                />
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <h3 
+                      className="text-xl font-bold"
+                      style={{ fontFamily: 'var(--font-geist-mono)' }}
+                    >{project.title}</h3>
+                    <p 
+                      className="text-sm"
+                      style={{ fontFamily: 'var(--font-geist-mono)' }}
+                    >{project.description}</p>
+                  </div>
                 </div>
-                <div className="p-6">
-                  <span 
-                    className="text-sm text-white/75"
-                    style={{ fontFamily: 'var(--font-geist-mono)' }}
-                  >
-                    {project.category}
-                  </span>
-                  <h3 
-                    className="text-xl mt-1 mb-2 text-white"
-                    style={{ fontFamily: 'var(--font-druk-text-wide)' }}
-                  >
-                    {project.title}
-                  </h3>
-                  <p 
-                    className="text-sm text-white/75"
-                    style={{ fontFamily: 'var(--font-geist-mono)' }}
-                  >
-                    {project.description}
-                  </p>
-                </div>
-              </motion.article>
-            </Link>
+              </Link>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -119,7 +118,8 @@ export function CaseStudies() {
         >
           <Link 
             href="/proyectos"
-            className="text-sm font-mono text-white hover:text-white/75 dark:hover:text-gray-400 transition-colors inline-flex items-center gap-2"
+            className="text-sm text-white hover:text-white/75 dark:hover:text-gray-400 transition-colors inline-flex items-center gap-2"
+            style={{ fontFamily: 'var(--font-geist-mono)' }}
           >
             Ver todos los proyectos
             <svg
