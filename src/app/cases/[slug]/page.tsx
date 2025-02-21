@@ -63,7 +63,7 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
                   alt={`${project.title} - Image ${i + 1}`}
                   width={300}
                   height={200}
-                  className="rounded-lg"
+                  className=""
                 />
               ))}
             </div>

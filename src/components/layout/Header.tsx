@@ -14,17 +14,17 @@ export function Header() {
         </Link>
         
         <nav className="hidden md:flex items-center gap-6">
-          <Link href="/services" className="text-sm font-medium hover:text-primary">
+          <Link href="/services" className="text-sm hover:text-primary uppercase" style={{ fontFamily: 'var(--font-geist-mono)' }}>
             Servicios
           </Link>
-          <Link href="/cases" className="text-sm font-medium hover:text-primary">
+          <Link href="/cases" className="text-sm hover:text-primary uppercase" style={{ fontFamily: 'var(--font-geist-mono)' }}>
             Casos
           </Link>
-          <Link href="/pricing" className="text-sm font-medium hover:text-primary">
+          <Link href="/pricing" className="text-sm hover:text-primary uppercase" style={{ fontFamily: 'var(--font-geist-mono)' }}>
             Precios
           </Link>
           <Button asChild>
-            <Link href="/contact">Empezar</Link>
+            <Link href="/contact" style={{ fontFamily: 'var(--font-geist-mono)' }} className="uppercase">Empezar</Link>
           </Button>
         </nav>
       </div>

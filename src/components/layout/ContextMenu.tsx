@@ -48,7 +48,7 @@ export function ContextMenu({ x, y, onClose }: ContextMenuProps) {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="context-menu fixed bg-black border border-white/20 p-2 rounded shadow-lg z-50"
+      className="context-menu fixed bg-black border border-white/20 p-2 shadow-lg z-50"
       style={{ left: x, top: y }}
     >
       <div className="w-64">
@@ -57,7 +57,7 @@ export function ContextMenu({ x, y, onClose }: ContextMenuProps) {
             {shortcuts.map(shortcut => (
               <div
                 key={shortcut.id}
-                className="flex items-center justify-between group px-3 py-2 hover:bg-white/5 rounded transition-colors"
+                className="flex items-center justify-between group px-3 py-2 hover:bg-white/5 transition-colors"
               >
                 <a
                   href={shortcut.url}
@@ -79,7 +79,7 @@ export function ContextMenu({ x, y, onClose }: ContextMenuProps) {
         )}
 
         {isAddingNew ? (
-          <div className="space-y-2 p-2 border border-white/10 rounded">
+          <div className="space-y-2 p-2 border border-white/10">
             <input
               type="text"
               placeholder="Title"
@@ -112,7 +112,7 @@ export function ContextMenu({ x, y, onClose }: ContextMenuProps) {
         ) : (
           <button
             onClick={() => setIsAddingNew(true)}
-            className="w-full text-left px-3 py-2 text-white/60 hover:text-white hover:bg-white/5 rounded transition-colors text-sm font-mono"
+            className="w-full text-left px-3 py-2 text-white/60 hover:text-white hover:bg-white/5 transition-colors text-sm font-mono"
           >
             + ADD SHORTCUT
           </button>

@@ -45,7 +45,7 @@ export default function SettingsPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="group relative bg-white/5 border border-white/10 rounded-lg p-6 hover:border-white/20 transition-colors"
+                className="group relative bg-white/5 border border-white/10 p-6 hover:border-white/20 transition-colors"
               >
                 {isAdding ? (
                   <div className="space-y-4">
@@ -54,14 +54,14 @@ export default function SettingsPage() {
                       placeholder="Title"
                       value={newShortcut.title}
                       onChange={e => setNewShortcut({ ...newShortcut, title: e.target.value })}
-                      className="w-full bg-black border border-white/20 rounded px-3 py-2 text-sm font-mono"
+                      className="w-full bg-black border border-white/20 px-3 py-2 text-sm font-mono"
                     />
                     <input
                       type="text"
                       placeholder="URL"
                       value={newShortcut.url}
                       onChange={e => setNewShortcut({ ...newShortcut, url: e.target.value })}
-                      className="w-full bg-black border border-white/20 rounded px-3 py-2 text-sm font-mono"
+                      className="w-full bg-black border border-white/20 px-3 py-2 text-sm font-mono"
                     />
                     <div className="flex justify-end gap-2">
                       <button
@@ -72,7 +72,7 @@ export default function SettingsPage() {
                       </button>
                       <button
                         onClick={handleAddNew}
-                        className="bg-[#00FF00] text-black text-sm font-mono px-3 py-2 rounded hover:bg-[#00FF00]/90"
+                        className="bg-[#00FF00] text-black text-sm font-mono px-3 py-2 hover:bg-[#00FF00]/90"
                       >
                         ADD
                       </button>
@@ -83,7 +83,7 @@ export default function SettingsPage() {
                     onClick={() => setIsAdding(true)}
                     className="w-full h-full flex flex-col items-center justify-center gap-4 text-white/60 group-hover:text-white"
                   >
-                    <div className="w-12 h-12 rounded-full border-2 border-current flex items-center justify-center">
+                    <div className="w-12 h-12 border-2 border-current flex items-center justify-center">
                       <span className="text-2xl">+</span>
                     </div>
                     <span className="font-mono text-sm">ADD SHORTCUT</span>
@@ -98,7 +98,7 @@ export default function SettingsPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="group relative bg-white/5 border border-white/10 rounded-lg p-6 hover:border-white/20 transition-colors"
+                  className="group relative bg-white/5 border border-white/10 p-6 hover:border-white/20 transition-colors"
                 >
                   <button
                     onClick={() => handleRemove(shortcut.id)}

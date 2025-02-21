@@ -110,27 +110,57 @@ body {
   body {
     @apply bg-background text-foreground;
   }
-  h1, h2, h3 {
-    font-family: 'Druk', sans-serif;
+
+  /* Headings - Druk Text Wide */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-druk-text-wide);
     @apply font-black uppercase tracking-normal leading-[1.1];
     letter-spacing: 0.02em;
-    max-width: 15ch;
   }
 
   h1 {
-    @apply text-6xl mb-8;
+    @apply text-7xl mb-8;
   }
 
   h2 {
-    @apply text-5xl mb-6;
+    @apply text-6xl mb-6;
   }
 
   h3 {
+    @apply text-5xl mb-4;
+  }
+
+  h4 {
     @apply text-4xl mb-4;
   }
 
-  h4, h5, h6 {
-    @apply font-sans tracking-tight font-black;
+  h5 {
+    @apply text-3xl mb-3;
+  }
+
+  h6 {
+    @apply text-2xl mb-2;
+  }
+
+  /* Body Text - Geist Mono */
+  p, span, a, button, input, select, textarea {
+    font-family: var(--font-geist-mono);
+    @apply uppercase;
+  }
+
+  /* Navigation */
+  nav a {
+    @apply text-sm tracking-wide transition-colors duration-200;
+  }
+
+  /* Buttons */
+  button, .button {
+    @apply text-sm tracking-wide transition-all duration-200;
+  }
+
+  /* Form Elements */
+  input, select, textarea {
+    @apply text-sm tracking-wide;
   }
 
   input[type='range'] {

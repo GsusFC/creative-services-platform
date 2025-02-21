@@ -36,7 +36,7 @@ export function ShortcutsMenu({ isOpen, onClose }: ShortcutsMenuProps) {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="shortcuts-menu fixed left-1/2 top-[90px] -translate-x-1/2 w-[280px] bg-black border border-white/20 rounded-lg shadow-2xl z-50"
+      className="shortcuts-menu fixed left-1/2 top-[90px] -translate-x-1/2 w-[280px] bg-black border border-white/20 shadow-2xl z-50"
     >
       <div className="p-2">
         {shortcuts.length > 0 ? (
@@ -47,7 +47,7 @@ export function ShortcutsMenu({ isOpen, onClose }: ShortcutsMenuProps) {
                 href={shortcut.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block px-3 py-2 rounded hover:bg-white/5 transition-colors text-white/75 hover:text-white font-mono text-sm"
+                className="block px-3 py-2 hover:bg-white/5 transition-colors text-white/75 hover:text-white font-mono text-sm"
               >
                 {shortcut.title}
               </a>
