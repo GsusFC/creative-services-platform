@@ -1,6 +1,39 @@
 # Creative Services Platform (CaaS)
 
-Una plataforma moderna de servicios creativos con sistema de suscripción basado en créditos.
+Una plataforma moderna de servicios creativos con sistema de suscripción basado en créditos. Construida con un diseño minimalista usando negro puro (#000000) y acentos RGB.
+
+## Tech Stack
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript
+- **Styling:** TailwindCSS
+- **Animations:** Framer Motion
+- **Components:** Radix UI (Tooltips)
+- **Deployment:** Vercel
+
+## Getting Started
+
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/GsusFC/creative-services-platform.git
+   cd creative-services-platform
+   ```
+
+2. Instala las dependencias:
+   ```bash
+   npm install
+   ```
+
+3. Ejecuta el proyecto localmente:
+   ```bash
+   npm run dev
+   ```
+   Abre `http://localhost:3000` en tu navegador.
+
+## Estado Actual
+- ✅ Sistema de precios con calculadora de créditos
+- ✅ Tooltips interactivos con acentos RGB
+- 🛠️ Casos de estudio en desarrollo
+- 🛠️ Integración con Web3 pendiente
 
 ## Servicios Core
 
