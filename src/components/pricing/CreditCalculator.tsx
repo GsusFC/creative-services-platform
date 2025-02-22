@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { jsPDF } from 'jspdf'
 import { getPricePerCredit, getCurrency, getDiscountForCredits } from '@/lib/pricing'
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 
@@ -96,6 +97,33 @@ export function CreditCalculator() {
     setPricePerCredit(getPricePerCredit())
     setCurrency(getCurrency())
   }, [])
+
+  const resetCalculator = () => {
+    setHours(10)
+    setSelectedType(serviceTypes[0])
+  }
+
+  const exportToPDF = () => {
+    const doc = new jsPDF()
+    const details = serviceTypeDetails[selectedType.complexity]
+    
+    doc.setFontSize(16)
+    doc.text("Creative Services Estimate", 20, 20)
+    
+    doc.setFontSize(12)
+    doc.text([
+      `Service: ${selectedType.name}`,
+      `Complexity: ${selectedType.complexity.toUpperCase()}`,
+      `Estimated Hours: ${hours}`,
+      `Credits per Hour: ${selectedType.creditsPerHour}`,
+      `Timeline: ${details.timeline}`,
+      `Iterations: ${details.iterations}`,
+      `Total Credits: ${totalCredits}`,
+      `Estimated Price: ${currency}${(totalCredits * pricePerCredit).toFixed(2)}`,
+    ], 20, 40)
+
+    doc.save("creative-services-estimate.pdf")
+  }
 
   const totalCredits = useMemo(() => {
     // Calculamos los créditos multiplicando las horas por el factor de complejidad
@@ -278,6 +306,11 @@ export function CreditCalculator() {
                   {totalCredits}
                   <span className="text-lg md:text-xl lg:text-2xl ml-2">CREDITS</span>
                 </div>
+                {hours < 5 && (
+                  <p className="text-sm text-red-500 mt-2 text-center">
+                    Mínimo recomendado: 5 horas
+                  </p>
+                )}
               </motion.div>
               <motion.div 
                 className="text-sm md:text-base uppercase"
@@ -295,6 +328,31 @@ export function CreditCalculator() {
                   maximumFractionDigits: 0 
                 })}
               </motion.div>
+
+              <div className="flex justify-center gap-4 mt-8">
+                <motion.button
+                  onClick={resetCalculator}
+                  className="px-4 py-2 rounded text-sm bg-[#1a1a1a] border border-white/20 uppercase"
+                  style={{ fontFamily: 'var(--font-geist-mono)' }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Reset
+                </motion.button>
+                
+                <motion.button
+                  onClick={exportToPDF}
+                  className="px-4 py-2 rounded text-sm text-black uppercase"
+                  style={{ 
+                    backgroundColor: selectedType.color,
+                    fontFamily: 'var(--font-geist-mono)'
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Export PDF
+                </motion.button>
+              </div>
             </div>
           </motion.div>
         </div>
