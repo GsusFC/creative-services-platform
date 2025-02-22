@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const services = [
   {
@@ -55,7 +56,7 @@ export function Services() {
     <section className="py-24 bg-black relative overflow-hidden">
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:6rem_6rem] opacity-70"></div>
 
-      <div className="container px-[40px] mx-auto">
+      <div className="px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -63,7 +64,7 @@ export function Services() {
             duration: 0.8,
             ease: [0.22, 1, 0.36, 1]
           }}
-          className="max-w-2xl mx-auto text-center mb-12"
+          className="max-w-2xl mx-auto text-center mb-12 px-4"
         >
           <h2 
             className="text-4xl md:text-5xl lg:text-6xl mb-4 text-white leading-tight"
@@ -79,7 +80,7 @@ export function Services() {
           </p>
         </motion.div>
         
-        <div className="grid md:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-4 gap-2 mb-12">
           {services.map((service, index) => (
             <motion.div
               key={service.title}
@@ -90,7 +91,7 @@ export function Services() {
                 delay: index * 0.1,
                 ease: [0.22, 1, 0.36, 1]
               }}
-              className="group relative bg-black p-6 border border-white/20 hover:border-white/40 transition-all duration-300 h-[420px] flex flex-col"
+              className="group relative bg-black p-8 border border-white/20 hover:border-white/40 transition-all duration-300 h-[380px] flex flex-col"
             >
               <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
 
@@ -139,6 +140,20 @@ export function Services() {
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="text-center px-4"
+        >
+          <Link 
+            href="/services" 
+            className="inline-flex items-center text-[#00ff00] hover:text-white transition-colors font-mono text-lg"
+          >
+            View All Services →
+          </Link>
+        </motion.div>
       </div>
     </section>
   )

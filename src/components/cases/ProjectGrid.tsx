@@ -50,19 +50,12 @@ function ProjectCard({ project }: { project: typeof featuredProjects[0] }) {
   )
 }
 
-export default function CasesPage() {
+export function ProjectGrid() {
   return (
-    <main className="min-h-screen bg-black text-white">
-      <div className="container mx-auto py-16">
-        <h1 className="font-druk text-6xl mb-16">Case Studies</h1>
-        
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {featuredProjects.map((project, index) => (
-            <ProjectCard key={project.slug} project={project} />
-          ))}
-        </div>
-      </div>
-    </main>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {featuredProjects.map((project, index) => (
+        <ProjectCard key={project.slug} project={project} />
+      ))}
+    </div>
   )
 }

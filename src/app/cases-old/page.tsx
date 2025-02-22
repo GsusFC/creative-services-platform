@@ -12,7 +12,7 @@ function ProjectCard({ project }: { project: typeof featuredProjects[0] }) {
       animate={{ opacity: 1, y: 0 }}
       className="group relative aspect-[16/9] bg-neutral-900 overflow-hidden"
     >
-      <Link href={`/cases/${project.slug}`} className="block h-full">
+      <Link href={`/case-studies/${project.slug}`} className="block h-full">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10" />
         
         {/* Project Image */}
@@ -50,7 +50,7 @@ function ProjectCard({ project }: { project: typeof featuredProjects[0] }) {
   )
 }
 
-export default function CasesPage() {
+export default function CaseStudiesPage() {
   return (
     <main className="min-h-screen bg-black text-white">
       <div className="container mx-auto py-16">
