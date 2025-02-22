@@ -3,13 +3,14 @@
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getPricePerCredit, getCurrency, getDiscountForCredits } from '@/lib/pricing'
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 
 type Complexity = 'low' | 'medium' | 'high'
 
 interface ServiceType {
   name: string
   complexity: Complexity
-  credits: number
+  creditsPerHour: number
   examples: string[]
   color: string
   hoverColor: string
@@ -21,11 +22,29 @@ const COLORS = {
   high: { bg: 'rgb(0, 0, 255)', hover: 'rgb(51, 51, 255)' }
 } as const
 
+const serviceTypeDetails = {
+  low: {
+    description: 'Simple design tasks with clear requirements and minimal iterations. Perfect for quick turnarounds and straightforward projects.',
+    timeline: '1-3 days',
+    iterations: '2 rounds of revisions',
+  },
+  medium: {
+    description: 'More complex projects requiring strategic thinking and multiple design elements. Ideal for establishing brand consistency.',
+    timeline: '3-7 days',
+    iterations: '3 rounds of revisions',
+  },
+  high: {
+    description: 'Comprehensive design projects involving multiple stakeholders and complex requirements. Best for full-scale branding and design systems.',
+    timeline: '7-14 days',
+    iterations: 'Unlimited revisions',
+  },
+} as const
+
 const serviceTypes: ServiceType[] = [
   {
     name: 'LOW COMPLEXITY',
     complexity: 'low',
-    credits: 1,
+    creditsPerHour: 1,
     examples: [
       'UI DESIGN',
       'PRESENTATIONS',
@@ -33,12 +52,12 @@ const serviceTypes: ServiceType[] = [
       'BRAND ADAPTATIONS'
     ],
     color: COLORS.low.bg,
-    hoverColor: COLORS.low.hover
+    hoverColor: COLORS.low.hover,
   },
   {
     name: 'MEDIUM COMPLEXITY',
     complexity: 'medium',
-    credits: 1.25,
+    creditsPerHour: 1.25,
     examples: [
       'ART DIRECTION',
       'DESIGN SYSTEMS',
@@ -46,12 +65,12 @@ const serviceTypes: ServiceType[] = [
       'USER FLOWS'
     ],
     color: COLORS.medium.bg,
-    hoverColor: COLORS.medium.hover
+    hoverColor: COLORS.medium.hover,
   },
   {
     name: 'HIGH COMPLEXITY',
     complexity: 'high',
-    credits: 1.5,
+    creditsPerHour: 1.5,
     examples: [
       'FULL BRANDING',
       'WEB DESIGN',
@@ -59,7 +78,7 @@ const serviceTypes: ServiceType[] = [
       'COMPLEX SYSTEMS'
     ],
     color: COLORS.high.bg,
-    hoverColor: COLORS.high.hover
+    hoverColor: COLORS.high.hover,
   }
 ]
 
@@ -69,6 +88,8 @@ export function CreditCalculator() {
   const [hours, setHours] = useState(10)
   const [pricePerCredit, setPricePerCredit] = useState(getPricePerCredit())
   const [currency, setCurrency] = useState(getCurrency())
+  const [isHovering, setIsHovering] = useState(false)
+
 
   useEffect(() => {
     setMounted(true)
@@ -76,20 +97,31 @@ export function CreditCalculator() {
     setCurrency(getCurrency())
   }, [])
 
-  const totalCredits = useMemo(() => (
-    Math.ceil(hours * selectedType.credits)
-  ), [hours, selectedType.credits])
+  const totalCredits = useMemo(() => {
+    // Calculamos los créditos multiplicando las horas por el factor de complejidad
+    const rawCredits = hours * selectedType.creditsPerHour;
+    // Redondeamos al alza para asegurar que siempre tengamos un número entero de créditos
+    return Math.ceil(rawCredits);
+  }, [hours, selectedType.creditsPerHour]);
 
-  const finalPrice = useMemo(() => (
-    totalCredits * pricePerCredit * (1 - getDiscountForCredits(totalCredits) / 100)
-  ), [totalCredits, pricePerCredit])
+  const finalPrice = useMemo(() => {
+    // Calculamos el precio base multiplicando los créditos totales por el precio por crédito
+    const basePrice = totalCredits * pricePerCredit;
+    // Aplicamos el descuento por volumen si corresponde
+    const discount = getDiscountForCredits(totalCredits) / 100;
+    // Calculamos el precio final aplicando el descuento
+    return Math.round(basePrice * (1 - discount));
+  }, [totalCredits, pricePerCredit])
 
   const handleTypeSelect = (type: ServiceType) => {
     setSelectedType(type)
   }
 
   const handleHoursChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHours(Number(e.target.value))
+    const newHours = Number(e.target.value);
+    if (!isNaN(newHours) && newHours >= 1 && newHours <= 100) {
+      setHours(newHours);
+    }
   }
 
   if (!mounted) return null
@@ -117,29 +149,48 @@ export function CreditCalculator() {
             </label>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {serviceTypes.map((type) => (
-                <motion.button
-                  key={type.complexity}
-                  onClick={() => handleTypeSelect(type)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleTypeSelect(type)}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="p-4 text-left transition-colors duration-300 border-2 focus:outline-none focus:ring-2 focus:ring-white/50"
-                  style={{
-                    backgroundColor: selectedType.complexity === type.complexity ? type.color : 'transparent',
-                    borderColor: selectedType.complexity === type.complexity ? type.color : 'rgb(51,51,51)',
-                    color: selectedType.complexity === type.complexity ? 'black' : 'white'
-                  }}
-                  role="radio"
-                  aria-checked={selectedType.complexity === type.complexity}
-                  tabIndex={0}
-                >
-                  <div className="text-base mb-2" style={{ fontFamily: 'var(--font-druk-text-wide)' }}>
-                    {type.name}
-                  </div>
-                  <div className="text-sm text-inherit opacity-80" style={{ fontFamily: 'var(--font-geist-mono)' }}>
-                    {type.credits} CREDITS/HOUR
-                  </div>
-                </motion.button>
+                <Tooltip key={type.complexity}>
+                  <TooltipTrigger asChild>
+                    <motion.button
+                        onClick={() => handleTypeSelect(type)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleTypeSelect(type)}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="p-4 text-left transition-colors duration-300 border-2 focus:outline-none focus:ring-2 focus:ring-white/50 relative"
+                        style={{
+                          backgroundColor: selectedType.complexity === type.complexity ? type.color : 'transparent',
+                          borderColor: selectedType.complexity === type.complexity ? type.color : 'rgb(51,51,51)',
+                          color: selectedType.complexity === type.complexity ? 'black' : 'white'
+                        }}
+                        role="radio"
+                        aria-checked={selectedType.complexity === type.complexity}
+                        tabIndex={0}
+                      >
+                        <div className="text-base mb-2" style={{ fontFamily: 'var(--font-druk-text-wide)' }}>
+                          {type.name}
+                        </div>
+                        <div className="text-sm text-inherit opacity-80" style={{ fontFamily: 'var(--font-geist-mono)' }}>
+                          {type.creditsPerHour} CREDITS/HOUR
+                        </div>
+                      </motion.button>
+                    </TooltipTrigger>
+                    <TooltipContent 
+                      side="top" 
+                      align="center"
+                      accentColor={type.color}
+                    >
+                      <div className="max-w-xs space-y-2">
+                        <p className="text-white font-medium">{serviceTypeDetails[type.complexity].description}</p>
+                        <div className="text-white/60 space-y-1">
+                          <p>⏳ {serviceTypeDetails[type.complexity].timeline}</p>
+                          <p>↻ {serviceTypeDetails[type.complexity].iterations}</p>
+                          <p className="text-white font-medium mt-2">
+                            {type.creditsPerHour} CREDITS PER HOUR
+                          </p>
+                        </div>
+                      </div>
+                    </TooltipContent>
+                </Tooltip>
               ))}
             </div>
             <motion.div 
@@ -168,16 +219,34 @@ export function CreditCalculator() {
                 max="100"
                 value={hours}
                 onChange={handleHoursChange}
-                className="w-full h-2 appearance-none cursor-pointer touch-manipulation focus:outline-none focus:ring-2 focus:ring-white/50"
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
+                className="w-full h-2 appearance-none cursor-pointer touch-manipulation focus:outline-none focus:ring-2 focus:ring-white/50 relative"
                 style={{
-                  background: `linear-gradient(to right, ${selectedType.color} 0%, ${selectedType.color} ${hours}%, rgb(51,51,51) ${hours}%, rgb(51,51,51) 100%)`
+                  background: `linear-gradient(to right, ${selectedType.color} 0%, ${selectedType.color} ${(hours / 100) * 100}%, rgb(51,51,51) ${(hours / 100) * 100}%, rgb(51,51,51) 100%)`
                 }}
-
                 aria-valuemin={1}
                 aria-valuemax={100}
                 aria-valuenow={hours}
                 aria-label="Select estimated hours"
               />
+              <AnimatePresence>
+                {isHovering && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="absolute left-1/2 -translate-x-1/2 -top-8 bg-black border border-white/20 px-2 py-1 text-xs text-white/80"
+                    style={{
+                      fontFamily: 'var(--font-geist-mono)',
+                      left: `${(hours / 100) * 100}%`,
+                      transform: `translateX(-${(hours / 100) * 100}%)`
+                    }}
+                  >
+                    {hours} HOURS
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
             <motion.div 
               className="text-center text-white mt-4 uppercase" style={{ fontFamily: 'var(--font-geist-mono)' }}
@@ -205,12 +274,17 @@ export function CreditCalculator() {
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3 }}
               >
-                {totalCredits}
-                <span className="text-lg md:text-xl lg:text-2xl ml-2 text-white/80">CREDITS</span>
+                <div style={{ color: selectedType.color }}>
+                  {totalCredits}
+                  <span className="text-lg md:text-xl lg:text-2xl ml-2">CREDITS</span>
+                </div>
               </motion.div>
               <motion.div 
-                className="text-sm md:text-base uppercase" style={{ fontFamily: 'var(--font-geist-mono)' }}
-                style={{ color: selectedType.color }}
+                className="text-sm md:text-base uppercase"
+                style={{ 
+                  fontFamily: 'var(--font-geist-mono)',
+                  color: selectedType.color 
+                }}
                 key={finalPrice}
                 initial={{ y: -10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}

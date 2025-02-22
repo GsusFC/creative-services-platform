@@ -3,6 +3,8 @@ import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import localFont from 'next/font/local'
+import { Toaster } from 'sonner'
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 const drukTextWide = localFont({
   src: '../../public/fonts/Druk Text Wide Heavy.woff2',
@@ -32,9 +34,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased font-sans ${geist.variable} ${geistMono.variable} ${drukTextWide.variable}`}>
-        <Navbar />
-        {children}
-        <Footer />
+        <TooltipProvider>
+          <Navbar />
+          {children}
+          <Footer />
+          <Toaster position="bottom-right" theme="dark" closeButton richColors />
+        </TooltipProvider>
       </body>
     </html>
   )
