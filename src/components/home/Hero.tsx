@@ -79,20 +79,6 @@ export function Hero() {
       </motion.div>
 
       {/* Desktop Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2">
-        <div 
-          className="text-white/60 text-sm"
-          style={{ fontFamily: 'var(--font-geist-mono)' }}
-        >
-          SCROLL
-        </div>
-        <div className="w-0.5 h-12 bg-gradient-to-b from-white/60 to-transparent" />
-      </div>
-    </div>
-  );
-}
-
-      {/* Desktop Scroll Indicator */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -112,5 +98,5 @@ export function Hero() {
         />
       </motion.div>
     </div>
-  )
+  );
 }
