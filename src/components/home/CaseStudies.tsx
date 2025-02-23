@@ -22,12 +22,12 @@ export function CaseStudies() {
       <motion.div 
         ref={containerRef}
         style={{ y, opacity }}
-        className="py-12 overflow-hidden relative"
+        className="overflow-hidden relative"
       >
         {/* Arrow Column */}
         <div className="absolute left-0 top-0 h-full w-[120px] hidden md:block bg-[#00ff00] overflow-hidden">
           <motion.div 
-            className="absolute inset-0 flex flex-col items-center"
+            className="absolute inset-0 flex flex-col items-center gap-0"
             initial={{ y: '-100%' }}
             animate={{ y: '0%' }}
             transition={{
@@ -40,9 +40,13 @@ export function CaseStudies() {
             {Array(60).fill(null).map((_, i) => (
               <div 
                 key={i} 
-                className="w-[120px] h-[120px] -mt-[1px] -mb-[1px] flex-shrink-0"
+                className="w-[120px] h-[120px] flex-shrink-0"
               >
-                <img src="/assets/icons/arrow.svg" alt="Arrow down" className="w-full h-full" />
+                <img 
+                  src="/assets/icons/arrow.svg" 
+                  alt="Arrow down" 
+                  className="w-full h-full object-cover block" 
+                />
               </div>
             ))}
           </motion.div>
@@ -51,19 +55,24 @@ export function CaseStudies() {
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3 mb-6"
+            className="mb-6 flex items-center justify-between"
           >
-            <div className="flex gap-1">
-              {Array(5).fill(null).map((_, i) => (
-                <div key={i} className="w-3 h-3 bg-[#00ff00]" />
-              ))}
-            </div>
             <p 
               className="text-[#00ff00] text-lg tracking-wider uppercase" 
               style={{ fontFamily: 'var(--font-geist-mono)' }}
             >
               Selected Work
             </p>
+            <Link 
+              href="/cases"
+              className="group inline-flex items-center gap-2 text-lg text-white/60 hover:text-white transition-colors"
+              style={{ fontFamily: 'var(--font-geist-mono)' }}
+            >
+              View All Projects
+              <span className="text-[#ff0000] group-hover:translate-x-1 transition-transform">
+                →
+              </span>
+            </Link>
           </motion.div>
 
           <div className="relative">
@@ -91,7 +100,7 @@ export function CaseStudies() {
                           </p>
                         </div>
                         <div className="flex-1 space-y-6">
-                          <h3 className="text-6xl md:text-8xl xl:text-9xl font-druk text-white group-hover:text-[#00ff00] transition-colors leading-[0.85] uppercase">
+                          <h3 className="text-6xl md:text-8xl xl:text-9xl font-druk text-white group-hover:text-[#ff0000] transition-colors leading-[0.85] uppercase">
                             {project.title}
                           </h3>
                           <p 
@@ -109,19 +118,7 @@ export function CaseStudies() {
             </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="mt-6 text-right px-4"
-          >
-            <Link 
-              href="/cases"
-              className="inline-block text-white/60 hover:text-white transition-colors"
-              style={{ fontFamily: 'var(--font-geist-mono)' }}
-            >
-              VIEW ALL PROJECTS
-            </Link>
-          </motion.div>
+
         </div>
       </motion.div>
     </div>

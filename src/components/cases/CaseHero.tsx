@@ -39,7 +39,7 @@ export function CaseHero({ title, category, description, image, color, heroVideo
         </div>
       </div>
       <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="relative z-10 max-w-6xl mx-auto px-6 py-24 text-center">
+        <div className="relative z-10 max-w-6xl mx-auto px-6 pt-32 md:pt-40 pb-24 text-center">
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}

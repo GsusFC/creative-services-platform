@@ -10,7 +10,7 @@ function ProjectCard({ project }: { project: typeof featuredProjects[0] }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="group relative aspect-[16/9] bg-neutral-900 overflow-hidden"
+      className="group relative aspect-square overflow-hidden"
     >
       <Link href={`/cases/${project.slug}`} className="block h-full">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10" />
@@ -53,31 +53,29 @@ function ProjectCard({ project }: { project: typeof featuredProjects[0] }) {
 export default function CasesPage() {
   return (
     <main className="min-h-screen bg-black text-white">
-      <div className="container mx-auto py-16">
-        <p 
-          className="text-[#00ff00] text-lg mb-16" 
-          style={{ fontFamily: 'var(--font-geist-mono)' }}
-        >
-          SELECTED WORK
-        </p>
+      <div className="pt-32 pb-12 md:pt-40">
+        <div className="px-6 mb-16">
+          <h1 
+            className="text-6xl md:text-8xl font-druk text-white uppercase mb-4" 
+          >
+            Projects
+          </h1>
+          <p 
+            className="text-[#00ff00] text-lg tracking-wider uppercase" 
+            style={{ fontFamily: 'var(--font-geist-mono)' }}
+          >
+            Selected Work
+          </p>
+        </div>
         
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-6">
           {featuredProjects.map((project) => (
             <ProjectCard key={project.slug} project={project} />
           ))}
         </div>
 
-        {/* View All Projects */}
-        <div className="flex justify-center">
-          <Link 
-            href="/projects" 
-            className="text-white/60 hover:text-white transition-colors"
-            style={{ fontFamily: 'var(--font-geist-mono)' }}
-          >
-            VIEW ALL PROJECTS
-          </Link>
-        </div>
+
       </div>
     </main>
   )

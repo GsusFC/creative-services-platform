@@ -106,7 +106,7 @@ export default function ServicesPage() {
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem] md:bg-[size:6rem_6rem] opacity-30 pointer-events-none" />
 
       {/* Header Section */}
-      <section className="relative pt-[120px] md:pt-[180px] pb-16 md:pb-24 px-[40px]">
+      <section className="relative pt-32 md:pt-40 pb-16 md:pb-24 px-[40px]">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
