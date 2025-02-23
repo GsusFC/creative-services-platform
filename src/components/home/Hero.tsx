@@ -79,20 +79,20 @@ export function Hero() {
       </motion.div>
 
       {/* Desktop Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-        className="hidden md:flex justify-center pb-8"
-      >
-        <div className="flex items-center gap-2 text-white/60">
+      <div className="hidden md:flex justify-center pb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="flex items-center gap-2 text-white/60"
+        >
           <span className="text-sm" style={{ fontFamily: 'var(--font-geist-mono)' }}>SCROLL</span>
           <svg width="16" height="24" viewBox="0 0 16 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="1" y="1" width="14" height="22" rx="7" stroke="currentColor" strokeWidth="2"/>
             <rect x="7" y="6" width="2" height="6" rx="1" fill="currentColor"/>
           </svg>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 }
