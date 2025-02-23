@@ -9,8 +9,8 @@ export function Hero() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem] md:bg-[size:6rem_6rem] opacity-30" />
 
       {/* Main Content */}
-      <div className="flex-1 w-full bg-black px-6 flex items-center justify-center">
-        <div className="text-center">
+      <div className="flex-1 w-full bg-black px-6 md:px-24 flex items-center" style={{ marginTop: '120px' }}>
+        <div className="text-left max-w-[90%] md:max-w-[80%]">
           {/* Mobile Layout */}
           <div className="md:hidden">
             <motion.div
@@ -19,15 +19,15 @@ export function Hero() {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <p 
-                className="text-[#00ff00] text-sm sm:text-base mb-3"
+                className="text-[#00ff00] text-sm sm:text-base mb-8"
                 style={{ fontFamily: 'var(--font-geist-mono)' }}
               >
                 STRATEGIC DESIGN STUDIO
               </p>
               <h1 
-                className="text-white font-bold leading-[0.85] tracking-[0.02em] uppercase whitespace-nowrap" 
+                className="text-white font-bold leading-[0.9] tracking-[0.02em] uppercase whitespace-nowrap" 
                 style={{ 
-                  fontSize: 'clamp(2rem, 10vw, 5rem)',
+                  fontSize: 'clamp(2rem, 8vw, 4rem)',
                   fontFamily: 'var(--font-druk-text-wide)'
                 }}
               >
@@ -44,15 +44,15 @@ export function Hero() {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <p 
-                className="text-[#00ff00] text-lg mb-4"
+                className="text-[#00ff00] text-lg mb-8"
                 style={{ fontFamily: 'var(--font-geist-mono)' }}
               >
                 STRATEGIC DESIGN STUDIO
               </p>
               <h1 
-                className="text-white font-bold leading-[0.85] tracking-[0.02em] uppercase whitespace-nowrap" 
+                className="text-white font-bold leading-[0.9] tracking-[0.02em] uppercase whitespace-nowrap" 
                 style={{ 
-                  fontSize: 'clamp(4rem, 8vw, 10rem)',
+                  fontSize: 'clamp(4rem, 7vw, 8rem)',
                   fontFamily: 'var(--font-druk-text-wide)'
                 }}
               >

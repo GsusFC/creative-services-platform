@@ -28,9 +28,9 @@ function ProjectCard({ project }: { project: typeof featuredProjects[0] }) {
         {/* Project Info */}
         <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
           <div className="space-y-2">
-            <p className="text-sm text-[#00ff00] font-mono">{project.category}</p>
-            <h3 className="text-2xl font-druk text-white">{project.title}</h3>
-            <p className="text-white/80">{project.description}</p>
+            <p className="text-sm text-[#00ff00] font-mono uppercase tracking-wider">{project.category}</p>
+            <h3 className="text-4xl md:text-5xl font-druk text-white leading-[0.9] tracking-tight">{project.title}</h3>
+            <p className="text-white/80 mt-4">{project.description}</p>
             
             {/* Tags */}
             <div className="flex flex-wrap gap-2 pt-2">
@@ -54,13 +54,29 @@ export default function CasesPage() {
   return (
     <main className="min-h-screen bg-black text-white">
       <div className="container mx-auto py-16">
-        <h1 className="font-druk text-6xl mb-16">Case Studies</h1>
+        <p 
+          className="text-[#00ff00] text-lg mb-16" 
+          style={{ fontFamily: 'var(--font-geist-mono)' }}
+        >
+          SELECTED WORK
+        </p>
         
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
           {featuredProjects.map((project) => (
             <ProjectCard key={project.slug} project={project} />
           ))}
+        </div>
+
+        {/* View All Projects */}
+        <div className="flex justify-center">
+          <Link 
+            href="/projects" 
+            className="text-white/60 hover:text-white transition-colors"
+            style={{ fontFamily: 'var(--font-geist-mono)' }}
+          >
+            VIEW ALL PROJECTS
+          </Link>
         </div>
       </div>
     </main>
