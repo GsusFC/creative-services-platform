@@ -79,14 +79,14 @@ export function Hero() {
       </motion.div>
 
       {/* Desktop Scroll Indicator */}
-      <div className="hidden md:flex justify-center pb-8">
-        <div className="flex items-center gap-2 text-white/60">
-          <span className="text-sm" style={{ fontFamily: 'var(--font-geist-mono)' }}>SCROLL</span>
-          <svg width="16" height="24" viewBox="0 0 16 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="1" y="1" width="14" height="22" rx="7" stroke="currentColor" strokeWidth="2"/>
-            <rect x="7" y="6" width="2" height="6" rx="1" fill="currentColor"/>
-          </svg>
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2">
+        <div 
+          className="text-white/60 text-sm"
+          style={{ fontFamily: 'var(--font-geist-mono)' }}
+        >
+          SCROLL
         </div>
+        <div className="w-0.5 h-12 bg-gradient-to-b from-white/60 to-transparent" />
       </div>
     </div>
   );
