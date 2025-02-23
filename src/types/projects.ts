@@ -32,6 +32,7 @@ export interface Project {
   category: string
   description: string
   image: string
+  heroVideo?: string
   slug: string
   color: string
   tags: string[]

@@ -33,7 +33,7 @@ const TooltipContent = React.forwardRef<
       y.set(10)
       opacity.set(0)
     }
-  }, [])
+  }, [y, opacity])
 
   return (
     <TooltipPrimitive.Portal>
