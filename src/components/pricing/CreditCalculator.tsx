@@ -332,9 +332,17 @@ export function CreditCalculator() {
               <div className="flex justify-center gap-4 mt-8">
                 <motion.button
                   onClick={resetCalculator}
-                  className="px-4 py-2 rounded text-sm bg-[#1a1a1a] border border-white/20 uppercase"
-                  style={{ fontFamily: 'var(--font-geist-mono)' }}
-                  whileHover={{ scale: 1.05 }}
+                  className="px-4 py-2 text-sm uppercase tracking-wider"
+                  style={{ 
+                    fontFamily: 'var(--font-geist-mono)',
+                    color: selectedType.color,
+                    border: `1px solid ${selectedType.color}`,
+                    backgroundColor: selectedType.color + '10'
+                  }}
+                  whileHover={{ 
+                    backgroundColor: selectedType.color + '20',
+                    scale: 1.05
+                  }}
                   whileTap={{ scale: 0.95 }}
                 >
                   Reset
@@ -342,7 +350,7 @@ export function CreditCalculator() {
                 
                 <motion.button
                   onClick={exportToPDF}
-                  className="px-4 py-2 rounded text-sm text-black uppercase"
+                  className="px-4 py-2 text-sm text-black uppercase tracking-wider"
                   style={{ 
                     backgroundColor: selectedType.color,
                     fontFamily: 'var(--font-geist-mono)'

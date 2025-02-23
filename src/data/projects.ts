@@ -9,7 +9,40 @@ export const featuredProjects: Project[] = [
     slug: 'adidas-originals',
     color: 'rgb(255, 0, 0)',
     tags: ['branding', 'digital', 'campaign'],
-    year: '2024'
+    year: '2024',
+    client: 'Adidas',
+    services: ['Brand Strategy', 'Digital Design', 'Campaign Development'],
+    challenge: 'Launch a digital-first campaign that would resonate with Gen Z while maintaining the iconic status of Adidas Originals.',
+    solution: 'We created an immersive digital experience that combined heritage elements with contemporary culture, using RGB color transitions and dynamic typography.',
+    results: [
+      '250% increase in social media engagement',
+      '2M+ campaign hashtag mentions',
+      '40% boost in online sales during launch week'
+    ],
+    testimonial: {
+      quote: "The team delivered a campaign that perfectly balanced our heritage with modern digital culture. The results exceeded our expectations.",
+      author: 'Sarah Johnson',
+      role: 'Global Digital Marketing Director, Adidas'
+    },
+    gallery: [
+      {
+        url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80',
+        caption: 'Digital campaign hero visual',
+        width: 800,
+        height: 600
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1579298245158-33e8f568f7d3?w=800&q=80',
+        caption: 'Interactive mobile experience',
+        width: 800,
+        height: 600
+      }
+    ],
+    nextProject: {
+      title: 'NIKE ACG',
+      slug: 'nike-acg',
+      image: 'https://images.unsplash.com/photo-1496247749665-49cf5b1022e9?w=800&q=80'
+    }
   },
   {
     title: 'NIKE ACG',
@@ -19,7 +52,40 @@ export const featuredProjects: Project[] = [
     slug: 'nike-acg',
     color: 'rgb(0, 255, 0)',
     tags: ['digital', 'ecommerce', 'ux'],
-    year: '2024'
+    year: '2024',
+    client: 'Nike',
+    services: ['UX Design', 'E-commerce Development', 'Digital Strategy'],
+    challenge: 'Create an immersive e-commerce experience that captures the rugged spirit of ACG while maintaining ease of use.',
+    solution: 'We developed a unique product exploration interface that combines 3D visualization with intuitive navigation, optimized for both desktop and mobile.',
+    results: [
+      '45% reduction in cart abandonment',
+      '3x increase in time spent on product pages',
+      '85% positive user feedback score'
+    ],
+    testimonial: {
+      quote: "The new ACG e-commerce experience perfectly balances innovation with usability. It's exactly what we were looking for.",
+      author: 'Michael Chen',
+      role: 'Digital Product Lead, Nike'
+    },
+    gallery: [
+      {
+        url: 'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800&q=80',
+        caption: 'Product detail page',
+        width: 800,
+        height: 600
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=800&q=80',
+        caption: 'Mobile shopping experience',
+        width: 800,
+        height: 600
+      }
+    ],
+    nextProject: {
+      title: 'SPOTIFY WRAPPED',
+      slug: 'spotify-wrapped',
+      image: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=800&q=80'
+    }
   },
   {
     title: 'SPOTIFY WRAPPED',
