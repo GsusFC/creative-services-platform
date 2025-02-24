@@ -4,36 +4,46 @@ import React from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 
-const steps = [
+const phases = [
   {
-    title: 'BRIEF',
-    description: 'We start by understanding your needs, goals, and vision. Our team works closely with you to define project scope, objectives, and deliverables.',
-    image: '/images/process/brief.jpg'
+    title: 'DISCOVER',
+    description: 'Initial phase where we understand your project, analyze the market, and define the path forward.',
+    milestones: [
+      { name: 'Kickoff meeting', icon: '🏁' },
+      { name: 'Brand & Digital audit', icon: '🏆' },
+      { name: 'Co-Design Workshop', icon: '▶️' },
+      { name: 'Análisis de tendencias y competencia', icon: '🔎' }
+    ],
+    image: '/images/process/discover.jpg'
   },
   {
-    title: 'RESEARCH',
-    description: 'Our team conducts thorough research on your industry, competitors, and target audience to ensure our creative solutions are strategic and effective.',
-    image: '/images/process/research.jpg'
+    title: 'FOCUS',
+    description: 'We define the strategic direction and visual approach that will guide the entire project.',
+    milestones: [
+      { name: 'Moodboards', icon: '📋' },
+      { name: 'Brand Strategy', icon: '👤' },
+      { name: 'Conceptualización', icon: '💥' }
+    ],
+    image: '/images/process/focus.jpg'
   },
   {
-    title: 'IDEATION',
-    description: 'We brainstorm and develop multiple creative concepts, exploring different approaches to solve your challenges innovatively.',
-    image: '/images/process/ideation.jpg'
+    title: 'BUILD',
+    description: 'The execution phase where we create and refine all the project deliverables.',
+    milestones: [
+      { name: 'Brand Identity', icon: '🖤' },
+      { name: 'Wireframing', icon: '✏️' },
+      { name: 'UI Design', icon: '🎨' },
+      { name: 'Prototipado', icon: '👥' }
+    ],
+    image: '/images/process/build.jpg'
   },
   {
-    title: 'CREATION',
-    description: 'Our skilled creative team brings the chosen concept to life, crafting high-quality deliverables that align with your brand and objectives.',
-    image: '/images/process/creation.jpg'
-  },
-  {
-    title: 'REVIEW',
-    description: 'You review our work and provide feedback. We refine and iterate based on your input to ensure the final product exceeds expectations.',
-    image: '/images/process/review.jpg'
-  },
-  {
-    title: 'DELIVERY',
-    description: 'Once approved, we deliver your project in all required formats, along with any necessary documentation or guidelines.',
-    image: '/images/process/delivery.jpg'
+    title: 'SYNC',
+    description: 'Final phase focused on documentation and knowledge transfer to ensure successful implementation.',
+    milestones: [
+      { name: 'Brand Center', icon: '🎯' }
+    ],
+    image: '/images/process/sync.jpg'
   }
 ]
 
@@ -56,11 +66,11 @@ export function Process() {
         </p>
       </div>
 
-      {/* Process Steps */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {steps.map((step, index) => (
+      {/* Process Phases */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        {phases.map((phase, index) => (
           <motion.div
-            key={step.title}
+            key={phase.title}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -69,25 +79,43 @@ export function Process() {
           >
             <div className="relative h-48">
               <Image
-                src={step.image}
-                alt={step.title}
+                src={phase.image}
+                alt={phase.title}
                 fill
                 className="object-cover"
               />
             </div>
             <div className="p-6">
               <h3 
-                className="text-2xl text-white mb-4"
+                className="text-3xl text-white mb-4"
                 style={{ fontFamily: 'var(--font-druk-text-wide)' }}
               >
-                {index + 1}. {step.title}
+                {phase.title}
               </h3>
               <p 
-                className="text-white/60"
+                className="text-white/60 mb-6"
                 style={{ fontFamily: 'var(--font-geist-mono)' }}
               >
-                {step.description}
+                {phase.description}
               </p>
+              
+              {/* Milestones */}
+              <div className="space-y-3">
+                {phase.milestones.map((milestone, idx) => (
+                  <div 
+                    key={milestone.name}
+                    className="flex items-center space-x-3 text-white/80"
+                  >
+                    <span className="text-xl">{milestone.icon}</span>
+                    <span 
+                      style={{ fontFamily: 'var(--font-geist-mono)' }}
+                      className="text-sm"
+                    >
+                      {milestone.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </motion.div>
         ))}
