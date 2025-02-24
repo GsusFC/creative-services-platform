@@ -4,7 +4,14 @@ import { CaseHero } from '@/components/cases/CaseHero';
 import { CaseContent } from '@/components/cases/CaseContent';
 import { ProjectNavigation } from '@/components/cases/ProjectNavigation';
 
-export default async function CaseStudyPage({ params }: { params: { slug: string } }) {
+import { Metadata } from 'next';
+
+type Props = {
+  params: { slug: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export default function CaseStudyPage({ params }: Props) {
   const project = featuredProjects.find((p) => p.slug === params.slug);
 
   if (!project) {
