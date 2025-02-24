@@ -58,7 +58,7 @@ export default function CaseStudiesPage() {
         
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {featuredProjects.map((project, index) => (
+          {featuredProjects.map(project => (
             <ProjectCard key={project.slug} project={project} />
           ))}
         </div>
