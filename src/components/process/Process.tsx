@@ -161,21 +161,29 @@ export function Process() {
       </div>
 
       {/* CTA Section */}
-      <div className="text-center mt-24">
+      <motion.div 
+        className="text-center py-24"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
         <h2 
           className="text-3xl text-white mb-8"
           style={{ fontFamily: 'var(--font-druk-text-wide)' }}
         >
           Ready to Start Your Project?
         </h2>
-        <a 
+        <motion.a 
           href="/pricing" 
           className="inline-block bg-white text-black px-8 py-4 rounded-full font-bold hover:bg-white/90 transition-all duration-300"
           style={{ fontFamily: 'var(--font-geist-mono)' }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           GET STARTED
-        </a>
-      </div>
+        </motion.a>
+      </motion.div>
     </div>
   )
 }
