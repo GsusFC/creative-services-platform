@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { jsPDF } from 'jspdf'
 import { getPricePerCredit, getCurrency, getDiscountForCredits } from '@/lib/pricing'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 
@@ -101,28 +100,6 @@ export function CreditCalculator() {
   const resetCalculator = () => {
     setHours(10)
     setSelectedType(serviceTypes[0])
-  }
-
-  const exportToPDF = () => {
-    const doc = new jsPDF()
-    const details = serviceTypeDetails[selectedType.complexity]
-    
-    doc.setFontSize(16)
-    doc.text("Creative Services Estimate", 20, 20)
-    
-    doc.setFontSize(12)
-    doc.text([
-      `Service: ${selectedType.name}`,
-      `Complexity: ${selectedType.complexity.toUpperCase()}`,
-      `Estimated Hours: ${hours}`,
-      `Credits per Hour: ${selectedType.creditsPerHour}`,
-      `Timeline: ${details.timeline}`,
-      `Iterations: ${details.iterations}`,
-      `Total Credits: ${totalCredits}`,
-      `Estimated Price: ${currency}${(totalCredits * pricePerCredit).toFixed(2)}`,
-    ], 20, 40)
-
-    doc.save("creative-services-estimate.pdf")
   }
 
   const totalCredits = useMemo(() => {
@@ -329,38 +306,22 @@ export function CreditCalculator() {
                 })}
               </motion.div>
 
-              <div className="flex justify-center gap-4 mt-8">
-                <motion.button
-                  onClick={resetCalculator}
-                  className="px-4 py-2 text-sm uppercase tracking-wider"
-                  style={{ 
-                    fontFamily: 'var(--font-geist-mono)',
-                    color: selectedType.color,
-                    border: `1px solid ${selectedType.color}`,
-                    backgroundColor: selectedType.color + '10'
-                  }}
-                  whileHover={{ 
-                    backgroundColor: selectedType.color + '20',
-                    scale: 1.05
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Reset
-                </motion.button>
-                
-                <motion.button
-                  onClick={exportToPDF}
-                  className="px-4 py-2 text-sm text-black uppercase tracking-wider"
-                  style={{ 
-                    backgroundColor: selectedType.color,
-                    fontFamily: 'var(--font-geist-mono)'
-                  }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Export PDF
-                </motion.button>
-              </div>
+              <motion.button
+                onClick={resetCalculator}
+                className="absolute top-4 right-4 text-xs uppercase tracking-wider px-2 py-1"
+                style={{ 
+                  fontFamily: 'var(--font-geist-mono)',
+                  color: 'rgba(255,255,255,0.5)',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                }}
+                whileHover={{ 
+                  color: 'rgba(255,255,255,0.8)',
+                  borderColor: 'rgba(255,255,255,0.4)'
+                }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Reset
+              </motion.button>
             </div>
           </motion.div>
         </div>
