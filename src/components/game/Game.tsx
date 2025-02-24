@@ -62,7 +62,14 @@ type Asteroid = {
 
 export function Game() {
   // Estado para el tutorial
-  const [showTutorial, setShowTutorial] = useState(!localStorage.getItem('tutorialShown'))
+  const [showTutorial, setShowTutorial] = useState(true)
+
+  useEffect(() => {
+    const tutorialShown = localStorage.getItem('tutorialShown')
+    if (tutorialShown) {
+      setShowTutorial(false)
+    }
+  }, [])
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [gameStarted, setGameStarted] = useState(false)
   const [score, setScore] = useState(0)
