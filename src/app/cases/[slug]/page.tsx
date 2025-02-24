@@ -4,11 +4,7 @@ import { CaseHero } from '@/components/cases/CaseHero';
 import { CaseContent } from '@/components/cases/CaseContent';
 import { ProjectNavigation } from '@/components/cases/ProjectNavigation';
 
-interface PageProps {
-  params: { slug: string }
-}
-
-export default function CaseStudyPage({ params }: PageProps) {
+export default async function CaseStudyPage({ params }: { params: { slug: string } }) {
   const project = featuredProjects.find((p) => p.slug === params.slug);
 
   if (!project) {
