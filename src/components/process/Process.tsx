@@ -1,8 +1,8 @@
 'use client'
 
-import React from 'react'
+import React, { useRef } from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 
 const phases = [
   {
@@ -48,77 +48,116 @@ const phases = [
 ]
 
 export function Process() {
+  const containerRef = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start end', 'end start']
+  })
+
   return (
-    <div className="container mx-auto px-4 py-24">
+    <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="text-center mb-24">
-        <h1 
+      <div className="text-center py-32 md:py-40 bg-black">
+        <motion.h1 
           className="text-5xl sm:text-6xl md:text-7xl text-white mb-8"
           style={{ fontFamily: 'var(--font-druk-text-wide)' }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
           Our Process
-        </h1>
-        <p 
-          className="text-lg md:text-xl text-white/60 max-w-3xl mx-auto"
+        </motion.h1>
+        <motion.p 
+          className="text-lg md:text-xl text-white/60 max-w-3xl mx-auto px-4"
           style={{ fontFamily: 'var(--font-geist-mono)' }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
         >
           We follow a structured yet flexible creative process that ensures high-quality results while maintaining clear communication and collaboration throughout the project.
-        </p>
+        </motion.p>
       </div>
 
-      {/* Process Phases */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {phases.map((phase, index) => (
-          <motion.div
-            key={phase.title}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.2 }}
-            className="bg-white/5 rounded-lg overflow-hidden hover:bg-white/10 transition-all duration-300"
-          >
-            <div className="relative h-48">
-              <Image
-                src={phase.image}
-                alt={phase.title}
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div className="p-6">
-              <h3 
-                className="text-3xl text-white mb-4"
-                style={{ fontFamily: 'var(--font-druk-text-wide)' }}
+      {/* Timeline */}
+      <div ref={containerRef} className="relative container mx-auto px-4 py-24">
+        {/* Central Line */}
+        <motion.div 
+          className="absolute left-1/2 top-0 w-px bg-gradient-to-b from-red-500 via-green-500 to-blue-500 origin-top"
+          style={{ 
+            height: '100%',
+            scaleY: scrollYProgress
+          }}
+        />
+
+        {/* Process Phases */}
+        <div className="relative space-y-48">
+          {phases.map((phase, index) => {
+            const isEven = index % 2 === 0
+            return (
+              <motion.div
+                key={phase.title}
+                className={`flex items-center gap-8 ${isEven ? 'flex-row' : 'flex-row-reverse'}`}
+                initial={{ opacity: 0, x: isEven ? -50 : 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
               >
-                {phase.title}
-              </h3>
-              <p 
-                className="text-white/60 mb-6"
-                style={{ fontFamily: 'var(--font-geist-mono)' }}
-              >
-                {phase.description}
-              </p>
-              
-              {/* Milestones */}
-              <div className="space-y-3">
-                {phase.milestones.map((milestone, idx) => (
-                  <div 
-                    key={milestone.name}
-                    className="flex items-center space-x-3 text-white/80"
+                {/* Content */}
+                <div className={`w-1/2 ${isEven ? 'text-right' : 'text-left'}`}>
+                  <motion.div
+                    className="bg-white/5 rounded-lg p-8 hover:bg-white/10 transition-all duration-300"
+                    whileHover={{ scale: 1.02 }}
                   >
-                    <span className="text-xl">{milestone.icon}</span>
-                    <span 
-                      style={{ fontFamily: 'var(--font-geist-mono)' }}
-                      className="text-sm"
+                    <h3 
+                      className="text-4xl text-white mb-4"
+                      style={{ fontFamily: 'var(--font-druk-text-wide)' }}
                     >
-                      {milestone.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        ))}
+                      {phase.title}
+                    </h3>
+                    <p 
+                      className="text-white/60 mb-6"
+                      style={{ fontFamily: 'var(--font-geist-mono)' }}
+                    >
+                      {phase.description}
+                    </p>
+                    
+                    {/* Milestones */}
+                    <div className={`space-y-3 ${isEven ? 'items-end' : 'items-start'}`}>
+                      {phase.milestones.map((milestone) => (
+                        <motion.div 
+                          key={milestone.name}
+                          className={`flex items-center gap-3 text-white/80 ${isEven ? 'flex-row-reverse' : 'flex-row'}`}
+                          whileHover={{ x: isEven ? -5 : 5 }}
+                        >
+                          <span className="text-xl">{milestone.icon}</span>
+                          <span 
+                            style={{ fontFamily: 'var(--font-geist-mono)' }}
+                            className="text-sm"
+                          >
+                            {milestone.name}
+                          </span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+                </div>
+
+                {/* Timeline Node */}
+                <motion.div 
+                  className="w-6 h-6 rounded-full bg-white absolute left-1/2 -translate-x-1/2"
+                  style={{
+                    background: index === 0 ? '#ef4444' : 
+                             index === 1 ? '#22c55e' :
+                             index === 2 ? '#3b82f6' :
+                             '#ffffff'
+                  }}
+                  whileHover={{ scale: 1.5 }}
+                />
+              </motion.div>
+            )
+          })}
+        </div>
+      </div>
       </div>
 
       {/* CTA Section */}
