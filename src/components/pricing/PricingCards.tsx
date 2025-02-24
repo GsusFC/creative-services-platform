@@ -7,21 +7,6 @@ import { Button } from '@/components/ui/button'
 
 const creditOptions = [40, 80, 120, 160, 200]
 
-interface Feature {
-  title: string
-  included: boolean
-}
-
-const features: Feature[] = [
-  { title: 'ACCESS TO ALL CREATIVE SERVICES', included: true },
-  { title: 'DEDICATED CREATIVE TEAM', included: true },
-  { title: 'PROJECT MANAGEMENT TEAM', included: true },
-  { title: 'UNLIMITED PROJECTS & BRANDS', included: true },
-  { title: 'UNLIMITED USERS & STORAGE', included: true },
-  { title: 'AI-ENHANCED CAPABILITIES', included: true },
-  { title: '30-DAY FREE TRIAL', included: true },
-]
-
 export function PricingCards() {
   const [mounted, setMounted] = useState(false)
   const [selectedCredits, setSelectedCredits] = useState(120)
@@ -37,22 +22,23 @@ export function PricingCards() {
   if (!mounted) {
     return null
   }
-  const discount = getDiscountForCredits(selectedCredits)
-  const originalPrice = selectedCredits * pricePerCredit
-  const discountedPrice = originalPrice * (1 - discount / 100)
 
+  const creditDiscount = getDiscountForCredits(selectedCredits)
+  const creditOriginalPrice = selectedCredits * pricePerCredit
+  const creditDiscountedPrice = creditOriginalPrice * (1 - creditDiscount / 100)
 
   return (
-    <div>
-
-        <div className="h-full max-w-3xl mx-auto bg-black border border-white/20 hover:border-white/40 p-8 relative group transition-all duration-300">
+    <div className="py-24">
+      {/* Módulo de Créditos Personalizados */}
+      <div className="max-w-3xl mx-auto">
+        <div className="h-full bg-black border border-white/20 hover:border-white/40 p-8 relative group transition-all duration-300">
           <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
           <div className="text-center mb-10">
             <div 
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-3 leading-none text-white"
               style={{ fontFamily: 'var(--font-druk-text-wide)' }}
             >
-              {currency.symbol}{discountedPrice.toLocaleString(currency.locale, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+              {currency.symbol}{creditDiscountedPrice.toLocaleString(currency.locale, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
               <span className="text-base sm:text-lg font-normal text-white/50 ml-1 sm:ml-2 tracking-normal">/month</span>
             </div>
             <div 
@@ -84,55 +70,22 @@ export function PricingCards() {
             ))}
           </div>
 
-          <div className="space-y-4 mb-12">
-            {features.map((feature, index) => (
-              <motion.div 
-                key={feature.title} 
-                className="flex items-center"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ 
-                  duration: 0.5,
-                  delay: index * 0.1
-                }}
-              >
-                <svg
-                  className="w-4 h-4 text-white mr-3 flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span 
-                  className="text-white text-sm tracking-tight"
-                  style={{ fontFamily: 'var(--font-geist-mono)' }}
-                >{feature.title}</span>
-              </motion.div>
-            ))}
-          </div>
-
           <Button 
             size="lg" 
             className="w-full h-14 text-base rounded-none bg-white hover:bg-white/90 text-black transition-all duration-300 tracking-wide uppercase"
             style={{ fontFamily: 'var(--font-geist-mono)' }}
           >
-            Comenzar ahora
+            GET STARTED
           </Button>
 
           <p 
             className="text-center text-xs text-white/50 mt-4 uppercase tracking-wider"
             style={{ fontFamily: 'var(--font-geist-mono)' }}
           >
-            Sin compromiso de permanencia
+            NO COMMITMENT REQUIRED
           </p>
         </div>
-
+      </div>
     </div>
   )
 }
