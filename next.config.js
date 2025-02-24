@@ -8,7 +8,7 @@ const nextConfig = {
     ignoreBuildErrors: true, // Temporary fix while we resolve type issues
   },
   images: {
-    domains: [],
+    domains: ['images.unsplash.com'],
   },
 }
 
