@@ -7,6 +7,21 @@ import { Button } from '@/components/ui/button'
 
 const creditOptions = [40, 80, 120, 160, 200]
 
+interface Feature {
+  title: string
+  included: boolean
+}
+
+const features: Feature[] = [
+  { title: 'ACCESS TO ALL CREATIVE SERVICES', included: true },
+  { title: 'DEDICATED CREATIVE TEAM', included: true },
+  { title: 'PROJECT MANAGEMENT TEAM', included: true },
+  { title: 'MULTIPLE BRANDS', included: true },
+  { title: 'TEAM MEMBERS', included: true },
+  { title: 'REVISION ROUNDS', included: true },
+  { title: 'BASIC SUPPORT', included: true },
+]
+
 export function PricingCards() {
   const [mounted, setMounted] = useState(false)
   const [selectedCredits, setSelectedCredits] = useState(120)
@@ -67,6 +82,41 @@ export function PricingCards() {
               >
                 {credits}
               </motion.button>
+            ))}
+          </div>
+
+          <div className="space-y-4 mb-12">
+            {features.map((feature, index) => (
+              <motion.div 
+                key={feature.title} 
+                className="flex items-center"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ 
+                  duration: 0.5,
+                  delay: index * 0.1
+                }}
+              >
+                <svg
+                  className="w-4 h-4 text-white mr-3 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span 
+                  className="text-white text-sm tracking-tight"
+                  style={{ fontFamily: 'var(--font-geist-mono)' }}
+                >
+                  {feature.title}
+                </span>
+              </motion.div>
             ))}
           </div>
 
