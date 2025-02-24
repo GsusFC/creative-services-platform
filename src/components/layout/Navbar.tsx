@@ -14,7 +14,6 @@ const navLinks = [
   { href: '/cases', label: 'CASES' },
   { href: '/process', label: 'PROCESS' },
   { href: '/pricing', label: 'PRICING' },
-  { href: '/options', label: 'OPTIONS' },
   { href: '/tools', label: 'TOOLS' },
   { href: '/game', label: 'GAME' }
 ];
