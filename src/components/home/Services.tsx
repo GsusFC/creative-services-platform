@@ -102,9 +102,11 @@ export function Services() {
                 {service.title}
               </h3>
               <div className="h-[100px] flex items-center justify-center mb-4 opacity-80 group-hover:opacity-100 transition-opacity duration-300">
-                <img 
+                <Image 
                   src={service.image} 
                   alt={service.title}
+                  width={100}
+                  height={100}
                   className="h-full w-auto object-contain"
                 />
               </div>

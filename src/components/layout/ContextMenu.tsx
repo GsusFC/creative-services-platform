@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { getShortcuts, addShortcut, removeShortcut, type Shortcut } from '@/lib/shortcuts'
 
 interface ContextMenuProps {

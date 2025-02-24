@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getPricePerCredit, getCurrency, getDiscountForCredits, volumeDiscounts } from '@/lib/pricing'
+import { getPricePerCredit, getCurrency, getDiscountForCredits } from '@/lib/pricing'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 
@@ -40,7 +40,7 @@ export function PricingCards() {
   const discount = getDiscountForCredits(selectedCredits)
   const originalPrice = selectedCredits * pricePerCredit
   const discountedPrice = originalPrice * (1 - discount / 100)
-  const savings = originalPrice - discountedPrice
+
 
   return (
     <div>

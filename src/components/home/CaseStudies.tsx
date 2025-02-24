@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRef } from 'react'
 import { featuredProjects } from '@/data/projects'
 
@@ -42,9 +43,11 @@ export function CaseStudies() {
                 key={i} 
                 className="w-[120px] h-[120px] flex-shrink-0"
               >
-                <img 
+                <Image 
                   src="/assets/icons/arrow.svg" 
                   alt="Arrow down" 
+                  width={120}
+                  height={120}
                   className="w-full h-full object-cover block" 
                 />
               </div>

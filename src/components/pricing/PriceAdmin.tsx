@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { getPricePerCredit, setPricePerCredit, getCurrency, setCurrency, currencies, type Currency, getVolumeDiscounts, setVolumeDiscounts, type VolumeDiscount } from '@/lib/pricing'
+import { getPricePerCredit, setPricePerCredit, getCurrency, setCurrency, currencies, getVolumeDiscounts, setVolumeDiscounts, type VolumeDiscount } from '@/lib/pricing'
 
 export function PriceAdmin() {
   const [mounted, setMounted] = useState(false)
@@ -11,7 +11,7 @@ export function PriceAdmin() {
   const [selectedCurrency, setSelectedCurrency] = useState(getCurrency())
   const [tempPrice, setTempPrice] = useState(price.toString())
   const [discounts, setDiscounts] = useState<VolumeDiscount[]>(getVolumeDiscounts())
-  const [editingDiscount, setEditingDiscount] = useState<number | null>(null)
+
 
   useEffect(() => {
     setMounted(true)
