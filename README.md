@@ -23,7 +23,24 @@ Una plataforma moderna de servicios creativos con sistema de suscripción basado
    npm install
    ```
 
-3. Ejecuta el proyecto localmente:
+3. Configura las variables de entorno:
+   Crea un archivo `.env.local` con:
+   ```env
+   NOTION_TOKEN=your_integration_token
+   NOTION_DATABASE_ID=your_database_id
+   ```
+
+4. Configura la integración con Notion:
+   - Ve a [https://www.notion.so/my-integrations](https://www.notion.so/my-integrations)
+   - Crea una nueva integración
+   - Guarda el token en `NOTION_TOKEN`
+   - Abre tu base de datos de case studies
+   - Copia el ID de la URL (después del workspace, antes de ?v)
+   - Guarda el ID en `NOTION_DATABASE_ID`
+   - En la base de datos, ve a (...) -> Connections
+   - Agrega la integración que creaste
+
+5. Ejecuta el proyecto localmente:
    ```bash
    npm run dev
    ```
