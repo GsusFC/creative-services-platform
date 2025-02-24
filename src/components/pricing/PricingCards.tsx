@@ -28,9 +28,9 @@ export function PricingCards() {
   const creditDiscountedPrice = creditOriginalPrice * (1 - creditDiscount / 100)
 
   return (
-    <div className="py-24">
+    <div className="h-full">
       {/* Módulo de Créditos Personalizados */}
-      <div className="max-w-3xl mx-auto">
+      <div className="h-full">
         <div className="h-full bg-black border border-white/20 hover:border-white/40 p-8 relative group transition-all duration-300">
           <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
           <div className="text-center mb-10">
