@@ -1,6 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { motion as m } from 'framer-motion'
 
 const steps = [
   {
@@ -57,7 +57,7 @@ export function Process() {
       {/* Process Steps */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {steps.map((step, index) => (
-          <motion.div
+          <m.div
             key={step.title}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -87,7 +87,7 @@ export function Process() {
                 {step.description}
               </p>
             </div>
-          </motion.div>
+          </m.div>
         ))}
       </div>
 
