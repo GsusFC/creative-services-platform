@@ -55,9 +55,9 @@ export function Process() {
   })
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="text-center py-32 md:py-40">
+      <div className="text-center py-32 md:py-40 bg-black">
         <motion.h1 
           className="text-5xl sm:text-6xl md:text-7xl text-white mb-8"
           style={{ fontFamily: 'var(--font-druk-text-wide)' }}
@@ -157,32 +157,33 @@ export function Process() {
             )
           })}
         </div>
-
-        {/* CTA Section */}
-        <motion.div 
-          className="text-center py-24"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 
-            className="text-3xl text-white mb-8"
-            style={{ fontFamily: 'var(--font-druk-text-wide)' }}
-          >
-            Ready to Start Your Project?
-          </h2>
-          <motion.a 
-            href="/pricing" 
-            className="inline-block bg-white text-black px-8 py-4 rounded-full font-bold hover:bg-white/90 transition-all duration-300"
-            style={{ fontFamily: 'var(--font-geist-mono)' }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            GET STARTED
-          </motion.a>
-        </motion.div>
       </div>
+      </div>
+
+      {/* CTA Section */}
+      <motion.div 
+        className="text-center py-24"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
+        <h2 
+          className="text-3xl text-white mb-8"
+          style={{ fontFamily: 'var(--font-druk-text-wide)' }}
+        >
+          Ready to Start Your Project?
+        </h2>
+        <motion.a 
+          href="/pricing" 
+          className="inline-block bg-white text-black px-8 py-4 rounded-full font-bold hover:bg-white/90 transition-all duration-300"
+          style={{ fontFamily: 'var(--font-geist-mono)' }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          GET STARTED
+        </motion.a>
+      </motion.div>
     </div>
   )
 }
