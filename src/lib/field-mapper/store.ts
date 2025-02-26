@@ -469,7 +469,16 @@ export const useFieldMapperStore = create<FieldMapperStore>()(
     {
       name: 'field-mapper-storage',
       storage: createJSONStorage(() => {
-        // Safe localStorage wrapper
+        // Safe localStorage wrapper with SSR check
+        if (typeof window === 'undefined') {
+          // Return a dummy storage for the server
+          return {
+            getItem: () => null,
+            setItem: () => {},
+            removeItem: () => {}
+          };
+        }
+        
         return {
           getItem(name) {
             try {

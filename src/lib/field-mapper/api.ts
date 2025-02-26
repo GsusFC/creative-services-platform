@@ -31,7 +31,7 @@ const DEFAULT_TIMEOUT = 15000;
 /**
  * Generic fetch function with timeout
  */
-async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout = DEFAULT_TIMEOUT) {
+export async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout = DEFAULT_TIMEOUT) {
   const controller = new AbortController();
   const { signal } = controller;
   

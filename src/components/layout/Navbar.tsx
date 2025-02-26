@@ -14,7 +14,8 @@ const navLinks = [
   { href: '/cases', label: 'CASES' },
   { href: '/process', label: 'PROCESS' },
   { href: '/pricing', label: 'PRICING' },
-  { href: '/game', label: 'GAME' }
+  { href: '/game', label: 'GAME' },
+  { href: '/admin', label: 'ADMIN' }
 ];
 
 const rgbGradient = 'linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(255, 0, 0) 14.12%, rgb(0, 255, 0) 51.80%, rgb(0, 0, 255) 89.37%, rgb(0, 0, 0) 101.35%)';

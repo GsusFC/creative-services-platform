@@ -1,4 +1,4 @@
-import { notion } from '@/lib/notion'
+import { notion } from '../../lib/notion'
 import { Mapping } from './store'
 
 export async function testMapping(mappings: Mapping[]) {
