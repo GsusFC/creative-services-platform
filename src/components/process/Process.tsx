@@ -1,189 +1,191 @@
-'use client'
+import React from 'react';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
 
-import React, { useRef } from 'react'
-import Image from 'next/image'
-import { motion, useScroll, useTransform } from 'framer-motion'
+export default function Process() {
+  // Motion variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
 
-const phases = [
-  {
-    title: 'DISCOVER',
-    description: 'Initial phase where we understand your project, analyze the market, and define the path forward.',
-    milestones: [
-      { name: 'Kickoff meeting', icon: '🏁' },
-      { name: 'Brand & Digital audit', icon: '🏆' },
-      { name: 'Co-Design Workshop', icon: '▶️' },
-      { name: 'Análisis de tendencias y competencia', icon: '🔎' }
-    ],
-    image: '/images/process/discover.jpg'
-  },
-  {
-    title: 'FOCUS',
-    description: 'We define the strategic direction and visual approach that will guide the entire project.',
-    milestones: [
-      { name: 'Moodboards', icon: '📋' },
-      { name: 'Brand Strategy', icon: '👤' },
-      { name: 'Conceptualización', icon: '💥' }
-    ],
-    image: '/images/process/focus.jpg'
-  },
-  {
-    title: 'BUILD',
-    description: 'The execution phase where we create and refine all the project deliverables.',
-    milestones: [
-      { name: 'Brand Identity', icon: '🖤' },
-      { name: 'Wireframing', icon: '✏️' },
-      { name: 'UI Design', icon: '🎨' },
-      { name: 'Prototipado', icon: '👥' }
-    ],
-    image: '/images/process/build.jpg'
-  },
-  {
-    title: 'SYNC',
-    description: 'Final phase focused on documentation and knowledge transfer to ensure successful implementation.',
-    milestones: [
-      { name: 'Brand Center', icon: '🎯' }
-    ],
-    image: '/images/process/sync.jpg'
-  }
-]
-
-export function Process() {
-  const containerRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start end', 'end start']
-  })
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 },
+  };
 
   return (
-    <div className="min-h-screen">
+    <div className="container mx-auto px-4 py-16 relative">
       {/* Hero Section */}
-      <div className="text-center py-32 md:py-40 bg-black">
-        <motion.h1 
-          className="text-5xl sm:text-6xl md:text-7xl text-white mb-8"
-          style={{ fontFamily: 'var(--font-druk-text-wide)' }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+      <motion.div
+        className="text-center mb-16"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h1 className="text-5xl md:text-7xl font-druk mb-6">
+          NUESTRO PROCESO
+        </h1>
+        <p className="text-xl md:text-2xl max-w-3xl mx-auto font-geist-mono">
+          Transformamos marcas mediante un proceso estratégico que combina
+          investigación profunda, creatividad audaz y ejecución precisa.
+        </p>
+      </motion.div>
+
+      {/* Process Steps */}
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 md:grid-cols-2 gap-16 mb-24"
+      >
+        {/* Step 1 */}
+        <motion.div
+          variants={itemVariants}
+          className="bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 p-8 rounded-lg"
         >
-          Our Process
-        </motion.h1>
-        <motion.p 
-          className="text-lg md:text-xl text-white/60 max-w-3xl mx-auto px-4"
-          style={{ fontFamily: 'var(--font-geist-mono)' }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          <div className="flex items-center mb-6">
+            <div className="w-12 h-12 flex items-center justify-center bg-purple-900/30 border border-purple-700/30 rounded-full mr-4">
+              <span className="text-purple-400 font-druk">01</span>
+            </div>
+            <h3 className="text-2xl font-druk tracking-tight">DISCOVERY</h3>
+          </div>
+          <p className="font-geist-mono mb-6">
+            Investigamos a fondo tu marca, audiencia y competencia para comprender 
+            el panorama completo y encontrar oportunidades únicas.
+          </p>
+          <ul className="space-y-3 font-geist-mono">
+            <li className="flex items-start">
+              <span className="text-purple-400 mr-2">→</span>
+              <span>Análisis de marca y mercado</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-purple-400 mr-2">→</span>
+              <span>Investigación de audiencia</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-purple-400 mr-2">→</span>
+              <span>Auditoría competitiva</span>
+            </li>
+          </ul>
+        </motion.div>
+
+        {/* Step 2 */}
+        <motion.div
+          variants={itemVariants}
+          className="bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 p-8 rounded-lg"
         >
-          We follow a structured yet flexible creative process that ensures high-quality results while maintaining clear communication and collaboration throughout the project.
-        </motion.p>
-      </div>
+          <div className="flex items-center mb-6">
+            <div className="w-12 h-12 flex items-center justify-center bg-purple-900/30 border border-purple-700/30 rounded-full mr-4">
+              <span className="text-purple-400 font-druk">02</span>
+            </div>
+            <h3 className="text-2xl font-druk tracking-tight">STRATEGY</h3>
+          </div>
+          <p className="font-geist-mono mb-6">
+            Desarrollamos un plan estratégico que define el posicionamiento, mensajes clave
+            y dirección creativa que impulsará el éxito de tu marca.
+          </p>
+          <ul className="space-y-3 font-geist-mono">
+            <li className="flex items-start">
+              <span className="text-purple-400 mr-2">→</span>
+              <span>Posicionamiento de marca</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-purple-400 mr-2">→</span>
+              <span>Estrategia de mensajes</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-purple-400 mr-2">→</span>
+              <span>Dirección creativa</span>
+            </li>
+          </ul>
+        </motion.div>
 
-      {/* Timeline */}
-      <div ref={containerRef} className="relative container mx-auto px-4 py-24">
-        {/* Central Line */}
-        <motion.div 
-          className="absolute left-1/2 top-0 w-px bg-gradient-to-b from-red-500 via-green-500 to-blue-500 origin-top"
-          style={{ 
-            height: '100%',
-            scaleY: scrollYProgress
-          }}
-        />
+        {/* Step 3 */}
+        <motion.div
+          variants={itemVariants}
+          className="bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 p-8 rounded-lg"
+        >
+          <div className="flex items-center mb-6">
+            <div className="w-12 h-12 flex items-center justify-center bg-purple-900/30 border border-purple-700/30 rounded-full mr-4">
+              <span className="text-purple-400 font-druk">03</span>
+            </div>
+            <h3 className="text-2xl font-druk tracking-tight">CREATION</h3>
+          </div>
+          <p className="font-geist-mono mb-6">
+            Transformamos la estrategia en elementos visuales y verbales impactantes
+            que capturan la esencia de tu marca y conectan con tu audiencia.
+          </p>
+          <ul className="space-y-3 font-geist-mono">
+            <li className="flex items-start">
+              <span className="text-purple-400 mr-2">→</span>
+              <span>Diseño de identidad visual</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-purple-400 mr-2">→</span>
+              <span>Desarrollo de contenido</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-purple-400 mr-2">→</span>
+              <span>Experiencias digitales</span>
+            </li>
+          </ul>
+        </motion.div>
 
-        {/* Process Phases */}
-        <div className="relative space-y-48">
-          {phases.map((phase, index) => {
-            const isEven = index % 2 === 0
-            return (
-              <motion.div
-                key={phase.title}
-                className={`flex items-center gap-8 ${isEven ? 'flex-row' : 'flex-row-reverse'}`}
-                initial={{ opacity: 0, x: isEven ? -50 : 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
-                {/* Content */}
-                <div className={`w-1/2 ${isEven ? 'text-right' : 'text-left'}`}>
-                  <motion.div
-                    className="bg-white/5 rounded-lg p-8 hover:bg-white/10 transition-all duration-300"
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    <h3 
-                      className="text-4xl text-white mb-4"
-                      style={{ fontFamily: 'var(--font-druk-text-wide)' }}
-                    >
-                      {phase.title}
-                    </h3>
-                    <p 
-                      className="text-white/60 mb-6"
-                      style={{ fontFamily: 'var(--font-geist-mono)' }}
-                    >
-                      {phase.description}
-                    </p>
-                    
-                    {/* Milestones */}
-                    <div className={`space-y-3 ${isEven ? 'items-end' : 'items-start'}`}>
-                      {phase.milestones.map((milestone) => (
-                        <motion.div 
-                          key={milestone.name}
-                          className={`flex items-center gap-3 text-white/80 ${isEven ? 'flex-row-reverse' : 'flex-row'}`}
-                          whileHover={{ x: isEven ? -5 : 5 }}
-                        >
-                          <span className="text-xl">{milestone.icon}</span>
-                          <span 
-                            style={{ fontFamily: 'var(--font-geist-mono)' }}
-                            className="text-sm"
-                          >
-                            {milestone.name}
-                          </span>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </motion.div>
-                </div>
-
-                {/* Timeline Node */}
-                <motion.div 
-                  className="w-6 h-6 rounded-full bg-white absolute left-1/2 -translate-x-1/2"
-                  style={{
-                    background: index === 0 ? '#ef4444' : 
-                             index === 1 ? '#22c55e' :
-                             index === 2 ? '#3b82f6' :
-                             '#ffffff'
-                  }}
-                  whileHover={{ scale: 1.5 }}
-                />
-              </motion.div>
-            )
-          })}
-        </div>
-      </div>
-      </div>
+        {/* Step 4 */}
+        <motion.div
+          variants={itemVariants}
+          className="bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 p-8 rounded-lg"
+        >
+          <div className="flex items-center mb-6">
+            <div className="w-12 h-12 flex items-center justify-center bg-purple-900/30 border border-purple-700/30 rounded-full mr-4">
+              <span className="text-purple-400 font-druk">04</span>
+            </div>
+            <h3 className="text-2xl font-druk tracking-tight">ACTIVATION</h3>
+          </div>
+          <p className="font-geist-mono mb-6">
+            Implementamos tu nueva marca a través de diversos canales y puntos de contacto,
+            asegurando coherencia y máximo impacto.
+          </p>
+          <ul className="space-y-3 font-geist-mono">
+            <li className="flex items-start">
+              <span className="text-purple-400 mr-2">→</span>
+              <span>Lanzamiento de marca</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-purple-400 mr-2">→</span>
+              <span>Implementación en canales</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-purple-400 mr-2">→</span>
+              <span>Medición y optimización</span>
+            </li>
+          </ul>
+        </motion.div>
+      </motion.div>
 
       {/* CTA Section */}
       <motion.div 
         className="text-center py-24"
         initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
       >
-        <h2 
-          className="text-3xl text-white mb-8"
-          style={{ fontFamily: 'var(--font-druk-text-wide)' }}
-        >
-          Ready to Start Your Project?
+        <h2 className="text-4xl md:text-5xl font-druk mb-6">
+          LLEVEMOS TU MARCA AL SIGUIENTE NIVEL
         </h2>
-        <motion.a 
-          href="/pricing" 
-          className="inline-block bg-white text-black px-8 py-4 rounded-full font-bold hover:bg-white/90 transition-all duration-300"
-          style={{ fontFamily: 'var(--font-geist-mono)' }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          GET STARTED
-        </motion.a>
+        <p className="text-xl max-w-2xl mx-auto mb-8 font-geist-mono">
+          Estamos listos para ayudarte a transformar tu marca con estrategias creativas que generan resultados reales.
+        </p>
+        <button className="bg-purple-700 hover:bg-purple-600 text-white px-8 py-4 rounded-md font-geist-mono transition-colors">
+          AGENDA UNA CONSULTA
+        </button>
       </motion.div>
     </div>
-  )
+  );
 }
