@@ -417,7 +417,8 @@ function FieldMapperContent() {
 };
 
 // Main component with React Query provider
-export default function FieldMapper() {
+// Adding trigger comment for Vercel rebuild
+export default function FieldMapperPage() {
   return (
     <QueryClientProvider client={queryClient}>
       <Suspense fallback={<LoadingFallback />}>

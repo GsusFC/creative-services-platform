@@ -1,4 +1,5 @@
 import React from 'react';
+// Trigger Vercel rebuild with updated dependencies
 import { LightbulbIcon } from 'lucide-react';
 
 export default function TipsPanel() {
