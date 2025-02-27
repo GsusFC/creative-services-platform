@@ -163,13 +163,13 @@ export default function MappingSelect({
           {/* Lista de campos */}
           <div className="max-h-60 overflow-y-auto">
             {/* Sección de campos recomendados */}
-            {recommendations.length > 0 && (
+            {recommendations.directlyCompatible.length > 0 && (
               <div className="px-2 py-1 text-xs font-semibold text-gray-400 border-b border-gray-700 bg-gray-900">
                 Recomendados
               </div>
             )}
             
-            {filterFields(recommendations).map(field => (
+            {filterFields(recommendations.directlyCompatible).map(field => (
               <button
                 key={field.id}
                 onClick={() => {
@@ -184,14 +184,40 @@ export default function MappingSelect({
               </button>
             ))}
             
-            {recommendations.length > 0 && (
+            {/* Campos que requieren transformación */}
+            {recommendations.requiresTransformation.length > 0 && (
               <div className="px-2 py-1 text-xs font-semibold text-gray-400 border-t border-b border-gray-700 bg-gray-900">
-                Todos los campos
+                Requieren transformación
               </div>
             )}
             
+            {filterFields(recommendations.requiresTransformation).map(field => (
+              <button
+                key={field.id}
+                onClick={() => {
+                  onSelect(field.id);
+                  setIsOpen(false);
+                }}
+                className="flex items-center w-full p-2 text-left hover:bg-gray-700 text-white"
+              >
+                <span className="mr-2">{getFieldIcon(field.type)}</span>
+                <span className="flex-grow">{field.name}</span>
+                <span className="text-xs text-gray-400">{field.type}</span>
+              </button>
+            ))}
+            
+            {/* Todos los campos */}
+            {recommendations.directlyCompatible.length > 0 || recommendations.requiresTransformation.length > 0 ? (
+              <div className="px-2 py-1 text-xs font-semibold text-gray-400 border-t border-b border-gray-700 bg-gray-900">
+                Todos los campos
+              </div>
+            ) : null}
+            
             {filterFields(notionFields)
-              .filter(field => !recommendations.some(r => r.id === field.id))
+              .filter(field => 
+                !recommendations.directlyCompatible.some(r => r.id === field.id) && 
+                !recommendations.requiresTransformation.some(r => r.id === field.id)
+              )
               .map(field => (
                 <button
                   key={field.id}
