@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import dynamic from 'next/dynamic'
 import type { Metadata } from 'next'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '../../components/ui/skeleton'
 
 // Importación dinámica del componente cliente
 const FieldMapperV3Wrapper = dynamic(

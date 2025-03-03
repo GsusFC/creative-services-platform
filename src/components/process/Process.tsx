@@ -158,7 +158,6 @@ export function Process() {
           })}
         </div>
       </div>
-      </div>
 
       {/* CTA Section */}
       <motion.div 
