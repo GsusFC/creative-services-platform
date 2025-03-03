@@ -1,7 +1,5 @@
-// Archivo simplificado para permitir el despliegue
-
-// Mock store simple
-import { create } from 'zustand';
+// Versión simplificada sin dependencia de zustand
+// Utiliza un patrón de módulo JavaScript simple para almacenamiento
 
 // Tipos básicos
 export interface FieldMapping {
@@ -19,33 +17,39 @@ export interface Field {
   source: 'notion' | 'website';
 }
 
-// Store simplificado que no causa errores de TypeScript
-interface SimplifiedStore {
-  mappings: FieldMapping[];
-  websiteFields: Field[];
-  notionFields: Field[];
-  isLoading: boolean;
-  error: string | null;
-  
-  // Funciones simuladas
-  setMappings: (mappings: FieldMapping[]) => void;
-  setNotionFields: (fields: Field[]) => void;
-  setWebsiteFields: (fields: Field[]) => void;
-  clearMappings: () => void;
-}
-
-// Creación del store simplificado
-export const useFieldMapperStore = create<SimplifiedStore>()((set) => ({
-  // Estado inicial
-  mappings: [],
-  websiteFields: [],
-  notionFields: [],
+// Estado y funciones
+const state = {
+  mappings: [] as FieldMapping[],
+  websiteFields: [] as Field[],
+  notionFields: [] as Field[],
   isLoading: false,
-  error: null,
-  
-  // Implementaciones simuladas de las funciones
-  setMappings: (mappings) => set({ mappings }),
-  setNotionFields: (fields) => set({ notionFields: fields }),
-  setWebsiteFields: (fields) => set({ websiteFields: fields }),
-  clearMappings: () => set({ mappings: [] })
-}));
+  error: null as string | null,
+};
+
+// Funciones para actualizar el estado
+const setMappings = (mappings: FieldMapping[]) => {
+  state.mappings = mappings;
+};
+
+const setNotionFields = (fields: Field[]) => {
+  state.notionFields = fields;
+};
+
+const setWebsiteFields = (fields: Field[]) => {
+  state.websiteFields = fields;
+};
+
+const clearMappings = () => {
+  state.mappings = [];
+};
+
+// Hook simulado que devuelve el estado y las funciones
+export const useFieldMapperStore = () => {
+  return {
+    ...state,
+    setMappings,
+    setNotionFields,
+    setWebsiteFields,
+    clearMappings,
+  };
+};
