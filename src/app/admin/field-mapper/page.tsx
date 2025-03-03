@@ -19,6 +19,7 @@ import {
   PlusIcon
 } from 'lucide-react'
 import toast from '@/lib/toast'
+import { TestResultType } from '@/lib/field-mapper/types'
 import FieldList from '@/components/field-mapper/FieldList'
 import TestingPanel from '@/components/field-mapper/TestingPanel'
 import TipsPanel from '@/components/field-mapper/TipsPanel'
@@ -27,6 +28,7 @@ import MappingList from '@/components/field-mapper/MappingList'
 import { useFieldMapperStore } from '@/lib/field-mapper/store'
 import { testMapping } from '@/lib/field-mapper/test-mapping'
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
+import Link from 'next/link';
 
 // Crear alias para iconos que no existen
 const TestIcon = BeakerIcon;
@@ -76,8 +78,8 @@ const ErrorDisplay = ({ error }: { error: string }) => (
 // Main Content component
 function FieldMapperContent() {
   const [error, setError] = useState<string | null>(null);
-  const [testResult, setTestResult] = useState<any | null>(null);
-  const [isTestingMapping, setIsTestingMapping] = useState(false);
+  const [testResult, setTestResult] = useState<TestResultType | null>(null);
+  const [isTestingMapping, setIsTestingMapping] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
   
   // Acceder al store directamente sin useCallback

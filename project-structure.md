@@ -1,0 +1,347 @@
+# Estructura del Proyecto Creative Services Platform
+
+Última actualización: Sat Mar  1 21:55:56 CET 2025
+
+```
+
+  .git
+  .github
+  .next
+  .scripts
+  .vscode
+  .windsurf
+  backup
+    field-mapper-v4-tema-oscuro
+      client
+      server
+    notion-importer-20250228
+  docs
+  node_modules
+  pages
+  public
+    assets
+      icons
+      images
+      services
+    fonts
+    images
+      hero
+      process
+      projects
+      services
+    logos
+    projects
+  scripts
+  src
+    _disabled
+      extract
+    app
+      admin
+        case-studies
+        field-mapper
+        field-mapper-functional
+        field-mapper-v2
+        field-mapper-v4
+          dashboard
+          landing
+          v3
+        notion-importer
+      api
+        case-studies
+          [slug]
+        chat
+        notion
+          component-mappings
+          component-structure
+          conflicts
+          convert-to-case-studies
+          database
+            sample
+            stats
+            structure
+          import
+            selected
+          mappings
+          schedule
+          test-mapping
+      build
+      case-studies
+        [slug]
+        landing
+      cases-old
+      fonts
+      game
+      pricing
+      process
+      services
+      settings
+      test-components
+      tools
+        field-mapper-v4
+    assets
+      icons
+    components
+      case-studies
+      case-study
+      cases
+      field-mapper
+      field-mapper-v4
+        client
+        server
+        __tests__
+      game
+      home
+      layout
+      notion-importer
+      pricing
+      process
+      providers
+      services
+      ui
+    context
+    data
+    fonts
+    lib
+      case-studies
+      debug
+      field-mapper
+      field-mapper-v4
+        hooks
+      utils
+    services
+    styles
+    types
+  tools
+    code_analysis
+    web_scraping
+    web_search
+
+## Archivos principales:
+
+/src/_disabled/CaseStudyExtractor.tsx
+/src/_disabled/extract/route.ts
+/src/app/admin/case-studies/page.tsx
+/src/app/admin/field-mapper-functional/page.tsx
+/src/app/admin/field-mapper-v2/page.tsx
+/src/app/admin/field-mapper-v4/page.tsx
+/src/app/admin/field-mapper/dashboard/page.tsx
+/src/app/admin/field-mapper/landing/page.tsx
+/src/app/admin/field-mapper/layout.tsx
+/src/app/admin/field-mapper/page.tsx
+/src/app/admin/field-mapper/v3/FieldMapperV3Wrapper.tsx
+/src/app/admin/field-mapper/v3/page.tsx
+/src/app/admin/notion-importer/page.tsx
+/src/app/admin/page.tsx
+/src/app/api/case-studies/[slug]/route.ts
+/src/app/api/case-studies/route.ts
+/src/app/api/chat/route.ts
+/src/app/api/notion/component-mappings/route.ts
+/src/app/api/notion/component-structure/route.ts
+/src/app/api/notion/conflicts/route.ts
+/src/app/api/notion/convert-to-case-studies/route.ts
+/src/app/api/notion/database/sample/route.ts
+/src/app/api/notion/database/stats/route.ts
+/src/app/api/notion/database/structure/route.ts
+/src/app/api/notion/import/route.ts
+/src/app/api/notion/import/selected/route.ts
+/src/app/api/notion/mappings/route.ts
+/src/app/api/notion/schedule/route.ts
+/src/app/api/notion/test-mapping/route.ts
+/src/app/build/page.tsx
+/src/app/case-studies/[slug]/page.tsx
+/src/app/case-studies/landing/page.tsx
+/src/app/case-studies/page.tsx
+/src/app/cases-old/page.tsx
+/src/app/error.tsx
+/src/app/fonts.ts
+/src/app/fonts/fonts.ts
+/src/app/game/page.tsx
+/src/app/global-error.tsx
+/src/app/layout.tsx
+/src/app/not-found.tsx
+/src/app/page.tsx
+/src/app/pricing/layout.tsx
+/src/app/pricing/page.tsx
+/src/app/process/page.tsx
+/src/app/services/page.tsx
+/src/app/settings/page.tsx
+/src/app/test-components/page.tsx
+/src/app/tools/field-mapper-v4/page.tsx
+/src/components/NotionData.tsx
+/src/components/case-studies/CaseStudyLandingLayout.tsx
+/src/components/case-studies/GallerySection.tsx
+/src/components/case-studies/HeroSection.tsx
+/src/components/case-studies/MainInfoSection.tsx
+/src/components/case-study/ContentBlock.tsx
+/src/components/cases/CaseContent.tsx
+/src/components/cases/CaseHero.tsx
+/src/components/cases/ProjectGallery.tsx
+/src/components/cases/ProjectGrid.tsx
+/src/components/cases/ProjectLinks.tsx
+/src/components/cases/ProjectMetrics.tsx
+/src/components/cases/ProjectNavigation.tsx
+/src/components/field-mapper-v4/client/BenchmarkHistory.tsx
+/src/components/field-mapper-v4/client/BenchmarkTool.tsx
+/src/components/field-mapper-v4/client/CacheStats.tsx
+/src/components/field-mapper-v4/client/CaseStudyStructure.tsx
+/src/components/field-mapper-v4/client/CompatibilityIndicator.tsx
+/src/components/field-mapper-v4/client/ConnectionLine.tsx
+/src/components/field-mapper-v4/client/ExportResultsButton.tsx
+/src/components/field-mapper-v4/client/FieldMapperV4.tsx
+/src/components/field-mapper-v4/client/LandingPreview.tsx
+/src/components/field-mapper-v4/client/MappingPreview.tsx
+/src/components/field-mapper-v4/client/MappingSelect.tsx
+/src/components/field-mapper-v4/client/NotionFieldsPanel.tsx
+/src/components/field-mapper-v4/client/OnboardingPanel.tsx
+/src/components/field-mapper-v4/client/OptimizationPanel.tsx
+/src/components/field-mapper-v4/client/PerformanceDashboard.tsx
+/src/components/field-mapper-v4/client/PerformanceTab.tsx
+/src/components/field-mapper-v4/client/PerformanceTools.tsx
+/src/components/field-mapper-v4/client/StatusMessage.tsx
+/src/components/field-mapper-v4/client/SummaryPanel.tsx
+/src/components/field-mapper-v4/client/TransformationComparator.tsx
+/src/components/field-mapper-v4/client/TransformationInfoPanel.tsx
+/src/components/field-mapper-v4/client/TransformationManager.tsx
+/src/components/field-mapper-v4/client/TransformationVisualizer.tsx
+/src/components/field-mapper/ActionButtons.tsx
+/src/components/field-mapper/CacheStats.tsx
+/src/components/field-mapper/Dashboard.tsx
+/src/components/field-mapper/FieldCompatibilityVisualizer.tsx
+/src/components/field-mapper/FieldList.tsx
+/src/components/field-mapper/FieldMapperContainer.tsx
+/src/components/field-mapper/FieldMapperDebugPanel.tsx
+/src/components/field-mapper/FieldMapperV3.tsx
+/src/components/field-mapper/FieldTypeBadge.tsx
+/src/components/field-mapper/IncrementalLoadProvider.tsx
+/src/components/field-mapper/Mapping.tsx
+/src/components/field-mapper/MappingList.tsx
+/src/components/field-mapper/OptimizationRecommendations.tsx
+/src/components/field-mapper/OptimizationSettings.tsx
+/src/components/field-mapper/OptimizedMapping.tsx
+/src/components/field-mapper/OptimizedMappingList.tsx
+/src/components/field-mapper/PerformanceCharts.tsx
+/src/components/field-mapper/PerformanceHistory.tsx
+/src/components/field-mapper/PerformanceMonitor.tsx
+/src/components/field-mapper/PerformanceTools.tsx
+/src/components/field-mapper/PreviewPanel.tsx
+/src/components/field-mapper/SimpleFieldMapper.tsx
+/src/components/field-mapper/StatsPanel.tsx
+/src/components/field-mapper/TestingPanel.tsx
+/src/components/field-mapper/TipsPanel.tsx
+/src/components/field-mapper/TransformationConfig.tsx
+/src/components/field-mapper/TransformationInfoPanel.tsx
+/src/components/field-mapper/TransformationVisualizer.tsx
+/src/components/field-mapper/VirtualizedMappingList.tsx
+/src/components/field-mapper/__tests__/FieldCompatibilityVisualizer.test.tsx
+/src/components/field-mapper/index.ts
+/src/components/game/Game.tsx
+/src/components/home/CaseStudies.tsx
+/src/components/home/Hero.tsx
+/src/components/home/LogoSlider.tsx
+/src/components/home/Services.tsx
+/src/components/layout/ContextMenu.tsx
+/src/components/layout/Footer.tsx
+/src/components/layout/Header.tsx
+/src/components/layout/Navbar.tsx
+/src/components/layout/PageHeader.tsx
+/src/components/layout/ShortcutsMenu.tsx
+/src/components/layout/Tooltip.tsx
+/src/components/notion-importer/ConflictManager.tsx
+/src/components/notion-importer/ImportStats.tsx
+/src/components/notion-importer/NotionProjectImporter.tsx
+/src/components/notion-importer/NotionToCaseStudyConverter.tsx
+/src/components/notion-importer/ProjectSelector.tsx
+/src/components/notion-importer/SyncScheduler.tsx
+/src/components/pricing/CreditCalculator.tsx
+/src/components/pricing/PriceAdmin.tsx
+/src/components/pricing/Pricing.tsx
+/src/components/pricing/PricingCards.tsx
+/src/components/pricing/PricingPlans.tsx
+/src/components/pricing/ServiceTypes.tsx
+/src/components/process/Process.tsx
+/src/components/providers/theme-provider.tsx
+/src/components/services/ServiceIcons.tsx
+/src/components/ui/accordion.tsx
+/src/components/ui/alert.tsx
+/src/components/ui/badge.tsx
+/src/components/ui/button.tsx
+/src/components/ui/card.tsx
+/src/components/ui/checkbox.tsx
+/src/components/ui/dark-mode-toggle.tsx
+/src/components/ui/dialog.tsx
+/src/components/ui/dropdown-menu.tsx
+/src/components/ui/input.tsx
+/src/components/ui/label.tsx
+/src/components/ui/pagination.tsx
+/src/components/ui/progress.tsx
+/src/components/ui/scroll-area.tsx
+/src/components/ui/select.tsx
+/src/components/ui/separator.tsx
+/src/components/ui/sheet.tsx
+/src/components/ui/skeleton.tsx
+/src/components/ui/slider.tsx
+/src/components/ui/switch.tsx
+/src/components/ui/table.tsx
+/src/components/ui/tabs.tsx
+/src/components/ui/toast.tsx
+/src/components/ui/tooltip.tsx
+/src/context/ThemeContext.tsx
+/src/data/projects.ts
+/src/lib/case-studies/mapper-utils.ts
+/src/lib/debug/debug-tester.ts
+/src/lib/debug/field-mapper-debugger.ts
+/src/lib/debug/field-mapper-validation-debugger.ts
+/src/lib/debug/hooks.ts
+/src/lib/debug/index.ts
+/src/lib/debug/types.ts
+/src/lib/field-mapper-v4/actions.ts
+/src/lib/field-mapper-v4/benchmark.ts
+/src/lib/field-mapper-v4/cache.ts
+/src/lib/field-mapper-v4/compatibility.ts
+/src/lib/field-mapper-v4/export.ts
+/src/lib/field-mapper-v4/hooks/index.ts
+/src/lib/field-mapper-v4/hooks/useTransformations.ts
+/src/lib/field-mapper-v4/optimization.ts
+/src/lib/field-mapper-v4/transformation-analysis.ts
+/src/lib/field-mapper-v4/transformations.ts
+/src/lib/field-mapper-v4/types.ts
+/src/lib/field-mapper-v4/utils.ts
+/src/lib/field-mapper-v4/validation.ts
+/src/lib/field-mapper/api.ts
+/src/lib/field-mapper/cache-service.ts
+/src/lib/field-mapper/optimization-service.ts
+/src/lib/field-mapper/performance-service.ts
+/src/lib/field-mapper/simplified-store.ts
+/src/lib/field-mapper/simplified-types.ts
+/src/lib/field-mapper/store.ts
+/src/lib/field-mapper/test-mapping.ts
+/src/lib/field-mapper/test-validation.js
+/src/lib/field-mapper/test-validation.ts
+/src/lib/field-mapper/transformation-service.ts
+/src/lib/field-mapper/transformations.ts
+/src/lib/field-mapper/types.ts
+/src/lib/field-mapper/use-validation-worker.ts
+/src/lib/field-mapper/utils.ts
+/src/lib/field-mapper/v3-api.ts
+/src/lib/field-mapper/v3-store.ts
+/src/lib/field-mapper/v3-transformations.ts
+/src/lib/field-mapper/v3-types.ts
+/src/lib/field-mapper/v3-validation.ts
+/src/lib/field-mapper/validateNotionData.ts
+/src/lib/field-mapper/validation-worker.ts
+/src/lib/field-mapper/validation.ts
+/src/lib/notion.ts
+/src/lib/plans.ts
+/src/lib/pricing.ts
+/src/lib/shortcuts.ts
+/src/lib/toast.ts
+/src/lib/utils.ts
+/src/lib/utils/api.ts
+/src/lib/utils/browser.ts
+/src/lib/utils/delay.ts
+/src/lib/utils/validation.ts
+/src/services/notion-service.ts
+/src/styles/colors.ts
+/src/types/case-study.ts
+/src/types/projects.ts
+```

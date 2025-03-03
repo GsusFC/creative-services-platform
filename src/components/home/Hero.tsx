@@ -1,4 +1,4 @@
-'use client';
+"use client"
 
 import { motion } from 'framer-motion';
 
@@ -9,7 +9,7 @@ export function Hero() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem] md:bg-[size:6rem_6rem] opacity-30" />
 
       {/* Main Content */}
-      <div className="flex-1 w-full bg-black px-6 md:px-24 flex items-center" style={{ marginTop: '120px' }}>
+      <div className="flex-1 w-full bg-black px-6 md:px-24 flex items-center" style={{ marginTop: '120px' }} role="banner">
         <div className="text-left max-w-[90%] md:max-w-[80%]">
           {/* Mobile Layout */}
           <div className="md:hidden">
@@ -52,7 +52,7 @@ export function Hero() {
               <h1 
                 className="text-white font-bold leading-[0.9] tracking-[0.02em] uppercase whitespace-nowrap" 
                 style={{ 
-                  fontSize: 'clamp(4rem, 7vw, 8rem)',
+                  fontSize: 'clamp(3.5rem, 6vw, 7.5rem)',
                   fontFamily: 'var(--font-druk-text-wide)'
                 }}
               >
@@ -84,6 +84,7 @@ export function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1, duration: 0.8 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2"
+        aria-hidden="true"
       >
         <div 
           className="text-white/60 text-sm"

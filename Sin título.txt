@@ -1,0 +1,36 @@
+Primera columna 
+Esta sección lista los assets de notion y cuando se usen para conectarlos con la estructura de la landing estaría bien que se marcaran. 
+
+Segunda columna
+En esta columna está definida la estructura de la web. Te la dejo por aquí. 
+
+Hero Section
+Imagen o video
+
+Text content
+
+Name Project 
+Tagline
+Description
+Services
+
+Gallery 
+Listado de imágenes o video 16:9 (podemos poner la cantidad de items que querámoslas?)
+
+Me gusta el estilo de la V.1 
+
+
+
+
+Case Studies:
+
+Case Studies Landing Page - La página que acabamos de revisar con el diseño minimalista
+Case Study Individual - Para ver un case study específico (usando un ID de ejemplo)
+Field Mapper V4:
+
+Field Mapper Landing - Dashboard del Field Mapper
+Field Mapper Funcional - Versión funcional del Field Mapper
+API Endpoints:
+
+API Cases - Endpoint para acceder a todos los cases
+API Notion Database Structure - Endpoint para obtener la estructura de una base de datos de Notion

@@ -2,7 +2,8 @@
 
 import React, { useCallback, useMemo } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { FieldMapping, useFieldMapperStore } from '@/lib/field-mapper/store'
+import { useFieldMapperStore } from '@/lib/field-mapper/store'
+import { FieldMapping } from '@/lib/field-mapper/types'
 import { Mapping } from './Mapping'
 
 export default function OptimizedMappingList() {

@@ -1,10 +1,12 @@
-'use client'
+"use client"
 
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { featuredProjects } from '@/data/projects'
+import { Project } from '@/types/projects'
+import { caseStudiesService } from '@/lib/cms/case-studies-service'
 
 export function CaseStudies() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -16,13 +18,45 @@ export function CaseStudies() {
   const y = useTransform(scrollYProgress, [0, 1], [100, 0])
   const opacity = useTransform(scrollYProgress, [0, 0.2], [0, 1])
 
-  const projects = featuredProjects.slice(0, 4)
+  // Estado para los proyectos destacados del CMS
+  const [projects, setProjects] = useState<Project[]>(featuredProjects.slice(0, 4))
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Efecto para cargar los proyectos destacados desde el CMS
+  useEffect(() => {
+    const loadFeaturedProjects = async () => {
+      try {
+        setIsLoading(true)
+        // Intentar cargar desde el CMS
+        const featuredFromCms = await caseStudiesService.getFeaturedCaseStudies(4)
+        
+        if (featuredFromCms && featuredFromCms.length > 0) {
+          // Adaptamos los datos del CMS al formato de Project
+          const adaptedProjects: Project[] = featuredFromCms.map(item => ({
+            ...item,
+            color: item.featured ? 'rgb(0, 255, 0)' : 'rgb(255, 255, 255)', // Color default o especial para destacados
+            year: new Date().getFullYear().toString(), // Año actual como default
+          }));
+          
+          setProjects(adaptedProjects)
+        }
+      } catch (error) {
+        console.error("Error loading featured projects:", error)
+        // Fallback a proyectos locales si hay error
+        setProjects(featuredProjects.slice(0, 4))
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadFeaturedProjects()
+  }, [])
 
   return (
     <div className="relative bg-black">
       <motion.div 
         ref={containerRef}
-        style={{ y, opacity }}
+        style={{ y, opacity, position: 'relative' }}
         className="overflow-hidden relative"
       >
         {/* Arrow Column */}
@@ -85,6 +119,7 @@ export function CaseStudies() {
                   key={project.slug}
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-10%" }}
                   transition={{ delay: index * 0.1 }}
                   className="last:mb-0"
                 >

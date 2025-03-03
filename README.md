@@ -1,249 +1,51 @@
-# Creative Services Platform (CaaS)
+# Devin-like Capabilities for Windsurf
 
-Una plataforma moderna de servicios creativos con sistema de suscripción basado en créditos. Construida con un diseño minimalista usando negro puro (#000000) y acentos RGB.
+This project has been enhanced with Devin-like capabilities using the configuration from [devin.cursorrules](https://github.com/grapeot/devin.cursorrules).
 
-## Tech Stack
-- **Framework:** Next.js 14 (App Router)
-- **Language:** TypeScript
-- **Styling:** TailwindCSS
-- **Animations:** Framer Motion
-- **Components:** Radix UI (Tooltips)
-- **Deployment:** Vercel
+## Features
 
-## Getting Started
+- **Planning and Execution**: The AI assistant can now plan, execute, and learn from actions to solve complex programming tasks.
+- **Extended Toolset**: Includes web search, web scraping, and code analysis capabilities.
+- **Self-Evolution**: The AI can update its understanding based on feedback and lessons learned.
 
-1. Clona el repositorio:
-   ```bash
-   git clone https://github.com/GsusFC/creative-services-platform.git
-   cd creative-services-platform
-   ```
+## Available Tools
 
-2. Instala las dependencias:
-   ```bash
-   npm install
-   ```
+### Web Search
+Search the web for information:
+```
+python tools/web_search/search.py "your search query" [num_results]
+```
 
-3. Configura las variables de entorno:
-   Crea un archivo `.env.local` con:
-   ```env
-   NOTION_TOKEN=your_integration_token
-   NOTION_DATABASE_ID=your_database_id
-   ```
+### Web Scraping
+Extract data from websites:
+```
+python tools/web_scraping/scrape.py "url" "optional_css_selector"
+```
 
-4. Configura la integración con Notion:
-   - Ve a [https://www.notion.so/my-integrations](https://www.notion.so/my-integrations)
-   - Crea una nueva integración
-   - Guarda el token en `NOTION_TOKEN`
-   - Abre tu base de datos de case studies
-   - Copia el ID de la URL (después del workspace, antes de ?v)
-   - Guarda el ID en `NOTION_DATABASE_ID`
-   - En la base de datos, ve a (...) -> Connections
-   - Agrega la integración que creaste
+### Code Analysis
+Analyze code files to extract key information:
+```
+python tools/code_analysis/analyze.py "file_path"
+```
 
-5. Ejecuta el proyecto localmente:
-   ```bash
-   npm run dev
-   ```
-   Abre `http://localhost:3000` en tu navegador.
+## Requirements
 
-## Estado Actual
-- ✅ Sistema de precios con calculadora de créditos
-- ✅ Tooltips interactivos con acentos RGB
-- 🛠️ Casos de estudio en desarrollo
-- 🛠️ Integración con Web3 pendiente
+To use the web scraping tool, you'll need to install Playwright:
+```
+pip install playwright
+playwright install
+```
 
-## Servicios Core
+For other tools:
+```
+pip install requests beautifulsoup4
+```
 
-### Estrategia
-- Investigación y análisis
-- Estrategia de marca
-- Posicionamiento
-- Roadmap de producto
+## Configuration Files
 
-### Branding
-- Identidad visual
-- Sistemas de diseño
-- Guías de marca
-- Aplicaciones de marca
+- `.windsurfrules`: Contains instructions for the Windsurf AI assistant
+- `scratchpad.md`: A working area for planning, tracking progress, and documenting lessons learned
 
-### Producto Digital
-- Diseño UI/UX
-- Interfaces web y móvil
-- Diseño de producto
-- Prototipos interactivos
+## Usage
 
-## Sistema de Créditos
-
-### Estructura de Precios
-- 40 créditos: €2,620/mes
-- 80 créditos: €5,240/mes
-- 120 créditos: €7,860/mes
-- 160 créditos: €10,480/mes
-- 200 créditos: €13,100/mes
-
-### Complejidad y Uso
-1. Baja Complejidad (1 crédito/hora)
-   - UI Design
-   - Presentaciones
-   - Piezas gráficas
-
-2. Media Complejidad (1.25 créditos/hora)
-   - Dirección de arte
-   - Design systems
-   - Motion design
-
-3. Alta Complejidad (1.5 créditos/hora)
-   - Estrategia de marca
-   - Diseño de producto
-   - Creative direction
-
-## Funcionalidades Clave
-
-### Panel de Cliente
-- Dashboard personalizado
-- Gestión de créditos
-- Seguimiento de proyectos
-- Biblioteca de activos
-
-### Sistema de Gestión
-- Asignación de recursos
-- Tracking de tiempo
-- Gestión de entregas
-- Analytics
-
-### Características Incluidas
-- Equipo creativo dedicado
-- Equipo de project management
-- Proyectos ilimitados
-- Storage ilimitado
-- Capacidades AI
-- 30 días de prueba
-
-## Stack Tecnológico
-
-### Frontend
-- Next.js + TypeScript
-- Tailwind CSS
-- Shadcn/ui
-- Framer Motion
-
-### Backend
-- Node.js + Express
-- PostgreSQL (datos)
-- MongoDB (assets)
-- Redis (caché)
-
-### Infraestructura
-- Docker
-- AWS
-- CI/CD automatizado
-- Backups automáticos
-
-## Roadmap de Implementación
-
-### 1. Landing Page y Marketing
-- Home con servicios core
-- Página de precios detallada
-- Calculadora de créditos interactiva
-- Portfolio y casos de estudio
-- Blog y recursos
-- Formulario de contacto/demo
-- Sistema de booking de llamadas
-
-### 2. Sistema de Autenticación y Usuarios
-- Registro de usuarios/empresas
-- Roles y permisos (Admin, PM, Cliente, Diseñador, Estratega)
-- Gestión de equipos
-- Perfiles de usuario
-- Recuperación de contraseña
-- OAuth (Google, etc.)
-
-### 3. Sistema de Créditos y Pagos
-- Planes de suscripción
-- Integración con pasarela de pagos
-- Sistema de facturación
-- Tracking de uso de créditos
-- Historial de transacciones
-- Alertas de consumo
-- Renovación automática
-- Upgrade/Downgrade de planes
-
-### 4. Panel de Cliente
-- Dashboard personalizado
-- Estado de créditos
-- Proyectos activos
-- Timeline de entregas
-- Biblioteca de assets
-- Historial de proyectos
-- Configuración de cuenta
-- Centro de notificaciones
-
-### 5. Sistema de Gestión de Proyectos
-- Creación de briefs
-- Asignación de recursos
-- Tracking de tiempo
-- Sistema de feedback
-- Versiones y revisiones
-- Calendario de entregas
-- Chat interno
-- Sistema de aprobaciones
-
-### 6. Asset Management
-- Biblioteca de archivos
-- Organización por proyectos
-- Versionado de archivos
-- Preview de archivos
-- Compartir assets
-- Búsqueda y filtros
-- Metadatos y tags
-- Integración con herramientas de diseño
-
-### 7. Backend y APIs
-- API RESTful
-- Autenticación JWT
-- Websockets para tiempo real
-- Microservicios
-- Rate limiting
-- Logging y monitoreo
-- Cache system
-- API Documentation
-
-### 8. Analytics y Reporting
-- Dashboard de métricas
-- Reportes de uso
-- KPIs por proyecto
-- Análisis de eficiencia
-- ROI tracking
-- Exportación de datos
-- Insights automáticos
-- Predicciones de uso
-
-### 9. Herramientas de Productividad
-- Templates de proyectos
-- Automatización de tareas
-- Integración con Slack
-- Integración con herramientas de diseño
-- Sistema de plantillas
-- Checklist automáticos
-- Base de conocimiento
-- FAQs y tutoriales
-
-### 10. Características Adicionales
-- Sistema de onboarding
-- Centro de ayuda
-- Documentación técnica
-- Sistema de tickets/soporte
-- Múltiples idiomas
-- Modo oscuro/claro
-- PWA
-- Apps móviles
-
-### 11. Legal y Compliance
-- Términos y condiciones
-- Política de privacidad
-- GDPR compliance
-- Contratos de servicio
-- Acuerdos de confidencialidad
-- Cookies policy
-- Documentación legal
-- Proceso de compliance
+Simply continue using Windsurf as normal. The AI assistant now has enhanced capabilities to help with your development tasks.

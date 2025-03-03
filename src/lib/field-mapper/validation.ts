@@ -6,22 +6,22 @@
  * Includes improved error handling and protection against invalid inputs.
  */
 
-// Define website field types
-export type WebsiteFieldType = 'text' | 'array' | 'image' | 'date' | 'number' | 'boolean' | 'url';
+// Import field types from types.ts
+import { WebsiteFieldType, NotionFieldType } from './types';
 
-// Define Notion field types
-export type NotionFieldType = 
-  'title' | 'rich_text' | 'number' | 'select' | 'multi_select' | 
-  'date' | 'people' | 'files' | 'checkbox' | 'url' | 'email' | 
-  'phone_number' | 'formula' | 'relation' | 'rollup' | 'created_time' | 
-  'created_by' | 'last_edited_time' | 'last_edited_by' | 'status' |
-  'unique_id' | 'button' | 'external';
+// Definimos el enum CompatibilityLevel aquí para evitar la importación circular
+export enum CompatibilityLevel {
+  HIGH = 'high',
+  MEDIUM = 'medium',
+  LOW = 'low',
+}
 
 // Compatibility map defines which Notion field types can be mapped to which website field types
-export const typeCompatibilityMap: Record<WebsiteFieldType, NotionFieldType[]> = {
+// Solo definimos los tipos básicos que necesitamos, no todos los de WebsiteFieldType
+export const typeCompatibilityMap: Partial<Record<WebsiteFieldType, NotionFieldType[]>> = {
   'text': [
-    'title', 'rich_text', 'select', 'url', 'email', 'phone_number', 
-    'formula', 'created_by', 'last_edited_by', 'unique_id', 'status'
+    'title', 'richText', 'select', 'url', 'email', 'phone_number', 
+    'formula', 'created_by', 'last_edited_by', 'status'
   ],
   'array': [
     'multi_select', 'relation', 'people', 'files'
@@ -33,13 +33,13 @@ export const typeCompatibilityMap: Record<WebsiteFieldType, NotionFieldType[]> =
     'date', 'created_time', 'last_edited_time'
   ],
   'number': [
-    'number', 'formula', 'unique_id'
+    'number', 'formula'
   ],
   'boolean': [
     'checkbox'
   ],
   'url': [
-    'url', 'rich_text', 'files', 'button', 'external'
+    'url', 'richText', 'files'
   ]
 };
 
@@ -67,8 +67,8 @@ export const typeConversionSuggestions: Record<string, string> = {
  * @returns boolean indicating compatibility
  */
 export function isTypeCompatible(
-  notionType: string, 
-  websiteType: string
+  notionType: NotionFieldType | string, 
+  websiteType: WebsiteFieldType | string
 ): boolean {
   try {
     // Safety check for inputs
@@ -78,8 +78,8 @@ export function isTypeCompatible(
     }
     
     // Normalize inputs
-    const normalizedNotionType = notionType.toLowerCase().trim();
-    const normalizedWebsiteType = websiteType.toLowerCase().trim();
+    const normalizedNotionType = notionType.toLowerCase().trim() as NotionFieldType;
+    const normalizedWebsiteType = websiteType.toLowerCase().trim() as WebsiteFieldType;
     
     // Special cases for formula and rollup - need more context for accurate validation
     if (normalizedNotionType === 'formula' || normalizedNotionType === 'rollup') {
@@ -90,14 +90,14 @@ export function isTypeCompatible(
     }
     
     // Check in compatibility map
-    const compatibleNotionTypes = typeCompatibilityMap[normalizedWebsiteType as WebsiteFieldType];
+    const compatibleNotionTypes = typeCompatibilityMap[normalizedWebsiteType];
     
     if (!compatibleNotionTypes) {
       console.warn(`Unknown website field type: ${normalizedWebsiteType}`);
       return false;
     }
     
-    const isCompatible = compatibleNotionTypes.includes(normalizedNotionType as NotionFieldType);
+    const isCompatible = compatibleNotionTypes.includes(normalizedNotionType);
     return isCompatible;
   } catch (err) {
     console.error('Error in isTypeCompatible:', err);
@@ -113,8 +113,8 @@ export function isTypeCompatible(
  * @returns Suggestion string or null if no suggestion available
  */
 export function getSuggestionForIncompatibleTypes(
-  notionType: string,
-  websiteType: string
+  notionType: NotionFieldType | string,
+  websiteType: WebsiteFieldType | string
 ): string | null {
   if (!notionType || !websiteType) return null;
   
@@ -127,8 +127,8 @@ export function getSuggestionForIncompatibleTypes(
  * Returns a validation object with isValid, error, and suggestion properties
  */
 export function validateTypeCompatibility(
-  notionType: string, 
-  websiteType: string
+  notionType: NotionFieldType | string, 
+  websiteType: WebsiteFieldType | string
 ): { isValid: boolean; error?: string; suggestion?: string } {
   try {
     // Validate inputs
@@ -191,3 +191,14 @@ export function validateTypeCompatibility(
     };
   }
 }
+
+export const getCompatibilityLevel = (type: string): CompatibilityLevel => {
+  // Actualizar esta función para manejar tipos reales en lugar de 'type1', 'type2'
+  if (['title', 'richText', 'text', 'string'].includes(type)) {
+    return CompatibilityLevel.HIGH;
+  } else if (['number', 'date', 'boolean', 'url', 'email'].includes(type)) {
+    return CompatibilityLevel.MEDIUM;
+  } else {
+    return CompatibilityLevel.LOW;
+  }
+};

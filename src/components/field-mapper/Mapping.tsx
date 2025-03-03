@@ -1,12 +1,15 @@
+'use client';
+
 import React, { useState } from 'react';
-import { useFieldMapperStore, Mapping as MappingType } from '@/lib/field-mapper/store';
+import { useFieldMapperStore } from '@/lib/field-mapper/store';
+import { FieldMapping } from '@/lib/field-mapper/types';
 import { Button } from '@/components/ui/button';
 import { XIcon, AlertCircleIcon, ChevronDownIcon, InfoIcon, ArrowRightIcon, CheckIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { validateTypeCompatibility } from '@/lib/field-mapper/validation';
 
 interface MappingProps {
-  mapping: MappingType;
+  mapping: FieldMapping;
   index: number;
 }
 

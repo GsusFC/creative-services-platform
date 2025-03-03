@@ -12,3 +12,7 @@ export const clash = localFont({
   display: 'swap',
   variable: '--font-clash',
 })
+
+// En vez de usar la fuente local con una ruta que podría no ser correcta,
+// vamos a quitar esta configuración y usar directamente className="font-mono"
+// que es la clase por defecto para fuentes monoespaciadas en Tailwind

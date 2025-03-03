@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useFieldMapperStore } from '@/lib/field-mapper/store';
 import { Input } from '@/components/ui/input';
@@ -21,6 +23,12 @@ interface FieldListProps {
   source: 'notion' | 'website';
   listId: string;
   className?: string;
+}
+
+interface FieldItemProps {
+  field: any;
+  isNotion: boolean;
+  onAddMapping: () => void;
 }
 
 export default function FieldList({ source, listId, className = '' }: FieldListProps) {
@@ -96,7 +104,7 @@ export default function FieldList({ source, listId, className = '' }: FieldListP
 }
 
 // Componente para mostrar un campo individual
-function FieldItem({ field, isNotion, onAddMapping }) {
+function FieldItem({ field, isNotion, onAddMapping }: FieldItemProps) {
   // Función para obtener el icono apropiado según el tipo de campo
   const getTypeIcon = () => {
     const type = field.type.toLowerCase();

@@ -7,7 +7,7 @@
  * - React Query integration for caching and retry
  */
 
-import { FieldMapping } from './store';
+import { FieldMapping } from './types';
 import { useQuery, useMutation, UseQueryOptions } from '@tanstack/react-query';
 
 // Type definitions
@@ -135,6 +135,8 @@ export async function testMappings(mappings: FieldMapping[]) {
  * React Query hooks
  */
 
+import { toast } from 'sonner';
+
 // Hook for fetching Notion database structure
 export function useNotionFields(options?: UseQueryOptions<NotionField[], Error>) {
   return useQuery({
@@ -161,8 +163,12 @@ export function useMappings(options?: UseQueryOptions<FieldMapping[], Error>) {
 export function useSaveMappings() {
   return useMutation({
     mutationFn: saveMappings,
+    onSuccess: () => {
+      toast.success('Mappings guardados correctamente');
+    },
     onError: (error) => {
       console.error('Error saving mappings:', error);
+      toast.error(`Error al guardar mappings: ${(error as Error).message}`);
     }
   });
 }
@@ -171,8 +177,12 @@ export function useSaveMappings() {
 export function useTestMappings() {
   return useMutation({
     mutationFn: testMappings,
+    onSuccess: () => {
+      toast.success('Prueba completada correctamente');
+    },
     onError: (error) => {
       console.error('Error testing mappings:', error);
+      toast.error(`Error al probar mappings: ${(error as Error).message}`);
     }
   });
 }

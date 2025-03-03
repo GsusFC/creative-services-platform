@@ -1,8 +1,10 @@
+'use client';
+
 import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { SaveIcon, DownloadIcon, Loader2Icon } from 'lucide-react';
 import { useFieldMapperStore } from '@/lib/field-mapper/store';
-import toast from '@/lib/toast';
+import { toast } from 'sonner';
 
 export default function ActionButtons() {
   const [isSaving, setIsSaving] = useState(false);
@@ -15,10 +17,7 @@ export default function ActionButtons() {
   // Guardar los mappings actuales
   const saveCurrentMappings = async () => {
     if (mappings.length === 0) {
-      toast({
-        status: 'warning',
-        title: 'No hay mappings para guardar'
-      });
+      toast.warning('No hay mappings para guardar');
       return;
     }
 
@@ -36,15 +35,9 @@ export default function ActionButtons() {
         throw new Error('Error al guardar los mappings');
       }
 
-      toast({
-        status: 'success',
-        title: 'Mappings guardados correctamente'
-      });
+      toast.success('Mappings guardados correctamente');
     } catch (error) {
-      toast({
-        status: 'error',
-        title: error instanceof Error ? error.message : 'Error al guardar los mappings'
-      });
+      toast.error(error instanceof Error ? error.message : 'Error al guardar los mappings');
     } finally {
       setIsSaving(false);
     }
@@ -62,21 +55,12 @@ export default function ActionButtons() {
       const data = await response.json();
       if (data.mappings && Array.isArray(data.mappings)) {
         setMappings(data.mappings);
-        toast({
-          status: 'success',
-          title: `${data.mappings.length} mappings cargados correctamente`
-        });
+        toast.success(`${data.mappings.length} mappings cargados correctamente`);
       } else {
-        toast({
-          status: 'info',
-          title: 'No se encontraron mappings guardados'
-        });
+        toast.info('No se encontraron mappings guardados');
       }
     } catch (error) {
-      toast({
-        status: 'error',
-        title: error instanceof Error ? error.message : 'Error al cargar los mappings'
-      });
+      toast.error(error instanceof Error ? error.message : 'Error al cargar los mappings');
     } finally {
       setIsLoading(false);
     }

@@ -17,7 +17,7 @@ export default function PricingPage() {
         <PriceAdmin />
 
         {/* Planes y FAQs */}
-        <div className="container mx-auto px-4 py-24 space-y-32">
+        <div className="reduced-container py-24 space-y-32">
           <div>
             <h2 
               className="text-4xl sm:text-5xl md:text-6xl text-white text-center mb-16"

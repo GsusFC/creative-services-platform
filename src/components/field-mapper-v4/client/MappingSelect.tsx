@@ -7,27 +7,25 @@
  */
 
 import { useState, useRef, useEffect } from 'react';
-import { CaseStudyField, NotionField, CompatibilityStatus } from '@/lib/field-mapper-v4/types';
+import { CaseStudyField, NotionField, FieldType } from '@/lib/field-mapper-v4/types';
 import { getRecommendedFields, checkFieldCompatibility } from '@/lib/field-mapper-v4/validation';
-import { getTransformation } from '@/lib/field-mapper-v4/transformations';
 import CompatibilityIndicator from './CompatibilityIndicator';
 
 interface MappingSelectProps {
   caseStudyField: CaseStudyField;
   notionFields: NotionField[];
   selectedNotionFieldId: string | null;
-  onSelect: (notionFieldId: string | null) => void;
+  onChangeAction: (notionFieldId: string | null) => void;
 }
 
 export default function MappingSelect({
   caseStudyField,
   notionFields,
   selectedNotionFieldId,
-  onSelect,
+  onChangeAction,
 }: MappingSelectProps) {
   // Estados
   const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   
   // Obtener las recomendaciones
@@ -55,165 +53,136 @@ export default function MappingSelect({
     };
   }, []);
 
-  // Filtrar campos según término de búsqueda
-  const filterFields = (fields: NotionField[]) => {
-    if (!searchTerm) return fields;
-    return fields.filter(field => 
-      field.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      field.type.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  };
-
-  // Obtener icono según tipo de campo
-  const getFieldIcon = (type: string) => {
-    switch (type) {
-      case 'text':
-        return '📝';
-      case 'rich_text':
-        return '📄';
-      case 'number':
-        return '🔢';
-      case 'date':
-        return '📅';
-      case 'image':
-        return '🖼️';
-      case 'file':
-        return '📎';
-      case 'files':
-        return '🖼️';
-      case 'select':
-        return '🔽';
-      case 'multi_select':
-        return '🏷️';
-      case 'url':
-        return '🔗';
-      case 'email':
-        return '📧';
-      case 'checkbox':
-        return '✅';
-      default:
-        return '❓';
-    }
-  };
+  // Nota: Función de iconos pendiente de implementar
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative w-[95%] mx-auto" ref={dropdownRef}>
       {/* Botón del selector */}
-      <button
+      <div 
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full p-2 text-left border rounded ${
-          selectedField ? 'bg-gray-800 border-blue-700 text-white' : 'bg-gray-800 border-gray-700 text-gray-300'
-        }`}
+        className={`
+          w-full p-2 text-left rounded-lg focus:outline-none focus:ring-1 transition-all duration-200
+          ${selectedField 
+            ? 'bg-black/40 border border-white/10 hover:bg-white/5 text-white/90' 
+            : 'bg-black/40 border border-white/10 hover:bg-white/5 text-white/70'}
+          cursor-pointer
+        `}
+        role="button"
+        tabIndex={0}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setIsOpen(!isOpen);
+          }
+        }}
       >
         {selectedField ? (
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <span className="mr-2">{getFieldIcon(selectedField.type)}</span>
-              <span>{selectedField.name}</span>
+              <span className="font-mono">{selectedField.name}</span>
+              <span className="ml-2 text-xs text-white/70 font-mono">
+                {selectedField.type}
+              </span>
               {compatibilityInfo && (
                 <span className="ml-2">
                   <CompatibilityIndicator 
                     status={compatibilityInfo.status} 
-                    transformationId={compatibilityInfo.transformationId}
                     compact={true}
+                    notionType={selectedField.type as FieldType}
+                    caseStudyType={caseStudyField.type as FieldType}
                   />
                 </span>
               )}
             </div>
-            <button
+            <div
               onClick={(e) => {
                 e.stopPropagation();
-                onSelect(null);
+                onChangeAction(null);
               }}
-              className="p-1 text-gray-400 rounded hover:bg-gray-700"
+              className="p-1 text-notion-text hover:bg-notion-border/30 rounded transition-colors cursor-pointer"
+              role="button"
+              tabIndex={0}
               aria-label="Eliminar mapeo"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onChangeAction(null);
+                }
+              }}
             >
-              ✕
-            </button>
+              <span className="w-4 h-4 flex items-center justify-center">✕</span>
+            </div>
           </div>
         ) : (
-          <span className="text-gray-400">Seleccionar campo ▾</span>
+          <div className="flex items-center justify-between text-white/70 font-mono">
+            <span>Seleccionar campo</span>
+            <span>▾</span>
+          </div>
         )}
-      </button>
-      
-      {/* Información de tipo y compatibilidad */}
-      {selectedField && (
-        <div className="mt-1 text-xs text-gray-400">
-          Tipo: {selectedField.type}
-        </div>
-      )}
+      </div>
       
       {/* Dropdown de selección */}
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 border border-gray-700 rounded-md shadow-lg bg-gray-800">
-          {/* Barra de búsqueda */}
-          <div className="p-2 border-b border-gray-700">
-            <input
-              type="text"
-              placeholder="Buscar campo..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full p-2 border border-gray-700 rounded bg-gray-900 text-white placeholder-gray-400"
-              onClick={(e) => e.stopPropagation()}
-            />
-          </div>
-          
+        <div className="absolute z-10 w-full mt-1 shadow-md bg-black/60 backdrop-blur-sm rounded-lg overflow-hidden border border-white/10">
           {/* Lista de campos */}
           <div className="max-h-60 overflow-y-auto">
             {/* Sección de campos recomendados */}
             {recommendations.directlyCompatible.length > 0 && (
-              <div className="px-2 py-1 text-xs font-semibold text-gray-400 border-b border-gray-700 bg-gray-900">
+              <div className="px-3 py-1.5 text-xs font-medium bg-black/40 text-white/80 font-mono">
                 Recomendados
               </div>
             )}
             
-            {filterFields(recommendations.directlyCompatible).map(field => (
+            {recommendations.directlyCompatible.map(field => (
               <button
                 key={field.id}
                 onClick={() => {
-                  onSelect(field.id);
+                  onChangeAction(field.id);
                   setIsOpen(false);
                 }}
-                className="flex items-center w-full p-2 text-left hover:bg-gray-700 text-white"
+                className="flex items-center w-full p-2 text-left hover:bg-white/5 text-white/90 focus:outline-none transition-colors"
               >
-                <span className="mr-2">{getFieldIcon(field.type)}</span>
-                <span className="flex-grow">{field.name}</span>
-                <span className="text-xs text-gray-400">{field.type}</span>
+                <span className="flex-grow font-mono truncate">{field.name}</span>
+                <span className="text-xs text-white/70 font-mono ml-2 shrink-0">
+                  {field.type}
+                </span>
               </button>
             ))}
             
             {/* Campos que requieren transformación */}
             {recommendations.requiresTransformation.length > 0 && (
-              <div className="px-2 py-1 text-xs font-semibold text-gray-400 border-t border-b border-gray-700 bg-gray-900">
+              <div className="px-3 py-1.5 text-xs font-medium mt-1 bg-gray-700/50 text-white/80 font-geist-mono">
                 Requieren transformación
               </div>
             )}
             
-            {filterFields(recommendations.requiresTransformation).map(field => (
+            {recommendations.requiresTransformation.map(field => (
               <button
                 key={field.id}
                 onClick={() => {
-                  onSelect(field.id);
+                  onChangeAction(field.id);
                   setIsOpen(false);
                 }}
-                className="flex items-center w-full p-2 text-left hover:bg-gray-700 text-white"
+                className="flex items-center w-full p-2 text-left hover:bg-white/5 text-white/90 focus:outline-none transition-colors"
               >
-                <span className="mr-2">{getFieldIcon(field.type)}</span>
-                <span className="flex-grow">{field.name}</span>
-                <span className="text-xs text-gray-400">{field.type}</span>
+                <span className="flex-grow font-mono truncate">{field.name}</span>
+                <span className="text-xs text-white/70 font-mono ml-2 shrink-0">
+                  {field.type}
+                </span>
               </button>
             ))}
             
             {/* Todos los campos */}
-            {recommendations.directlyCompatible.length > 0 || recommendations.requiresTransformation.length > 0 ? (
-              <div className="px-2 py-1 text-xs font-semibold text-gray-400 border-t border-b border-gray-700 bg-gray-900">
+            {(recommendations.directlyCompatible.length > 0 || recommendations.requiresTransformation.length > 0) && (
+              <div className="px-3 py-1.5 text-xs font-medium mt-1 bg-gray-700/50 text-white/80 font-geist-mono">
                 Todos los campos
               </div>
-            ) : null}
+            )}
             
-            {filterFields(notionFields)
+            {notionFields
               .filter(field => 
                 !recommendations.directlyCompatible.some(r => r.id === field.id) && 
                 !recommendations.requiresTransformation.some(r => r.id === field.id)
@@ -222,19 +191,21 @@ export default function MappingSelect({
                 <button
                   key={field.id}
                   onClick={() => {
-                    onSelect(field.id);
+                    onChangeAction(field.id);
                     setIsOpen(false);
                   }}
-                  className="flex items-center w-full p-2 text-left hover:bg-gray-700 text-white"
+                  className="flex items-center w-full p-2 text-left hover:bg-white/5 text-white/90 focus:outline-none transition-colors"
                 >
-                  <span className="mr-2">{getFieldIcon(field.type)}</span>
-                  <span className="flex-grow">{field.name}</span>
-                  <span className="text-xs text-gray-400">{field.type}</span>
+                  <span className="flex-grow font-mono truncate">{field.name}</span>
+                  <span className="text-xs text-white/70 font-mono ml-2 shrink-0">
+                    {field.type}
+                  </span>
                 </button>
               ))}
               
-            {filterFields(notionFields).length === 0 && (
-              <div className="p-2 text-center text-gray-400">
+            {/* Estado vacío */}
+            {notionFields.length === 0 && (
+              <div className="p-4 text-center text-white/50 bg-gray-800/90 font-geist-mono">
                 No se encontraron campos
               </div>
             )}

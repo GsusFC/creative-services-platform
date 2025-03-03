@@ -1,24 +1,13 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-import { NotionFieldType, WebsiteFieldType, validateTypeCompatibility } from './validation'
+import { validateTypeCompatibility } from './validation'
+import { NotionFieldType, WebsiteFieldType, FieldMapping, Field, ValidationResult } from './types'
 import { v4 as uuidv4 } from 'uuid';
 
-export interface FieldMapping {
-  id: string
-  notionField: string
-  websiteField: string
-  notionType: string
-  websiteType: string
-  required?: boolean
-  validation?: {
-    isValid: boolean
-    warning?: string
-    suggestion?: string
-    notionType?: string
-    websiteType?: string
-  }
-}
+// Re-export FieldMapping para que pueda ser importado desde este archivo
+export type { FieldMapping, Field, ValidationResult } from './types';
 
+// ValidationError interface for internal use
 interface ValidationError {
   websiteField: string;
   notionField: string;
@@ -26,15 +15,6 @@ interface ValidationError {
   notionType: string;
   warning: string;
   suggestion?: string;
-}
-
-export interface Field {
-  id: string;
-  name: string;
-  type: string;
-  source: 'notion' | 'website';
-  typeDetails?: any;
-  required?: boolean;
 }
 
 interface FieldMapperState {
@@ -65,15 +45,12 @@ interface FieldMapperActions {
   setLoading: (isLoading: boolean) => void
 }
 
-interface FieldMapperStore extends FieldMapperState, FieldMapperActions {}
-
-// Crear el tipo del store combinando state y actions
-type FieldMapperStore = FieldMapperState & FieldMapperActions;
+type StoreType = FieldMapperState & FieldMapperActions;
 
 // Helpers for validation
 const VALIDATION_THROTTLE = 500; // ms
 
-const validateMappingStructure = (mapping: any): boolean => {
+const validateMappingStructure = (mapping: FieldMapping): boolean => {
   if (!mapping || typeof mapping !== 'object') return false;
   if (typeof mapping.notionField !== 'string') return false;
   if (typeof mapping.websiteField !== 'string') return false;
@@ -110,7 +87,7 @@ const memoizedValidateTypeCompatibility = memoize(
   }
 );
 
-export const useFieldMapperStore = create<FieldMapperStore>()(
+export const useFieldMapperStore = create<StoreType>()(
   persist(
     (set, get) => ({
       // Initial state
@@ -124,27 +101,27 @@ export const useFieldMapperStore = create<FieldMapperStore>()(
       lastValidated: 0,
 
       // Actions
-      setNotionFields: (fields) => {
-        set((state) => ({ 
+      setNotionFields: (fields: Field[]) => {
+        set((state: StoreType) => ({ 
           notionFields: fields || [],
           // If we update fields, we need to revalidate
           lastValidated: 0
         }));
       },
       
-      setWebsiteFields: (fields) => {
-        set((state) => ({ 
+      setWebsiteFields: (fields: Field[]) => {
+        set((state: StoreType) => ({ 
           websiteFields: fields || [],
           // If we update fields, we need to revalidate
           lastValidated: 0
         }));
       },
       
-      setLoading: (isLoading) => set({ isLoading }),
+      setLoading: (isLoading: boolean) => set({ isLoading }),
       
-      setError: (error) => set({ error }),
+      setError: (error: string | null) => set({ error }),
       
-      setMappings: (mappings) => {
+      setMappings: (mappings: FieldMapping[]) => {
         console.log('Setting mappings:', mappings?.length || 0);
         
         try {
@@ -163,7 +140,7 @@ export const useFieldMapperStore = create<FieldMapperStore>()(
               id: m.id || uuidv4() // Ensure ID exists
             }));
           
-          set((state) => ({ 
+          set((state: StoreType) => ({ 
             mappings: validMappings,
             // Reset validation when we set new mappings
             validationErrors: {},
@@ -181,7 +158,7 @@ export const useFieldMapperStore = create<FieldMapperStore>()(
         }
       },
       
-      addMapping: (mapping) => {
+      addMapping: (mapping: { notionField: string, websiteField: string, websiteType?: string, notionType?: string }) => {
         try {
           // Get field types if not provided
           const { websiteFields, notionFields } = get();
@@ -215,7 +192,7 @@ export const useFieldMapperStore = create<FieldMapperStore>()(
           newMapping.validation = validation;
           
           // Update state - use callback form for atomic updates
-          set((state) => {
+          set((state: StoreType) => {
             const newMappings = [...state.mappings, newMapping];
             return { 
               mappings: newMappings,
@@ -233,7 +210,7 @@ export const useFieldMapperStore = create<FieldMapperStore>()(
         }
       },
       
-      updateMapping: (index, mapping) => {
+      updateMapping: (index: number, mapping: FieldMapping) => {
         try {
           // Validate the updated mapping
           const validation = memoizedValidateTypeCompatibility({
@@ -248,7 +225,7 @@ export const useFieldMapperStore = create<FieldMapperStore>()(
           };
           
           // Use callback to ensure atomic updates
-          set((state) => {
+          set((state: StoreType) => {
             // Prevent out of bounds or invalid indexes
             if (index < 0 || index >= state.mappings.length) {
               console.error(`Invalid index: ${index}, mappings length: ${state.mappings.length}`);
@@ -282,10 +259,10 @@ export const useFieldMapperStore = create<FieldMapperStore>()(
         }
       },
       
-      removeMapping: (index) => {
+      removeMapping: (index: number) => {
         try {
           // Use callback to ensure atomic updates
-          set((state) => {
+          set((state: StoreType) => {
             // Prevent out of bounds
             if (index < 0 || index >= state.mappings.length) {
               console.error(`Invalid index: ${index}, mappings length: ${state.mappings.length}`);
@@ -506,11 +483,11 @@ export const useFieldMapperStore = create<FieldMapperStore>()(
         };
       }),
       // Only persist the mappings, not the entire state
-      partialize: (state) => ({ 
+      partialize: (state: StoreType) => ({ 
         mappings: state.mappings
       }),
       // Validate on hydration
-      onRehydrateStorage: () => (state) => {
+      onRehydrateStorage: () => (state: StoreType) => {
         if (state) {
           console.log('Field mapper store rehydrated with', state.mappings?.length || 0, 'mappings');
           
