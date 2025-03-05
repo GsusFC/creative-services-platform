@@ -1,55 +1,54 @@
-'use client'
+import { CaseStudy } from '@/types/case-study'
+import { getAllCaseStudies } from '@/lib/case-studies/service'
+import { Suspense } from 'react'
+import ProjectsList from './projects-list'
 
-import { motion } from 'framer-motion'
-import Image from 'next/image'
-import Link from 'next/link'
-import { featuredProjects } from '@/data/projects'
-
-function ProjectCard({ project }: { project: typeof featuredProjects[0] }) {
+// Componente para mostrar durante la carga
+function ProjectsLoading() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="group relative aspect-square overflow-hidden"
-    >
-      <Link href={`/cases/${project.slug}`} className="block h-full">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10" />
-        
-        {/* Project Image */}
-        <div className="absolute inset-0">
-          <Image
-            src={project.image}
-            alt={project.title}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        </div>
-
-        {/* Project Info */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
-          <div className="space-y-2">
-            <p className="text-sm text-[#00ff00] font-mono uppercase tracking-wider">{project.category}</p>
-            <h3 className="text-4xl md:text-5xl font-druk text-white leading-[0.9] tracking-tight">{project.title}</h3>
-            <p className="text-white/80 mt-4">{project.description}</p>
-            
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2 pt-2">
-              {project.tags.map(tag => (
-                <span 
-                  key={tag}
-                  className="px-2 py-1 bg-white/10 text-xs text-white/60"
-                >
-                  {tag}
-                </span>
-              ))}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-6">
+      {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+        <div key={i} className="relative aspect-square bg-white/5 animate-pulse">
+          <div className="absolute bottom-6 left-6 right-6 space-y-2">
+            <div className="h-4 bg-white/10 w-16 rounded"></div>
+            <div className="h-10 bg-white/10 w-full rounded"></div>
+            <div className="h-4 bg-white/10 w-full rounded mt-4"></div>
+            <div className="flex gap-2 pt-2">
+              <div className="h-6 w-12 bg-white/10 rounded"></div>
+              <div className="h-6 w-12 bg-white/10 rounded"></div>
             </div>
           </div>
         </div>
-      </Link>
-    </motion.div>
-  )
+      ))}
+    </div>
+  );
 }
 
+// Componente servidor para obtener los datos
+async function ProjectsDataFetcher() {
+  const projects = await getAllCaseStudies();
+  
+  // Filtrar solo los proyectos publicados
+  const publishedProjects = projects.filter(p => p.status === 'published');
+  
+  if (publishedProjects.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-white/60">
+        <p className="text-xl mb-4">No hay proyectos publicados todavía</p>
+        <a 
+          href="/admin/case-studies/new" 
+          className="px-4 py-2 bg-[#00ff00] text-black font-medium rounded hover:bg-[#00cc00] transition-colors"
+        >
+          Crear Proyecto
+        </a>
+      </div>
+    );
+  }
+
+  return <ProjectsList projects={publishedProjects} />;
+}
+
+// Componente principal de la página
 export default function CasesPage() {
   return (
     <main className="min-h-screen bg-black text-white">
@@ -68,14 +67,10 @@ export default function CasesPage() {
           </p>
         </div>
         
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-6">
-          {featuredProjects.map((project) => (
-            <ProjectCard key={project.slug} project={project} />
-          ))}
-        </div>
-
-
+        {/* Projects Grid with Suspense */}
+        <Suspense fallback={<ProjectsLoading />}>
+          <ProjectsDataFetcher />
+        </Suspense>
       </div>
     </main>
   )
