@@ -283,22 +283,54 @@ export default function FlagSystem() {
       
       {/* Control panel - mobile optimized */}
       <div className="w-full lg:w-[25%] px-4 lg:px-0">
-        {/* Mobile compact controls */}
-        <div className="lg:hidden w-full bg-black/50 backdrop-blur-sm rounded-lg p-4 border border-white/10 mb-4">
-          <div className="flex flex-col gap-3">
-            <input
-              type="text"
-              ref={inputRef}
-              className="w-full bg-black border border-white/20 rounded-md py-2 px-3 text-lg font-sans uppercase tracking-wider focus:border-[#00ff00] focus:outline-none"
-              placeholder="TYPE OR GENERATE WORD..."
-              value={word}
-              onChange={(e) => setWord(e.target.value)}
-            />
+        {/* Mobile compact controls - optimizados */}
+        <div className="lg:hidden w-full bg-black/50 backdrop-blur-sm rounded-lg p-3 border border-white/10">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2 mb-2">
+              {/* Input de texto */}
+              <input
+                type="text"
+                ref={inputRef}
+                className="flex-grow bg-black border border-white/20 rounded-md py-2 px-3 text-base font-sans uppercase focus:border-[#00ff00] focus:outline-none"
+                placeholder="TYPE HERE..."
+                value={word}
+                onChange={(e) => setWord(e.target.value)}
+              />
+              
+              {/* Switch de formato con iconos pequeños */}
+              <div className="flex items-center border border-white/10 rounded p-1 bg-black/30">
+                <div className="flex items-center justify-center w-4 h-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/60">
+                    <line x1="8" y1="6" x2="21" y2="6" />
+                    <line x1="8" y1="12" x2="21" y2="12" />
+                    <line x1="8" y1="18" x2="21" y2="18" />
+                    <line x1="3" y1="6" x2="3.01" y2="6" />
+                    <line x1="3" y1="12" x2="3.01" y2="12" />
+                    <line x1="3" y1="18" x2="3.01" y2="18" />
+                  </svg>
+                </div>
+                <Switch 
+                  checked={isGridMode}
+                  onCheckedChange={toggleGridMode}
+                  className="mx-1 scale-75"
+                />
+                <div className="flex items-center justify-center w-4 h-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/60">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            
+            {/* Controles secundarios */}
             <div className="flex gap-2 w-full">
               <button
                 onClick={generateRandomWord}
                 disabled={isGenerating}
-                className="flex-grow px-3 py-2 bg-[#00ff00] text-black font-sans uppercase tracking-wider text-sm disabled:opacity-50 hover:brightness-110 transition-all duration-300"
+                className="flex-grow px-3 py-2 bg-[#00ff00] text-black font-sans uppercase tracking-wider text-xs disabled:opacity-50 hover:brightness-110 transition-all duration-300"
               >
                 {isGenerating ? '...' : 'RANDOM'}
               </button>
@@ -308,20 +340,23 @@ export default function FlagSystem() {
                   const randomIndex = Math.floor(Math.random() * colors.length);
                   changeBackgroundColor(colors[randomIndex]);
                 }}
-                className="w-12 px-0 py-2 bg-blue-500 text-white font-sans uppercase tracking-wider text-sm hover:bg-blue-600 transition-all duration-300"
+                className="w-10 px-0 py-1 bg-blue-500 text-white font-sans uppercase tracking-wider text-xs hover:bg-blue-600 transition-all duration-300"
               >
                 BG
               </button>
-              <div className="relative w-12 bg-black/70 border border-white/20 rounded-md flex items-center justify-center">
-                <input
-                  type="number"
-                  min="2"
-                  max="10"
-                  className="w-full h-full bg-transparent text-white text-center font-sans focus:outline-none"
-                  value={maxLength}
-                  onChange={(e) => setMaxLength(parseInt(e.target.value) || 2)}
-                />
-              </div>
+            </div>
+            
+            {/* Slider para longitud */}
+            <div className="flex items-center gap-2 mt-1">
+              <input
+                type="range"
+                min="2"
+                max="10"
+                className="flex-grow h-1 accent-[#00ff00]"
+                value={maxLength}
+                onChange={(e) => setMaxLength(parseInt(e.target.value))}
+              />
+              <span className="font-sans text-sm text-white/80 w-4 text-center">{maxLength}</span>
             </div>
           </div>
         </div>
