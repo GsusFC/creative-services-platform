@@ -86,9 +86,9 @@ const FlagDisplay = ({
           </div>
         </div>
         
-        {/* Palabra en el borde inferior */}
+        {/* Palabra en el borde inferior - responsive */}
         <div className="absolute bottom-4 w-full text-center">
-          <span className="text-white font-sans text-4xl tracking-wider">{word}</span>
+          <span className="text-white font-sans text-xl sm:text-2xl md:text-4xl tracking-wider">{word}</span>
         </div>
       </div>
     );
@@ -121,9 +121,9 @@ const FlagDisplay = ({
         })}
       </div>
       
-      {/* Palabra en el borde inferior */}
+      {/* Palabra en el borde inferior - responsive */}
       <div className="absolute bottom-4 w-full text-center">
-          <span className="text-white font-sans text-4xl tracking-wider">{word}</span>
+          <span className="text-white font-sans text-xl sm:text-2xl md:text-4xl tracking-wider">{word}</span>
       </div>
     </div>
   );
