@@ -231,25 +231,27 @@ export default function FlagSystem() {
   };
 
   return (
-    <div className="w-full max-w-8xl flex flex-col lg:flex-row gap-8 mb-8">
+    <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 mb-8">
       {/* Área de visualización de banderas */}
-      <div className="w-full lg:w-2/3 flex justify-center" style={{maxWidth: "min(66.66%, -200px + 100vh)", opacity: 1, transform: "none"}}>
+      <div className="w-full lg:w-2/3 flex justify-center mx-auto">
         <div className="w-full aspect-square">
           <div className="flex justify-center w-full relative">
             <div 
               style={{
-                width: "1000px", 
-                height: "1000px", 
                 position: "relative", 
                 display: "flex", 
                 justifyContent: "center", 
-                alignItems: "center", 
-                maxWidth: "100%", 
+                alignItems: "center",  
                 border: "1px solid #333", 
                 borderRadius: "8px", 
                 overflow: "hidden", 
                 boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
-                backgroundColor
+                backgroundColor,
+                width: "100%",
+                height: "100%",
+                maxWidth: "600px",
+                maxHeight: "600px",
+                aspectRatio: "1 / 1"
               }}
               className="transition-all duration-300"
             >
