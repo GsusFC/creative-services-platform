@@ -161,7 +161,7 @@ const HistoryPanel = () => {
         {history.map((word, index) => (
           <div 
             key={index} 
-            className="px-3 py-1 bg-white/10 rounded-md text-white cursor-pointer hover:bg-[#00ff00]/20 hover:border-[#00ff00]/30 transition-colors border border-transparent"
+            className="px-2 py-0.5 bg-white/10 rounded-md text-white text-xs cursor-pointer hover:bg-[#00ff00]/20 hover:border-[#00ff00]/30 transition-colors border border-transparent font-sans"
             onClick={() => handleWordClick(word)}
           >
             {word}
