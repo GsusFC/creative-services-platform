@@ -222,34 +222,24 @@ export default function FlagSystem() {
         {/* Mobile compact controls - optimizados */}
         <div className="lg:hidden w-full bg-black/50 backdrop-blur-sm rounded-lg p-3 border border-white/10">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 mb-2">
-              {/* Input de texto */}
+            {/* Sistema de tabs en versión móvil */}
+            <div className="flex justify-center mb-3">
+              <TabSelector 
+                activeMode={displayMode} 
+                onChange={setDisplayMode} 
+              />
+            </div>
+            
+            {/* Input de texto */}
+            <div className="mb-2">
               <input
                 type="text"
                 ref={inputRef}
-                className="flex-grow bg-black border border-white/20 rounded-md py-2 px-3 text-base font-sans uppercase focus:border-[#00ff00] focus:outline-none"
+                className="w-full bg-black border border-white/20 rounded-md py-2 px-3 text-base font-sans uppercase focus:border-[#00ff00] focus:outline-none"
                 placeholder="TYPE HERE..."
                 value={word}
                 onChange={(e) => setWord(e.target.value)}
               />
-              
-              {/* Botón para abrir opciones de visualización */}
-              <button
-                onClick={() => {
-                  // Toggle entre los diferentes modos en móvil
-                  if (displayMode === 'classic') setDisplayMode('grid');
-                  else if (displayMode === 'grid') setDisplayMode('adaptive');
-                  else setDisplayMode('classic');
-                }}
-                className="flex justify-center items-center rounded-md bg-black/40 border border-white/10 w-10 h-10"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/70">
-                  <rect x="3" y="3" width="7" height="7" />
-                  <rect x="14" y="3" width="7" height="7" />
-                  <rect x="14" y="14" width="7" height="7" />
-                  <rect x="3" y="14" width="7" height="7" />
-                </svg>
-              </button>
             </div>
             
             {/* Controles secundarios */}
@@ -274,7 +264,7 @@ export default function FlagSystem() {
             </div>
             
             {/* Slider para longitud */}
-            <div className="flex items-center gap-2 mt-1">
+            <div className="flex items-center gap-2 mt-1 mb-2">
               <input
                 type="range"
                 min="2"
@@ -284,6 +274,15 @@ export default function FlagSystem() {
                 onChange={(e) => setMaxLength(parseInt(e.target.value))}
               />
               <span className="font-sans text-sm text-white/80 w-4 text-center">{maxLength}</span>
+            </div>
+            
+            {/* Text visibility toggle en móvil */}
+            <div className="flex items-center justify-between border-t border-white/10 pt-2">
+              <span className="font-sans text-xs text-white/80">Mostrar texto</span>
+              <Switch 
+                checked={showText}
+                onCheckedChange={toggleShowText}
+              />
             </div>
           </div>
         </div>
