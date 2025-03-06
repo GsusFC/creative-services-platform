@@ -48,7 +48,7 @@ const FlagDisplay = ({
       >
         <div className="w-[70%] mx-auto">
           {/* Display usando flexbox + flexwrap con SVG directos */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', width: '200px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', width: '140px', margin: '0 auto' }}>
             {letters.map((letter, index) => {
               const flag = letterToFlag(letter);
               if (!flag) return null;
@@ -57,8 +57,8 @@ const FlagDisplay = ({
                 <div 
                   key={index} 
                   style={{ 
-                    width: '100px', 
-                    height: '100px', 
+                    width: '70px', 
+                    height: '70px', 
                     flexShrink: 0,
                     flexGrow: 0,
                     margin: 0, 
@@ -106,10 +106,10 @@ const FlagDisplay = ({
               <img 
                 src={flag.flagPath} 
                 alt={`Bandera para la letra ${letter}`}
-                style={{ 
-                  display: 'inline-block', 
-                  width: '100px', 
-                  height: '100px',
+                  style={{ 
+                    display: 'inline-block', 
+                    width: '70px', 
+                    height: '70px',
                   objectFit: 'contain'
                 }}
               />

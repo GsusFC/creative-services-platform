@@ -111,7 +111,7 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
     // SVG dimensions
     const width = 1000;
     const height = 1000;
-    const flagHeight = 80;
+    const flagHeight = 70;
     
     // Determine background color for the SVG
     const bgColor = backgroundColor || '#000000';
@@ -127,7 +127,7 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
     if (isGridMode) {
       // Grid mode: two columns
       const isOdd = letters.length % 2 !== 0;
-      const flagSize = Math.min(100, 500 / Math.ceil(letters.length / 2)); // Ajustar según cantidad
+      const flagSize = Math.min(70, 350 / Math.ceil(letters.length / 2)); // Ajustar según cantidad
       
       // Calculate initial position and dimensions
       const gridWidth = flagSize * 2;
