@@ -48,7 +48,10 @@ const FlagDisplay = ({
       >
         <div className="w-[70%] mx-auto">
           {/* Display usando flexbox + flexwrap con SVG directos */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', width: '140px', margin: '0 auto' }}>
+          <div 
+            style={{ display: 'flex', flexWrap: 'wrap', width: '140px', margin: '0 auto' }}
+            className="sm:scale-100 scale-75 transform origin-center"
+          >
             {letters.map((letter, index) => {
               const flag = letterToFlag(letter);
               if (!flag) return null;
@@ -96,7 +99,7 @@ const FlagDisplay = ({
       className="flex flex-col justify-center items-center h-full w-full transition-colors duration-300"
       style={{ backgroundColor }}
     >
-      <div className="flex flex-row justify-center" style={{ fontSize: 0, lineHeight: 0 }}>
+      <div className="flex flex-row justify-center flex-wrap sm:flex-nowrap" style={{ fontSize: 0, lineHeight: 0 }}>
         {letters.map((letter, index) => {
           const flag = letterToFlag(letter);
           if (!flag) return null;
@@ -110,8 +113,8 @@ const FlagDisplay = ({
                     display: 'inline-block', 
                     width: '70px', 
                     height: '70px',
-                  objectFit: 'contain'
-                }}
+                    objectFit: 'contain'
+                  }}
               />
             </div>
           );
@@ -231,7 +234,7 @@ export default function FlagSystem() {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 mb-8">
+    <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 md:gap-12 mb-8 p-4 md:p-0">
       {/* Flag display area - full width on mobile, 70% on desktop */}
       <div className="w-full lg:w-[70%] flex justify-center mx-auto">
         <div className="w-full aspect-square">
@@ -345,7 +348,6 @@ export default function FlagSystem() {
             
             {/* Length control */}
             <div className="w-full border-t border-white/10 pt-4">
-              <label className="block mb-2 text-sm font-sans text-white/80 uppercase tracking-wide">Maximum length</label>
               <div className="flex items-center gap-4">
                 <input
                   type="range"
