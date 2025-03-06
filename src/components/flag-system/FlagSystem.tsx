@@ -66,18 +66,16 @@ const FlagDisplay = ({
                     float: 'left'
                   }}
                 >
-                  <object
-                    type="image/svg+xml"
-                    data={flag.flagPath}
-                    title={`Bandera para la letra ${letter}`}
+                  <img 
+                    src={flag.flagPath} 
+                    alt={`Bandera para la letra ${letter}`}
                     style={{ 
                       display: 'block', 
                       width: '100%', 
-                      height: '100%'
+                      height: '100%',
+                      objectFit: 'contain'
                     }}
-                  >
-                    {flag.name}
-                  </object>
+                  />
                 </div>
               );
             })}
@@ -105,18 +103,16 @@ const FlagDisplay = ({
           
           return (
             <div key={index} className="flex items-center" style={{ margin: 0, padding: 0 }}>
-              <object
-                type="image/svg+xml"
-                data={flag.flagPath}
-                title={`Bandera para la letra ${letter}`}
+              <img 
+                src={flag.flagPath} 
+                alt={`Bandera para la letra ${letter}`}
                 style={{ 
                   display: 'inline-block', 
                   width: '100px', 
-                  height: '100px'
+                  height: '100px',
+                  objectFit: 'contain'
                 }}
-              >
-                {flag.name}
-              </object>
+              />
             </div>
           );
         })}

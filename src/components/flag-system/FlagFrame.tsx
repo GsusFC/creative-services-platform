@@ -55,14 +55,11 @@ export default function FlagFrame() {
               
               return (
                 <div key={index} className="w-16 h-16 sm:w-20 sm:h-20">
-                  <object
-                    type="image/svg+xml"
-                    data={flag.flagPath}
-                    title={`Bandera para la letra ${letter}`}
-                    className="w-full h-full"
-                  >
-                    {flag.name}
-                  </object>
+                  <img 
+                    src={flag.flagPath} 
+                    alt={`Bandera para la letra ${letter}`}
+                    className="w-full h-full object-contain"
+                  />
                 </div>
               );
             })}
