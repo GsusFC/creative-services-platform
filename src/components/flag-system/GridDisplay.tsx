@@ -102,8 +102,8 @@ const GridDisplay: React.FC<GridDisplayProps> = ({ word, backgroundColor, showTe
       
       {/* Palabra en el borde inferior (condicionalmente visible) */}
       {showText && (
-        <div className="absolute bottom-40 w-full text-center">
-          <span className="text-white font-sans text-xl sm:text-2xl md:text-4xl tracking-wider">{word}</span>
+        <div className="absolute bottom-2 w-full text-center">
+          <span className="text-white font-sans text-sm sm:text-base md:text-xl tracking-wider">{word}</span>
         </div>
       )}
     </div>

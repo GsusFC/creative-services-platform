@@ -220,9 +220,9 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
         svgContent += `
         <text 
           x="${width/2}" 
-          y="${height - 40}" 
+          y="${height - 20}" 
           font-family="Arial, sans-serif" 
-          font-size="48"
+          font-size="32"
           text-anchor="middle" 
           fill="white" 
           letter-spacing="0.1em"
