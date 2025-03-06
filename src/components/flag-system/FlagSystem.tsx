@@ -304,8 +304,8 @@ export default function FlagSystem() {
               <input
                 type="text"
                 ref={inputRef}
-                className="w-full bg-black border border-white/20 rounded-md py-3 px-4 text-xl font-sans uppercase tracking-wider focus:border-[#00ff00] focus:outline-none"
-                placeholder="TYPE OR GENERATE WORD..."
+                className="w-full bg-black border border-white/20 rounded-md py-3 px-4 text-base font-sans uppercase tracking-wider focus:border-[#00ff00] focus:outline-none"
+                placeholder="TYPE A WORD..."
                 value={word}
                 onChange={(e) => setWord(e.target.value)}
               />
@@ -316,9 +316,9 @@ export default function FlagSystem() {
               <button
                 onClick={generateRandomWord}
                 disabled={isGenerating}
-                className="flex-grow-[3] px-6 py-3 bg-[#00ff00] text-black font-sans uppercase tracking-wider disabled:opacity-50 hover:brightness-110 transition-all duration-300"
+                className="flex-grow-[3] px-6 py-3 bg-[#00ff00] text-black font-sans text-sm uppercase tracking-wider disabled:opacity-50 hover:brightness-110 transition-all duration-300"
               >
-                {isGenerating ? 'GENERATING...' : 'RANDOM WORD'}
+                {isGenerating ? 'GENERATING...' : 'RANDOM'}
               </button>
               
               <button
@@ -328,7 +328,7 @@ export default function FlagSystem() {
                   const randomIndex = Math.floor(Math.random() * colors.length);
                   changeBackgroundColor(colors[randomIndex]);
                 }}
-                className="flex-grow-[1] px-4 py-3 bg-blue-500 text-white font-sans uppercase tracking-wider hover:bg-blue-600 transition-all duration-300"
+                className="flex-grow-[1] px-4 py-3 bg-blue-500 text-white font-sans text-sm uppercase tracking-wider hover:bg-blue-600 transition-all duration-300"
               >
                 BG
               </button>
@@ -339,7 +339,7 @@ export default function FlagSystem() {
               <button
                 disabled={!displayWord}
                 onClick={exportAsSvg}
-                className="w-full px-6 py-3 bg-white/10 border border-white/20 text-white font-sans uppercase tracking-wider disabled:opacity-30 hover:bg-white/20 transition-all duration-300"
+                className="w-full px-6 py-3 bg-white/10 border border-white/20 text-white font-sans text-sm uppercase tracking-wider disabled:opacity-30 hover:bg-white/20 transition-all duration-300"
               >
                 EXPORT SVG
               </button>
@@ -356,7 +356,7 @@ export default function FlagSystem() {
                   value={maxLength}
                   onChange={(e) => setMaxLength(parseInt(e.target.value))}
                 />
-                <span className="font-sans text-xl text-white">{maxLength}</span>
+                <span className="font-sans text-base text-white">{maxLength}</span>
               </div>
             </div>
           </div>
