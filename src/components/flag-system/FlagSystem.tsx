@@ -175,27 +175,40 @@ const HistoryPanel = () => {
   );
 };
 
-// Componente de paleta de colores
-const ColorPalette = ({ onSelectColor }: { onSelectColor: (color: string) => void }) => {
-  const colors = [
-    { value: '#000000', label: 'Negro' },
-    { value: '#ffffff', label: 'Blanco' },
-    { value: '#ff0000', label: 'Rojo' },
-    { value: '#0000ff', label: 'Azul' },
-    { value: '#00ff00', label: 'Verde' }
-  ];
-  
+// Versión móvil compacta del historial
+const MobileHistoryPanel = () => {
+  const { history, clearHistory } = useFlagHistory();
+  const { setWord } = useFlagGenerator()[1];
+
   return (
-    <div className="flex justify-between gap-2 mt-2">
-      {colors.map((color) => (
-        <button
-          key={color.value}
-          onClick={() => onSelectColor(color.value)}
-          className="w-8 h-8 rounded-full border border-white/20 transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50"
-          style={{ backgroundColor: color.value }}
-          title={color.label}
-        />
-      ))}
+    <div className="lg:hidden">
+      <div className="w-full mt-3 bg-black/30 border border-white/10 rounded-md p-3">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="font-sans text-xs text-white/80 uppercase tracking-wide">History</h3>
+          <button 
+            onClick={clearHistory}
+            className="text-[10px] text-white/40 hover:text-white/70 transition-colors font-sans px-1.5 py-0.5 bg-white/5 rounded hover:bg-white/10"
+          >
+            Clear
+          </button>
+        </div>
+        
+        <div className="flex flex-wrap gap-1.5">
+          {history.length === 0 ? (
+            <p className="text-white/40 text-center w-full py-2 font-sans text-xs">No words in history</p>
+          ) : (
+            history.map((word, index) => (
+              <div 
+                key={index} 
+                className="px-1.5 py-0.5 bg-white/10 rounded text-white text-[10px] cursor-pointer hover:bg-[#00ff00]/20 hover:border-[#00ff00]/30 transition-colors border border-transparent font-sans"
+                onClick={() => setWord(word)}
+              >
+                {word}
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
   );
 };
@@ -234,9 +247,9 @@ export default function FlagSystem() {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 md:gap-12 mb-8 p-4 md:p-0">
-      {/* Flag display area - full width on mobile, 70% on desktop */}
-      <div className="w-full lg:w-[70%] flex justify-center mx-auto">
+    <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-4 md:gap-8 mb-8 p-0">
+      {/* Flag display area - optimized for all screen sizes */}
+      <div className="w-full lg:w-[75%] flex justify-center mx-auto px-4 lg:px-0">
         <div className="w-full aspect-square">
           <div className="flex justify-center w-full relative">
             <div 
@@ -268,9 +281,53 @@ export default function FlagSystem() {
         </div>
       </div>
       
-      {/* Control panel - slimmer on desktop */}
-      <div className="w-full lg:w-[30%]">
-        <div className="w-full bg-black/50 backdrop-blur-sm rounded-lg p-6 border border-white/10">
+      {/* Control panel - mobile optimized */}
+      <div className="w-full lg:w-[25%] px-4 lg:px-0">
+        {/* Mobile compact controls */}
+        <div className="lg:hidden w-full bg-black/50 backdrop-blur-sm rounded-lg p-4 border border-white/10 mb-4">
+          <div className="flex flex-col gap-3">
+            <input
+              type="text"
+              ref={inputRef}
+              className="w-full bg-black border border-white/20 rounded-md py-2 px-3 text-lg font-sans uppercase tracking-wider focus:border-[#00ff00] focus:outline-none"
+              placeholder="TYPE OR GENERATE WORD..."
+              value={word}
+              onChange={(e) => setWord(e.target.value)}
+            />
+            <div className="flex gap-2 w-full">
+              <button
+                onClick={generateRandomWord}
+                disabled={isGenerating}
+                className="flex-grow px-3 py-2 bg-[#00ff00] text-black font-sans uppercase tracking-wider text-sm disabled:opacity-50 hover:brightness-110 transition-all duration-300"
+              >
+                {isGenerating ? '...' : 'RANDOM'}
+              </button>
+              <button
+                onClick={() => {
+                  const colors = ['#000000', '#ffffff', '#ff0000', '#00ff00', '#0000ff'];
+                  const randomIndex = Math.floor(Math.random() * colors.length);
+                  changeBackgroundColor(colors[randomIndex]);
+                }}
+                className="w-12 px-0 py-2 bg-blue-500 text-white font-sans uppercase tracking-wider text-sm hover:bg-blue-600 transition-all duration-300"
+              >
+                BG
+              </button>
+              <div className="relative w-12 bg-black/70 border border-white/20 rounded-md flex items-center justify-center">
+                <input
+                  type="number"
+                  min="2"
+                  max="10"
+                  className="w-full h-full bg-transparent text-white text-center font-sans focus:outline-none"
+                  value={maxLength}
+                  onChange={(e) => setMaxLength(parseInt(e.target.value) || 2)}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Desktop full controls - hidden on mobile */}
+        <div className="hidden lg:block w-full bg-black/50 backdrop-blur-sm rounded-lg p-6 border border-white/10">
           <div className="flex flex-col gap-5">
             {/* Display mode toggle - now with icons */}
             <div className="flex items-center justify-end mb-3">
@@ -360,13 +417,16 @@ export default function FlagSystem() {
                 <span className="font-sans text-xl text-white">{maxLength}</span>
               </div>
             </div>
-            
-            {/* Selector de color eliminado */}
           </div>
         </div>
         
-        {/* Panel de historial */}
-        <HistoryPanel />
+        {/* Panel de historial - versión desktop y móvil */}
+        <div className="hidden lg:block">
+          <HistoryPanel />
+        </div>
+        
+        {/* Versión móvil compacta del historial */}
+        <MobileHistoryPanel />
       </div>
     </div>
   );
