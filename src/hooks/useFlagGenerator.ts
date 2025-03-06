@@ -6,13 +6,13 @@ import { letterToFlag } from '../lib/flag-system/flagMap';
 const ANIMATION_DELAY = 150;
 const DEFAULT_MAX_LENGTH = 6;
 
-// Colores disponibles para el fondo
+// Available background colors
 const BACKGROUND_COLORS = [
-  '#ff0000', // Rojo
-  '#0000ff', // Azul
-  '#00ff00', // Verde
-  '#000000', // Negro
-  '#ffffff', // Blanco
+  '#ff0000', // Red
+  '#0000ff', // Blue
+  '#00ff00', // Green
+  '#000000', // Black
+  '#ffffff', // White
 ];
 
 export interface FlagGeneratorState {
@@ -31,7 +31,7 @@ export interface FlagGeneratorActions {
   setMaxLength: (length: number) => void;
   exportAsSvg: () => void;
   toggleGridMode: () => void;
-  changeBackgroundColor: () => void;
+  changeBackgroundColor: (specificColor?: string) => void;
 }
 
 export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] => {
@@ -87,16 +87,21 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
     setIsGridMode(prevMode => !prevMode);
   }, []);
   
-  // Cambiar color de fondo aleatoriamente
-  const changeBackgroundColor = useCallback(() => {
-    // Seleccionar un color aleatorio diferente al actual
-    let newColor;
-    do {
-      const randomIndex = Math.floor(Math.random() * BACKGROUND_COLORS.length);
-      newColor = BACKGROUND_COLORS[randomIndex];
-    } while (newColor === backgroundColor && BACKGROUND_COLORS.length > 1);
-    
-    setBackgroundColor(newColor);
+  // Change background color randomly or to a specific color
+  const changeBackgroundColor = useCallback((specificColor?: string) => {
+    if (specificColor) {
+      // If a specific color is provided, set it
+      setBackgroundColor(specificColor);
+    } else {
+      // Select a random color different from the current one
+      let newColor;
+      do {
+        const randomIndex = Math.floor(Math.random() * BACKGROUND_COLORS.length);
+        newColor = BACKGROUND_COLORS[randomIndex];
+      } while (newColor === backgroundColor && BACKGROUND_COLORS.length > 1);
+      
+      setBackgroundColor(newColor);
+    }
   }, [backgroundColor]);
 
   // Export as SVG
@@ -108,55 +113,95 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
     const height = 1000;
     const flagHeight = 80;
     
+    // Determine background color for the SVG
+    const bgColor = backgroundColor || '#000000';
+    
     // Create SVG content
     let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-      <!-- Black background -->
-      <rect width="${width}" height="${height}" fill="black" />`;
-      
-    // Add flags in the center
-    const totalWidth = displayWord.length * flagHeight;
-    let xPosition = (width - totalWidth) / 2;
+      <!-- Background -->
+      <rect width="${width}" height="${height}" fill="${bgColor}" />`;
     
-    // Add each flag
-    for (let i = 0; i < displayWord.length; i++) {
-      const letter = displayWord[i];
-      const flag = letterToFlag(letter);
+    // Obtener letras
+    const letters = displayWord.split('').map(letter => letter.toUpperCase());
+    
+    if (isGridMode) {
+      // Grid mode: two columns
+      const isOdd = letters.length % 2 !== 0;
+      const flagSize = Math.min(100, 500 / Math.ceil(letters.length / 2)); // Ajustar según cantidad
       
-      if (flag) {
-        svgContent += `
-        <image 
-          x="${xPosition}" 
-          y="${(height - flagHeight) / 2}" 
-          width="${flagHeight}" 
-          height="${flagHeight}" 
-          href="${flag.flagPath}"
-        />`;
+      // Calculate initial position and dimensions
+      const gridWidth = flagSize * 2;
+      const gridHeight = flagSize * Math.ceil(letters.length / 2);
+      const startX = (width - gridWidth) / 2;
+      const startY = (height - gridHeight) / 2;
+      
+      // Draw flags in grid
+      for (let i = 0; i < letters.length; i++) {
+        const letter = letters[i];
+        const flag = letterToFlag(letter);
         
-        xPosition += flagHeight;
+        if (flag) {
+          // Calculate position in the grid
+          const row = Math.floor(i / 2);
+          const col = i % 2;
+          
+          svgContent += `
+          <image 
+            x="${startX + col * flagSize}" 
+            y="${startY + row * flagSize}" 
+            width="${flagSize}" 
+            height="${flagSize}" 
+            href="${flag.flagPath}"
+          />`;
+        }
+      }
+    } else {
+      // Normal mode: single row
+      // Adjust size based on letter count
+      const adjustedFlagHeight = Math.min(flagHeight, 500 / displayWord.length);
+      
+      // Add flags in the center
+      const totalWidth = displayWord.length * adjustedFlagHeight;
+      let xPosition = (width - totalWidth) / 2;
+      
+      // Add each flag
+      for (let i = 0; i < displayWord.length; i++) {
+        const letter = displayWord[i];
+        const flag = letterToFlag(letter);
+        
+        if (flag) {
+          svgContent += `
+          <image 
+            x="${xPosition}" 
+            y="${(height - adjustedFlagHeight) / 2}" 
+            width="${adjustedFlagHeight}" 
+            height="${adjustedFlagHeight}" 
+            href="${flag.flagPath}"
+          />`;
+          
+          xPosition += adjustedFlagHeight;
+        }
       }
     }
     
-    // Add the word text if randomly generated
-    if (isGeneratedRandomly) {
-      svgContent += `
-      <text 
-        x="${width/2}" 
-        y="${height - 20}" 
-        font-family="Druk Text Wide Heavy, system-ui" 
-        font-size="48" 
-        font-weight="bold"
-        text-anchor="middle" 
-        fill="white" 
-        letter-spacing="0.05em"
-      >${displayWord}</text>`;
-    }
+    // Always add the word at the bottom
+    svgContent += `
+    <text 
+      x="${width/2}" 
+      y="${height - 40}" 
+      font-family="Geist Mono, monospace" 
+      font-size="48"
+      text-anchor="middle" 
+      fill="white" 
+      letter-spacing="0.1em"
+    >${displayWord}</text>`;
     
     // Add FLAG SYSTEM signature
     svgContent += `
       <text 
         x="${width - 10}" 
         y="${height - 10}" 
-        font-family="monospace" 
+        font-family="Geist Mono, monospace" 
         font-size="16" 
         text-anchor="end" 
         fill="#333333"
