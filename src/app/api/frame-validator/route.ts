@@ -1,189 +1,138 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-interface FrameValidationResponse {
-  valid: boolean;
-  errors: string[];
-  warnings: string[];
-  details?: {
-    buttons?: number;
-    hasPostUrl?: boolean;
-    hasImage?: boolean;
-    hasVersion?: boolean;
-    hasInputField?: boolean;
-    imageUrl?: string;
-    postUrl?: string;
-  };
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    // Parsear el cuerpo de la solicitud que debe contener el HTML del Frame a validar
-    const { html, url } = await request.json();
-
-    if (!html && !url) {
-      return NextResponse.json(
-        { 
-          valid: false, 
-          errors: ['Se debe proporcionar HTML o URL para validar']
-        },
-        { status: 400 }
-      );
-    }
-
-    // Inicializar la respuesta
-    const response: FrameValidationResponse = {
-      valid: true,
-      errors: [],
-      warnings: [],
-      details: {
-        buttons: 0,
-        hasPostUrl: false,
-        hasImage: false,
-        hasVersion: false,
-        hasInputField: false
-      }
-    };
-
-    // Obtener el HTML, ya sea del cuerpo de la solicitud o de la URL proporcionada
-    let frameHtml = html;
-    
-    if (url && !html) {
-      try {
-        const htmlResponse = await fetch(url);
-        frameHtml = await htmlResponse.text();
-      } catch (error) {
-        response.errors.push(`Error al obtener HTML de la URL: ${error}`);
-        response.valid = false;
-      }
-    }
-
-    if (!frameHtml) {
-      return NextResponse.json(
-        { 
-          valid: false, 
-          errors: ['No se pudo obtener el HTML para validar']
-        },
-        { status: 400 }
-      );
-    }
-
-    // Analizar metaetiquetas de Frame
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(frameHtml, 'text/html');
-    
-    // Validar versión del Frame
-    const versionMeta = doc.querySelector('meta[property="fc:frame"]');
-    if (!versionMeta) {
-      response.errors.push('Falta la metaetiqueta fc:frame requerida');
-      response.valid = false;
-    } else {
-      response.details!.hasVersion = true;
-      const version = versionMeta.getAttribute('content');
-      if (version !== 'vNext') {
-        response.warnings.push(`Versión de frame '${version}' puede no ser compatible con los estándares actuales`);
-      }
-    }
-
-    // Validar imagen
-    const imageMeta = doc.querySelector('meta[property="fc:frame:image"]');
-    if (!imageMeta) {
-      response.errors.push('Falta la metaetiqueta fc:frame:image requerida');
-      response.valid = false;
-    } else {
-      response.details!.hasImage = true;
-      response.details!.imageUrl = imageMeta.getAttribute('content') || undefined;
-      
-      if (response.details!.imageUrl) {
-        if (!response.details!.imageUrl.startsWith('http')) {
-          response.errors.push('La URL de la imagen debe ser una URL completa (comenzando con http:// o https://)');
-          response.valid = false;
-        }
-        
-        if (response.details!.imageUrl.includes('localhost')) {
-          response.warnings.push('La URL de la imagen contiene localhost, lo que no funcionará en producción');
-        }
-      }
-    }
-
-    // Validar post_url
-    const postUrlMeta = doc.querySelector('meta[property="fc:frame:post_url"]');
-    if (!postUrlMeta) {
-      response.warnings.push('Falta la metaetiqueta fc:frame:post_url recomendada');
-    } else {
-      response.details!.hasPostUrl = true;
-      response.details!.postUrl = postUrlMeta.getAttribute('content') || undefined;
-      
-      if (response.details!.postUrl) {
-        if (!response.details!.postUrl.startsWith('http')) {
-          response.errors.push('La URL de post debe ser una URL completa (comenzando con http:// o https://)');
-          response.valid = false;
-        }
-        
-        if (response.details!.postUrl.includes('localhost')) {
-          response.warnings.push('La URL de post contiene localhost, lo que no funcionará en producción');
-        }
-      }
-    }
-
-    // Validar botones
-    const buttonMetas = doc.querySelectorAll('meta[property^="fc:frame:button:"]');
-    response.details!.buttons = buttonMetas.length;
-    if (buttonMetas.length === 0) {
-      response.warnings.push('No se encontraron botones en el Frame');
-    } else if (buttonMetas.length > 4) {
-      response.errors.push(`Demasiados botones: ${buttonMetas.length}. El máximo permitido es 4`);
-      response.valid = false;
-    }
-
-    // Validar campo de entrada
-    const inputMeta = doc.querySelector('meta[property="fc:frame:input:text"]');
-    response.details!.hasInputField = !!inputMeta;
-
-    return NextResponse.json(response);
-    
-  } catch (error) {
-    console.error('Error al validar frame:', error);
-    return NextResponse.json(
-      { 
-        valid: false, 
-        errors: [`Error al procesar la solicitud: ${error}`],
-        warnings: []
-      },
-      { status: 500 }
-    );
-  }
-}
-
+// API para validar Frames de Farcaster
 export async function GET(request: NextRequest) {
-  const url = request.nextUrl.searchParams.get('url');
-  
-  if (!url) {
-    return NextResponse.json(
-      { message: 'Proporcione una URL para validar con el parámetro ?url=' },
-      { status: 400 }
-    );
-  }
-
   try {
-    // Hacer la solicitud POST a la misma ruta con la URL proporcionada
-    const response = await fetch(`${request.nextUrl.origin}/api/frame-validator`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ url }),
-    });
-
-    const result = await response.json();
-    return NextResponse.json(result);
+    // Obtener la URL del frame a validar
+    const url = request.nextUrl.searchParams.get('url');
+    
+    if (!url) {
+      return NextResponse.json({
+        valid: false,
+        error: 'No URL parameter provided',
+      }, { status: 400 });
+    }
+    
+    try {
+      // Intentar obtener el contenido de la URL
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        return NextResponse.json({
+          valid: false,
+          error: `Failed to fetch URL: ${response.status} ${response.statusText}`,
+        }, { status: 400 });
+      }
+      
+      const html = await response.text();
+      
+      // Validar que el HTML contenga los meta tags requeridos para Frames
+      const validation = validateFrameMetaTags(html);
+      
+      return NextResponse.json(validation);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return NextResponse.json({
+        valid: false,
+        error: `Error fetching URL: ${errorMessage}`,
+      }, { status: 400 });
+    }
   } catch (error) {
-    return NextResponse.json(
-      { 
-        valid: false, 
-        errors: [`Error al validar URL: ${error}`],
-        warnings: []
-      },
-      { status: 500 }
-    );
+    console.error('Error in frame-validator:', error);
+    return NextResponse.json({ 
+      valid: false,
+      error: 'Internal Server Error' 
+    }, { status: 500 });
   }
+}
+
+// Función para validar los meta tags de Frames
+function validateFrameMetaTags(html: string): { 
+  valid: boolean; 
+  errors?: string[]; 
+  warnings?: string[];
+  metaTags?: Record<string, string>;
+} {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  const metaTags: Record<string, string> = {};
+  
+  // Verificar presencia del tag fc:frame
+  const frameVersionRegex = /<meta\s+property=["']fc:frame["']\s+content=["'](vNext|1)["']\s*\/?>/i;
+  const frameVersionMatch = html.match(frameVersionRegex);
+  
+  if (!frameVersionMatch) {
+    errors.push('Missing required meta tag: fc:frame');
+  } else {
+    metaTags['fc:frame'] = frameVersionMatch[1];
+  }
+  
+  // Verificar presencia de la imagen
+  const frameImageRegex = /<meta\s+property=["']fc:frame:image["']\s+content=["'](.+?)["']\s*\/?>/i;
+  const frameImageMatch = html.match(frameImageRegex);
+  
+  if (!frameImageMatch) {
+    errors.push('Missing required meta tag: fc:frame:image');
+  } else {
+    metaTags['fc:frame:image'] = frameImageMatch[1];
+    
+    // Validar URL de la imagen
+    try {
+      new URL(frameImageMatch[1]);
+    } catch (e) {
+      errors.push('Invalid URL in fc:frame:image');
+    }
+  }
+  
+  // Verificar post_url si hay botones
+  const buttonRegex = /<meta\s+property=["']fc:frame:button:(\d+)["']\s+content=["'](.+?)["']\s*\/?>/gi;
+  let buttonMatch;
+  const buttons: string[] = [];
+  
+  while ((buttonMatch = buttonRegex.exec(html)) !== null) {
+    buttons.push(buttonMatch[2]);
+    metaTags[`fc:frame:button:${buttonMatch[1]}`] = buttonMatch[2];
+  }
+  
+  if (buttons.length > 0) {
+    const postUrlRegex = /<meta\s+property=["']fc:frame:post_url["']\s+content=["'](.+?)["']\s*\/?>/i;
+    const postUrlMatch = html.match(postUrlRegex);
+    
+    if (!postUrlMatch) {
+      errors.push('Missing required meta tag: fc:frame:post_url (required when buttons are present)');
+    } else {
+      metaTags['fc:frame:post_url'] = postUrlMatch[1];
+      
+      // Validar URL del post_url
+      try {
+        new URL(postUrlMatch[1]);
+      } catch (e) {
+        errors.push('Invalid URL in fc:frame:post_url');
+      }
+    }
+  }
+  
+  // Verificar input (opcional)
+  const inputTextRegex = /<meta\s+property=["']fc:frame:input:text["']\s+content=["'](.+?)["']\s*\/?>/i;
+  const inputTextMatch = html.match(inputTextRegex);
+  
+  if (inputTextMatch) {
+    metaTags['fc:frame:input:text'] = inputTextMatch[1];
+  }
+  
+  // Advertencias
+  if (buttons.length > 4) {
+    warnings.push('More than 4 buttons defined. Only the first 4 will be used.');
+  }
+  
+  if (inputTextMatch && !buttons.includes('Escribir Palabra')) {
+    warnings.push('Input field is defined but no button seems to use it (based on button text)');
+  }
+  
+  return {
+    valid: errors.length === 0,
+    errors: errors.length > 0 ? errors : undefined,
+    warnings: warnings.length > 0 ? warnings : undefined,
+    metaTags: Object.keys(metaTags).length > 0 ? metaTags : undefined,
+  };
 }
