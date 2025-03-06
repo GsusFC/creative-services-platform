@@ -113,119 +113,159 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
   }, [backgroundColor]);
 
   // Export as SVG
-  const exportAsSvg = useCallback(() => {
+  const exportAsSvg = useCallback(async () => {
     if (!displayWord) return;
     
-    // SVG dimensions
-    const width = 1000;
-    const height = 1000;
-    const flagHeight = 70;
-    
-    // Determine background color for the SVG
-    const bgColor = backgroundColor || '#000000';
-    
-    // Create SVG content
-    let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-      <!-- Background -->
-      <rect width="${width}" height="${height}" fill="${bgColor}" />`;
-    
-    // Obtener letras
-    const letters = displayWord.split('').map(letter => letter.toUpperCase());
-    
-    if (isGridMode) {
-      // Grid mode: two columns
-      const isOdd = letters.length % 2 !== 0;
-      const flagSize = Math.min(70, 350 / Math.ceil(letters.length / 2)); // Ajustar según cantidad
-      
-      // Calculate initial position and dimensions
-      const gridWidth = flagSize * 2;
-      const gridHeight = flagSize * Math.ceil(letters.length / 2);
-      const startX = (width - gridWidth) / 2;
-      const startY = (height - gridHeight) / 2;
-      
-      // Draw flags in grid
-      for (let i = 0; i < letters.length; i++) {
-        const letter = letters[i];
-        const flag = letterToFlag(letter);
-        
-        if (flag) {
-          // Calculate position in the grid
-          const row = Math.floor(i / 2);
-          const col = i % 2;
-          
-          // Convertir ruta relativa a absoluta
-          const absolutePath = window.location.origin + flag.flagPath;
-          
-          svgContent += `
-          <image 
-            x="${startX + col * flagSize}" 
-            y="${startY + row * flagSize}" 
-            width="${flagSize}" 
-            height="${flagSize}" 
-            href="${absolutePath}"
-          />`;
-        }
-      }
-    } else {
-      // Normal mode: single row
-      // Adjust size based on letter count
-      const adjustedFlagHeight = Math.min(flagHeight, 500 / displayWord.length);
-      
-      // Add flags in the center
-      const totalWidth = displayWord.length * adjustedFlagHeight;
-      let xPosition = (width - totalWidth) / 2;
-      
-      // Add each flag
-      for (let i = 0; i < displayWord.length; i++) {
-        const letter = displayWord[i];
-        const flag = letterToFlag(letter);
-        
-        if (flag) {
-          // Convertir ruta relativa a absoluta
-          const absolutePath = window.location.origin + flag.flagPath;
-          
-          svgContent += `
-          <image 
-            x="${xPosition}" 
-            y="${(height - adjustedFlagHeight) / 2}" 
-            width="${adjustedFlagHeight}" 
-            height="${adjustedFlagHeight}" 
-            href="${absolutePath}"
-          />`;
-          
-          xPosition += adjustedFlagHeight;
-        }
-      }
-    }
-    
-    // Add the word at the bottom if showText is enabled
-    if (showText) {
-      svgContent += `
-      <text 
-        x="${width/2}" 
-        y="${height - 40}" 
-        font-family="Arial, sans-serif" 
-        font-size="48"
-        text-anchor="middle" 
-        fill="white" 
-        letter-spacing="0.1em"
-      >${displayWord}</text>`;
-    }
-    
-    // Add FLAG SYSTEM signature
-    svgContent += `
-      <text 
-        x="${width - 10}" 
-        y="${height - 10}" 
-        font-family="Arial, sans-serif" 
-        font-size="16" 
-        text-anchor="end" 
-        fill="white" 
-        opacity="0.7"
-      >FLAG SYSTEM</text>
-    </svg>`;
-    
     try {
+      // SVG dimensions
+      const width = 1000;
+      const height = 1000;
+      const flagHeight = 70;
+      
+      // Determine background color for the SVG
+      const bgColor = backgroundColor || '#000000';
+      
+      // Create SVG content
+      let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+        <!-- Background -->
+        <rect width="${width}" height="${height}" fill="${bgColor}" />`;
+      
+      // Obtener letras
+      const letters = displayWord.split('').map(letter => letter.toUpperCase());
+      
+      // Función para convertir la imagen SVG a un string de datos SVG
+      const getSvgContent = async (url: string): Promise<string> => {
+        try {
+          const response = await fetch(url);
+          const svgText = await response.text();
+          return svgText;
+        } catch (error) {
+          console.error('Error al obtener contenido SVG:', error);
+          return '';
+        }
+      };
+      
+      // Array para guardar todas las promesas de carga de SVG
+      const svgPromises: Promise<{ index: number; svgContent: string; position: { x: number; y: number; width: number; height: number } }>[] = [];
+      
+      if (isGridMode) {
+        // Grid mode: two columns
+        const flagSize = Math.min(70, 350 / Math.ceil(letters.length / 2)); // Ajustar según cantidad
+        
+        // Calculate initial position and dimensions
+        const gridWidth = flagSize * 2;
+        const gridHeight = flagSize * Math.ceil(letters.length / 2);
+        const startX = (width - gridWidth) / 2;
+        const startY = (height - gridHeight) / 2;
+        
+        // Prepare all SVG load operations
+        for (let i = 0; i < letters.length; i++) {
+          const letter = letters[i];
+          const flag = letterToFlag(letter);
+          
+          if (flag) {
+            // Calculate position in the grid
+            const row = Math.floor(i / 2);
+            const col = i % 2;
+            
+            svgPromises.push(
+              getSvgContent(flag.flagPath).then(svgContent => ({
+                index: i,
+                svgContent,
+                position: {
+                  x: startX + col * flagSize,
+                  y: startY + row * flagSize,
+                  width: flagSize,
+                  height: flagSize
+                }
+              }))
+            );
+          }
+        }
+      } else {
+        // Normal mode: single row
+        // Adjust size based on letter count
+        const adjustedFlagHeight = Math.min(flagHeight, 500 / displayWord.length);
+        
+        // Add flags in the center
+        const totalWidth = displayWord.length * adjustedFlagHeight;
+        let xPosition = (width - totalWidth) / 2;
+        
+        // Prepare all SVG load operations
+        for (let i = 0; i < displayWord.length; i++) {
+          const letter = displayWord[i];
+          const flag = letterToFlag(letter);
+          
+          if (flag) {
+            svgPromises.push(
+              getSvgContent(flag.flagPath).then(svgContent => ({
+                index: i,
+                svgContent,
+                position: {
+                  x: xPosition,
+                  y: (height - adjustedFlagHeight) / 2,
+                  width: adjustedFlagHeight,
+                  height: adjustedFlagHeight
+                }
+              }))
+            );
+            
+            xPosition += adjustedFlagHeight;
+          }
+        }
+      }
+      
+      // Wait for all SVG content to load
+      const svgResults = await Promise.all(svgPromises);
+      
+      // Sort by index to maintain correct order
+      svgResults.sort((a, b) => a.index - b.index);
+      
+      // Add each SVG content to the main SVG
+      for (const result of svgResults) {
+        // Extraer solo el contenido interno del SVG (sin las etiquetas <svg> y </svg>)
+        let innerSvgContent = result.svgContent;
+        
+        // Quitar el encabezado del SVG (todo antes del primer ">")
+        innerSvgContent = innerSvgContent.substring(innerSvgContent.indexOf('>') + 1);
+        
+        // Quitar el cierre final del SVG
+        innerSvgContent = innerSvgContent.substring(0, innerSvgContent.lastIndexOf('</svg>'));
+        
+        // Ajustar el viewBox
+        svgContent += `
+        <g transform="translate(${result.position.x}, ${result.position.y}) scale(${result.position.width / 512}, ${result.position.height / 512})">
+          ${innerSvgContent}
+        </g>`;
+      }
+      
+      // Add the word at the bottom if showText is enabled
+      if (showText) {
+        svgContent += `
+        <text 
+          x="${width/2}" 
+          y="${height - 40}" 
+          font-family="Arial, sans-serif" 
+          font-size="48"
+          text-anchor="middle" 
+          fill="white" 
+          letter-spacing="0.1em"
+        >${displayWord}</text>`;
+      }
+      
+      // Add FLAG SYSTEM signature
+      svgContent += `
+        <text 
+          x="${width - 10}" 
+          y="${height - 10}" 
+          font-family="Arial, sans-serif" 
+          font-size="16" 
+          text-anchor="end" 
+          fill="white" 
+          opacity="0.7"
+        >FLAG SYSTEM</text>
+      </svg>`;
+      
       // Create blob and download
       const blob = new Blob([svgContent], { type: 'image/svg+xml' });
       const url = URL.createObjectURL(blob);
