@@ -232,8 +232,8 @@ export default function FlagSystem() {
 
   return (
     <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 mb-8">
-      {/* Flag display area */}
-      <div className="w-full lg:w-3/5 flex justify-center mx-auto">
+      {/* Flag display area - full width on mobile, 70% on desktop */}
+      <div className="w-full lg:w-[70%] flex justify-center mx-auto">
         <div className="w-full aspect-square">
           <div className="flex justify-center w-full relative">
             <div 
@@ -265,8 +265,8 @@ export default function FlagSystem() {
         </div>
       </div>
       
-      {/* Control panel */}
-      <div className="w-full lg:w-2/5">
+      {/* Control panel - slimmer on desktop */}
+      <div className="w-full lg:w-[30%]">
         <div className="w-full bg-black/50 backdrop-blur-sm rounded-lg p-6 border border-white/10">
           <div className="flex flex-col gap-5">
             {/* Display mode toggle - now with icons */}
