@@ -6,125 +6,53 @@ import { useFlagHistory } from '@/contexts/FlagHistoryContext';
 import { letterToFlag } from '@/lib/flag-system/flagMap';
 import { Switch } from '../ui/switch';
 
-// Componente para mostrar las banderas en el canvas
-const FlagDisplay = ({ 
-  word, 
-  isGridMode, 
-  backgroundColor 
+import ClassicDisplay from './ClassicDisplay';
+import GridDisplay from './GridDisplay';
+import AdaptiveDisplay from './AdaptiveDisplay';
+
+// Define los tipos de visualización disponibles
+type DisplayMode = 'classic' | 'grid' | 'adaptive';
+
+// Componente TabSelector para cambiar entre modos de visualización
+const TabSelector = ({ 
+  activeMode, 
+  onChange 
 }: { 
-  word: string; 
-  isGridMode: boolean;
-  backgroundColor: string;
+  activeMode: DisplayMode; 
+  onChange: (mode: DisplayMode) => void;
 }) => {
-  if (!word) {
-    return (
-      <div className="text-center p-8">
-          <span className="text-white/60 font-sans text-xl block">
-            Enter or generate a word to display flags
-          </span>
-      </div>
-    );
-  }
-
-  // Determinar tamaño de banderas según longitud de palabra
-  let flagSize = "w-20 h-20";
-  if (word.length > 6) {
-    flagSize = "w-16 h-16";
-  }
-  if (word.length > 8) {
-    flagSize = "w-14 h-14";
-  }
-
-  // Array de letras para mostrar
-  const letters = word.split('').map(letter => letter.toUpperCase());
-  
-  // Renderizado según el modo
-  if (isGridMode) {
-    // Modo columnas: dos columnas sin espacio
-    return (
-      <div 
-        className="flex flex-col justify-center items-center h-full w-full transition-colors duration-300"
-        style={{ backgroundColor }}
-      >
-        <div className="w-[70%] mx-auto">
-          {/* Display usando flexbox + flexwrap con SVG directos */}
-          <div 
-            style={{ display: 'flex', flexWrap: 'wrap', width: '140px', margin: '0 auto' }}
-            className="sm:scale-100 scale-75 transform origin-center"
-          >
-            {letters.map((letter, index) => {
-              const flag = letterToFlag(letter);
-              if (!flag) return null;
-              
-              return (
-                <div 
-                  key={index} 
-                  style={{ 
-                    width: '70px', 
-                    height: '70px', 
-                    flexShrink: 0,
-                    flexGrow: 0,
-                    margin: 0, 
-                    padding: 0, 
-                    float: 'left'
-                  }}
-                  className="sm:w-[70px] sm:h-[70px] w-[50px] h-[50px]"
-                >
-                  <img 
-                    src={flag.flagPath} 
-                    alt={`Bandera para la letra ${letter}`}
-                    style={{ 
-                      display: 'block', 
-                      width: '100%', 
-                      height: '100%',
-                      objectFit: 'contain'
-                    }}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        
-        {/* Palabra en el borde inferior - responsive */}
-        <div className="absolute bottom-4 w-full text-center">
-          <span className="text-white font-sans text-xl sm:text-2xl md:text-4xl tracking-wider">{word}</span>
-        </div>
-      </div>
-    );
-  }
-  
-  // Modo normal: una sola fila
   return (
-    <div 
-      className="flex flex-col justify-center items-center h-full w-full transition-colors duration-300"
-      style={{ backgroundColor }}
-    >
-      <div className="flex flex-row justify-center flex-wrap sm:flex-nowrap" style={{ fontSize: 0, lineHeight: 0 }}>
-        {letters.map((letter, index) => {
-          const flag = letterToFlag(letter);
-          if (!flag) return null;
-          
-          return (
-            <div key={index} className="flex items-center" style={{ margin: 0, padding: 0 }}>
-              <img 
-                src={flag.flagPath} 
-                alt={`Bandera para la letra ${letter}`}
-                  style={{ 
-                    display: 'inline-block', 
-                    objectFit: 'contain'
-                  }}
-                  className="sm:w-[70px] sm:h-[70px] w-[50px] h-[50px]"
-              />
-            </div>
-          );
-        })}
-      </div>
-      
-      {/* Palabra en el borde inferior - responsive */}
-      <div className="absolute bottom-4 w-full text-center">
-          <span className="text-white font-sans text-xl sm:text-2xl md:text-4xl tracking-wider">{word}</span>
-      </div>
+    <div className="flex gap-2 bg-black/20 p-1 rounded-lg border border-white/10 w-fit">
+      <button
+        onClick={() => onChange('classic')}
+        className={`px-3 py-1.5 rounded-md text-sm font-sans transition-colors ${
+          activeMode === 'classic' 
+            ? 'bg-white/20 text-white' 
+            : 'bg-transparent text-white/60 hover:text-white/80'
+        }`}
+      >
+        Clásico
+      </button>
+      <button
+        onClick={() => onChange('grid')}
+        className={`px-3 py-1.5 rounded-md text-sm font-sans transition-colors ${
+          activeMode === 'grid' 
+            ? 'bg-white/20 text-white' 
+            : 'bg-transparent text-white/60 hover:text-white/80'
+        }`}
+      >
+        Grid
+      </button>
+      <button
+        onClick={() => onChange('adaptive')}
+        className={`px-3 py-1.5 rounded-md text-sm font-sans transition-colors ${
+          activeMode === 'adaptive' 
+            ? 'bg-white/20 text-white' 
+            : 'bg-transparent text-white/60 hover:text-white/80'
+        }`}
+      >
+        Adaptativo
+      </button>
     </div>
   );
 };
@@ -223,6 +151,9 @@ export default function FlagSystem() {
   const { addToHistory } = useFlagHistory();
   const [showColorPalette, setShowColorPalette] = useState(false);
   
+  // Estado para el modo de visualización (tabs)
+  const [displayMode, setDisplayMode] = useState<DisplayMode>('adaptive');
+  
   // Mantener focus en el input al escribir
   useEffect(() => {
     if (word && !isGenerating && inputRef.current) {
@@ -271,11 +202,26 @@ export default function FlagSystem() {
               }}
               className="transition-all duration-300"
             >
-              <FlagDisplay 
-                word={displayWord} 
-                isGridMode={isGridMode} 
-                backgroundColor={backgroundColor} 
-              />
+              {/* Sistema de tabs y visualización adaptativa */}
+              <>
+                <div className="absolute top-3 left-0 right-0 flex justify-center z-10">
+                  <TabSelector 
+                    activeMode={displayMode} 
+                    onChange={setDisplayMode} 
+                  />
+                </div>
+                
+                {/* Renderizar el componente adecuado según el modo activo */}
+                {displayMode === 'classic' && (
+                  <ClassicDisplay word={displayWord} backgroundColor={backgroundColor} />
+                )}
+                {displayMode === 'grid' && (
+                  <GridDisplay word={displayWord} backgroundColor={backgroundColor} />
+                )}
+                {displayMode === 'adaptive' && (
+                  <AdaptiveDisplay word={displayWord} backgroundColor={backgroundColor} />
+                )}
+              </>
             </div>
           </div>
         </div>
@@ -297,32 +243,23 @@ export default function FlagSystem() {
                 onChange={(e) => setWord(e.target.value)}
               />
               
-              {/* Switch de formato con iconos pequeños */}
-              <div className="flex items-center border border-white/10 rounded p-1 bg-black/30">
-                <div className="flex items-center justify-center w-4 h-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/60">
-                    <line x1="8" y1="6" x2="21" y2="6" />
-                    <line x1="8" y1="12" x2="21" y2="12" />
-                    <line x1="8" y1="18" x2="21" y2="18" />
-                    <line x1="3" y1="6" x2="3.01" y2="6" />
-                    <line x1="3" y1="12" x2="3.01" y2="12" />
-                    <line x1="3" y1="18" x2="3.01" y2="18" />
-                  </svg>
-                </div>
-                <Switch 
-                  checked={isGridMode}
-                  onCheckedChange={toggleGridMode}
-                  className="mx-1 scale-75"
-                />
-                <div className="flex items-center justify-center w-4 h-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/60">
-                    <rect x="3" y="3" width="7" height="7" />
-                    <rect x="14" y="3" width="7" height="7" />
-                    <rect x="14" y="14" width="7" height="7" />
-                    <rect x="3" y="14" width="7" height="7" />
-                  </svg>
-                </div>
-              </div>
+              {/* Botón para abrir opciones de visualización */}
+              <button
+                onClick={() => {
+                  // Toggle entre los diferentes modos en móvil
+                  if (displayMode === 'classic') setDisplayMode('grid');
+                  else if (displayMode === 'grid') setDisplayMode('adaptive');
+                  else setDisplayMode('classic');
+                }}
+                className="flex justify-center items-center rounded-md bg-black/40 border border-white/10 w-10 h-10"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/70">
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="14" y="14" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                </svg>
+              </button>
             </div>
             
             {/* Controles secundarios */}
