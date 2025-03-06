@@ -263,19 +263,6 @@ export default function FlagSystem() {
               </button>
             </div>
             
-            {/* Slider para longitud */}
-            <div className="flex items-center gap-2 mt-1 mb-2">
-              <input
-                type="range"
-                min="2"
-                max="10"
-                className="flex-grow h-1 accent-[#00ff00]"
-                value={maxLength}
-                onChange={(e) => setMaxLength(parseInt(e.target.value))}
-              />
-              <span className="font-sans text-sm text-white/80 w-4 text-center">{maxLength}</span>
-            </div>
-            
             {/* Text visibility toggle en móvil */}
             <div className="flex items-center justify-between border-t border-white/10 pt-2">
               <span className="font-sans text-xs text-white/80">Mostrar texto</span>
@@ -344,20 +331,8 @@ export default function FlagSystem() {
               </button>
             </div>
             
-            {/* Length control */}
-            <div className="w-full border-t border-white/10 pt-4 mb-3">
-              <div className="flex items-center gap-4">
-                <input
-                  type="range"
-                  min="2"
-                  max="10"
-                  className="w-full accent-[#00ff00]"
-                  value={maxLength}
-                  onChange={(e) => setMaxLength(parseInt(e.target.value))}
-                />
-                <span className="font-sans text-base text-white">{maxLength}</span>
-              </div>
-            </div>
+            {/* Separador */}
+            <div className="w-full border-t border-white/10 pt-4 mb-3"></div>
             
             {/* Text visibility toggle */}
             <div className="w-full flex items-center justify-between">

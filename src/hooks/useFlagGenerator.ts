@@ -4,7 +4,7 @@ import { letterToFlag } from '../lib/flag-system/flagMap';
 
 // Module-level constants
 const ANIMATION_DELAY = 150;
-const DEFAULT_MAX_LENGTH = 6;
+const MAX_LENGTH = 10; // Fixed maximum length of 10 letters
 
 // Available background colors
 const BACKGROUND_COLORS = [
@@ -41,24 +41,24 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
   const [displayWord, setDisplayWord] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratedRandomly, setIsGeneratedRandomly] = useState(false);
-  const [maxLength, setMaxLengthInternal] = useState(DEFAULT_MAX_LENGTH);
+  const [maxLength, setMaxLengthInternal] = useState(MAX_LENGTH); // Usar el máximo fijo
   const [isGridMode, setIsGridMode] = useState(false); // Inicialmente en modo estándar
   const [backgroundColor, setBackgroundColor] = useState('#000000'); // Color inicial: negro
   const [showText, setShowText] = useState(true); // Mostrar texto por defecto
 
   // Handle word change
   const setWord = useCallback((value: string) => {
-    // Filter letters only, convert to uppercase and limit length
-    const filteredValue = value.replace(/[^a-zA-Z]/g, '').toUpperCase().substring(0, maxLength);
+    // Filter letters only, convert to uppercase and limit length to max 10
+    const filteredValue = value.replace(/[^a-zA-Z]/g, '').toUpperCase().substring(0, MAX_LENGTH);
     setWordInternal(filteredValue);
     setDisplayWord(filteredValue);
     setIsGeneratedRandomly(false);
-  }, [maxLength]);
+  }, []);
 
   // Generate random word
   const generateRandomWord = useCallback(() => {
     setIsGenerating(true);
-    const randomWord = getRandomWord(maxLength);
+    const randomWord = getRandomWord(MAX_LENGTH); // Usar el máximo fijo para la palabra aleatoria
     setIsGeneratedRandomly(true);
     
     // Animate the word generation process
@@ -72,18 +72,12 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
         setIsGenerating(false);
       }
     }, ANIMATION_DELAY);
-  }, [maxLength]);
+  }, []);
 
-  // Handle max length change
+  // Handle max length change - no longer needed but keeping for API compatibility
   const setMaxLength = useCallback((newLength: number) => {
-    setMaxLengthInternal(newLength);
-    // Truncate current word if it exceeds the new limit
-    if (word.length > newLength) {
-      const truncatedWord = word.substring(0, newLength);
-      setWordInternal(truncatedWord);
-      setDisplayWord(truncatedWord);
-    }
-  }, [word]);
+    setMaxLengthInternal(MAX_LENGTH); // Siempre usar el máximo fijo
+  }, []);
 
   // Toggle grid mode
   const toggleGridMode = useCallback(() => {
