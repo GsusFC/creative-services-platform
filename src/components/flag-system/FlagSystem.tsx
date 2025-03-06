@@ -19,7 +19,7 @@ const FlagDisplay = ({
   if (!word) {
     return (
       <div className="text-center p-8">
-          <span className="text-white/60 font-geist-mono text-xl block">
+          <span className="text-white/60 font-sans text-xl block">
             Enter or generate a word to display flags
           </span>
       </div>
@@ -84,7 +84,7 @@ const FlagDisplay = ({
         
         {/* Palabra en el borde inferior */}
         <div className="absolute bottom-4 w-full text-center">
-          <span className="text-white font-geist-mono text-4xl tracking-wider">{word}</span>
+          <span className="text-white font-sans text-4xl tracking-wider">{word}</span>
         </div>
       </div>
     );
@@ -120,7 +120,7 @@ const FlagDisplay = ({
       
       {/* Palabra en el borde inferior */}
       <div className="absolute bottom-4 w-full text-center">
-          <span className="text-white font-geist-mono text-4xl tracking-wider">{word}</span>
+          <span className="text-white font-sans text-4xl tracking-wider">{word}</span>
       </div>
     </div>
   );
@@ -139,8 +139,8 @@ const HistoryPanel = () => {
   if (history.length === 0) {
     return (
       <div className="w-full mt-6 bg-black/30 border border-white/10 rounded-md p-4">
-        <h3 className="font-geist-mono text-sm text-white/80 mb-2 uppercase tracking-wide">History</h3>
-        <p className="text-white/40 text-center py-4 font-geist-mono text-sm">No words in history</p>
+        <h3 className="font-sans text-sm text-white/80 mb-2 uppercase tracking-wide">History</h3>
+        <p className="text-white/40 text-center py-4 font-sans text-sm">No words in history</p>
       </div>
     );
   }
@@ -148,10 +148,10 @@ const HistoryPanel = () => {
   return (
     <div className="w-full mt-6 bg-black/30 border border-white/10 rounded-md p-4">
       <div className="flex justify-between items-center mb-3">
-        <h3 className="font-geist-mono text-sm text-white/80 uppercase tracking-wide">History</h3>
+        <h3 className="font-sans text-sm text-white/80 uppercase tracking-wide">History</h3>
         <button 
           onClick={clearHistory}
-          className="text-xs text-white/40 hover:text-white/70 transition-colors font-geist-mono px-2 py-1 bg-white/5 rounded hover:bg-white/10"
+          className="text-xs text-white/40 hover:text-white/70 transition-colors font-sans px-2 py-1 bg-white/5 rounded hover:bg-white/10"
         >
           Clear
         </button>
@@ -302,7 +302,7 @@ export default function FlagSystem() {
               <input
                 type="text"
                 ref={inputRef}
-                className="w-full bg-black border border-white/20 rounded-md py-3 px-4 text-xl font-geist-mono uppercase tracking-wider focus:border-[#00ff00] focus:outline-none"
+                className="w-full bg-black border border-white/20 rounded-md py-3 px-4 text-xl font-sans uppercase tracking-wider focus:border-[#00ff00] focus:outline-none"
                 placeholder="TYPE OR GENERATE WORD..."
                 value={word}
                 onChange={(e) => setWord(e.target.value)}
@@ -314,7 +314,7 @@ export default function FlagSystem() {
               <button
                 onClick={generateRandomWord}
                 disabled={isGenerating}
-                className="flex-grow-[3] px-6 py-3 bg-[#00ff00] text-black font-geist-mono uppercase tracking-wider disabled:opacity-50 hover:brightness-110 transition-all duration-300"
+                className="flex-grow-[3] px-6 py-3 bg-[#00ff00] text-black font-sans uppercase tracking-wider disabled:opacity-50 hover:brightness-110 transition-all duration-300"
               >
                 {isGenerating ? 'GENERATING...' : 'RANDOM WORD'}
               </button>
@@ -326,7 +326,7 @@ export default function FlagSystem() {
                   const randomIndex = Math.floor(Math.random() * colors.length);
                   changeBackgroundColor(colors[randomIndex]);
                 }}
-                className="flex-grow-[1] px-4 py-3 bg-blue-500 text-white font-geist-mono uppercase tracking-wider hover:bg-blue-600 transition-all duration-300"
+                className="flex-grow-[1] px-4 py-3 bg-blue-500 text-white font-sans uppercase tracking-wider hover:bg-blue-600 transition-all duration-300"
               >
                 BG
               </button>
@@ -337,7 +337,7 @@ export default function FlagSystem() {
               <button
                 disabled={!displayWord}
                 onClick={exportAsSvg}
-                className="w-full px-6 py-3 bg-white/10 border border-white/20 text-white font-geist-mono uppercase tracking-wider disabled:opacity-30 hover:bg-white/20 transition-all duration-300"
+                className="w-full px-6 py-3 bg-white/10 border border-white/20 text-white font-sans uppercase tracking-wider disabled:opacity-30 hover:bg-white/20 transition-all duration-300"
               >
                 EXPORT SVG
               </button>
@@ -345,7 +345,7 @@ export default function FlagSystem() {
             
             {/* Length control */}
             <div className="w-full border-t border-white/10 pt-4">
-              <label className="block mb-2 text-sm font-geist-mono text-white/80 uppercase tracking-wide">Maximum length</label>
+              <label className="block mb-2 text-sm font-sans text-white/80 uppercase tracking-wide">Maximum length</label>
               <div className="flex items-center gap-4">
                 <input
                   type="range"
@@ -355,7 +355,7 @@ export default function FlagSystem() {
                   value={maxLength}
                   onChange={(e) => setMaxLength(parseInt(e.target.value))}
                 />
-                <span className="font-geist-mono text-xl text-white">{maxLength}</span>
+                <span className="font-sans text-xl text-white">{maxLength}</span>
               </div>
             </div>
             
