@@ -14,50 +14,6 @@ export default function AdminPage() {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <Link href="/flag-system" className="block group col-span-1">
-            <Card className="bg-black/30 border border-white/10 hover:border-yellow-500/70 transition-all duration-300">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-white group-hover:text-yellow-400 transition-colors">
-                  <DatabaseIcon className="h-5 w-5" />
-                  Flag System
-                </CardTitle>
-                <CardDescription className="text-gray-400">
-                  Sistema de generación de banderas
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-500 mb-4">
-                  Visualiza y genera imágenes de banderas náuticas a partir de texto.
-                </p>
-                <div className="flex justify-end">
-                  <ArrowRightIcon className="h-5 w-5 text-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-          
-          <Link href="/flag-system-v2" className="block group col-span-1">
-            <Card className="bg-black/30 border border-white/10 hover:border-green-500/70 transition-all duration-300">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-white group-hover:text-green-400 transition-colors">
-                  <DatabaseIcon className="h-5 w-5" />
-                  Flag System V2
-                </CardTitle>
-                <CardDescription className="text-gray-400">
-                  Versión responsive del sistema
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-500 mb-4">
-                  Visualización adaptativa de banderas según el número de letras en diseño grid.
-                </p>
-                <div className="flex justify-end">
-                  <ArrowRightIcon className="h-5 w-5 text-green-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-          
           <Link href="/flag-system-v3" className="block group col-span-1">
             <Card className="bg-black/30 border border-white/10 hover:border-blue-500/70 transition-all duration-300">
               <CardHeader className="pb-2">
@@ -102,8 +58,6 @@ export default function AdminPage() {
             </Card>
           </Link>
           
-          
-          {/* Puedes agregar más tarjetas para otras herramientas de administración aquí */}
           <Link href="#" className="block group opacity-70 cursor-not-allowed col-span-1">
             <Card className="bg-black/30 border border-white/10">
               <CardHeader className="pb-2">
