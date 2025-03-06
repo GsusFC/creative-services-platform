@@ -145,13 +145,16 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
           const row = Math.floor(i / 2);
           const col = i % 2;
           
+          // Convertir ruta relativa a absoluta
+          const absolutePath = window.location.origin + flag.flagPath;
+          
           svgContent += `
           <image 
             x="${startX + col * flagSize}" 
             y="${startY + row * flagSize}" 
             width="${flagSize}" 
             height="${flagSize}" 
-            href="${flag.flagPath}"
+            href="${absolutePath}"
           />`;
         }
       }
@@ -170,13 +173,16 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
         const flag = letterToFlag(letter);
         
         if (flag) {
+          // Convertir ruta relativa a absoluta
+          const absolutePath = window.location.origin + flag.flagPath;
+          
           svgContent += `
           <image 
             x="${xPosition}" 
             y="${(height - adjustedFlagHeight) / 2}" 
             width="${adjustedFlagHeight}" 
             height="${adjustedFlagHeight}" 
-            href="${flag.flagPath}"
+            href="${absolutePath}"
           />`;
           
           xPosition += adjustedFlagHeight;
@@ -189,7 +195,7 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
     <text 
       x="${width/2}" 
       y="${height - 40}" 
-      font-family="Geist Mono, monospace" 
+      font-family="Arial, sans-serif" 
       font-size="48"
       text-anchor="middle" 
       fill="white" 
@@ -201,24 +207,33 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
       <text 
         x="${width - 10}" 
         y="${height - 10}" 
-        font-family="Geist Mono, monospace" 
+        font-family="Arial, sans-serif" 
         font-size="16" 
         text-anchor="end" 
-        fill="#333333"
+        fill="white" 
+        opacity="0.7"
       >FLAG SYSTEM</text>
     </svg>`;
     
-    // Create blob and download
-    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `flag-word-${displayWord.toLowerCase()}.svg`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  }, [displayWord, isGeneratedRandomly]);
+    try {
+      // Create blob and download
+      const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `flag-word-${displayWord.toLowerCase()}.svg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      // Notificar al usuario
+      alert('SVG exportado correctamente!');
+    } catch (error) {
+      console.error('Error al exportar SVG:', error);
+      alert('Error al exportar SVG. Revisa la consola para más detalles.');
+    }
+  }, [displayWord, isGridMode, backgroundColor]);
 
   return [
     { word, displayWord, isGenerating, isGeneratedRandomly, maxLength, isGridMode, backgroundColor },
