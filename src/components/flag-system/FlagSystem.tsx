@@ -301,32 +301,12 @@ export default function FlagSystem() {
         {/* Desktop full controls - hidden on mobile */}
         <div className="hidden lg:block w-full bg-black/50 backdrop-blur-sm rounded-lg p-6 border border-white/10">
           <div className="flex flex-col gap-5">
-            {/* Display mode toggle - now with icons */}
-            <div className="flex items-center justify-end mb-3">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-6 h-6">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/70">
-                    <line x1="8" y1="6" x2="21" y2="6" />
-                    <line x1="8" y1="12" x2="21" y2="12" />
-                    <line x1="8" y1="18" x2="21" y2="18" />
-                    <line x1="3" y1="6" x2="3.01" y2="6" />
-                    <line x1="3" y1="12" x2="3.01" y2="12" />
-                    <line x1="3" y1="18" x2="3.01" y2="18" />
-                  </svg>
-                </div>
-                <Switch 
-                  checked={isGridMode}
-                  onCheckedChange={toggleGridMode}
-                />
-                <div className="flex items-center justify-center w-6 h-6">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/70">
-                    <rect x="3" y="3" width="7" height="7" />
-                    <rect x="14" y="3" width="7" height="7" />
-                    <rect x="14" y="14" width="7" height="7" />
-                    <rect x="3" y="14" width="7" height="7" />
-                  </svg>
-                </div>
-              </div>
+            {/* Sistema de tabs en panel de control */}
+            <div className="flex justify-center mb-4">
+              <TabSelector 
+                activeMode={displayMode} 
+                onChange={setDisplayMode} 
+              />
             </div>
             
             {/* Text input */}
