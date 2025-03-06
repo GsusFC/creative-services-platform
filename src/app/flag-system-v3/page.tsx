@@ -10,7 +10,7 @@ export default function FlagSystemV3Page() {
       <div className="pt-32">
         <header className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-druk tracking-wider mb-4">FLAG SYSTEM V3</h1>
-          <p className="text-white/60 max-w-2xl mx-auto">
+          <p className="text-white/60 max-w-2xl mx-auto font-geist-mono text-sm">
             International nautical alphabet visualization system.
             Create words and display them with their corresponding signal flags.
           </p>
