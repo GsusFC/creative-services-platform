@@ -98,7 +98,7 @@ const ClassicDisplay: React.FC<ClassicDisplayProps> = ({ word, backgroundColor, 
       
       {/* Palabra en el borde inferior (condicionalmente visible) */}
       {showText && (
-        <div className="absolute bottom-4 w-full text-center">
+        <div className="absolute bottom-40 w-full text-center">
           <span className="text-white font-sans text-xl sm:text-2xl md:text-4xl tracking-wider">{word}</span>
         </div>
       )}
