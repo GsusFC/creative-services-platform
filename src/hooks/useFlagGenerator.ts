@@ -223,20 +223,23 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
       
       // Add each SVG content to the main SVG
       for (const result of svgResults) {
-        // Extraer solo el contenido interno del SVG (sin las etiquetas <svg> y </svg>)
-        let innerSvgContent = result.svgContent;
+        // Extraer el viewBox del SVG original
+        const viewBoxMatch = result.svgContent.match(/viewBox="([^"]+)"/);
+        const viewBox = viewBoxMatch ? viewBoxMatch[1] : "0 0 512 512";
+        const [vbX, vbY, vbWidth, vbHeight] = viewBox.split(' ').map(Number);
         
-        // Quitar el encabezado del SVG (todo antes del primer ">")
-        innerSvgContent = innerSvgContent.substring(innerSvgContent.indexOf('>') + 1);
-        
-        // Quitar el cierre final del SVG
-        innerSvgContent = innerSvgContent.substring(0, innerSvgContent.lastIndexOf('</svg>'));
-        
-        // Ajustar el viewBox
+        // Crear un nuevo SVG como grupo con sus propias coordenadas
         svgContent += `
-        <g transform="translate(${result.position.x}, ${result.position.y}) scale(${result.position.width / 512}, ${result.position.height / 512})">
-          ${innerSvgContent}
-        </g>`;
+        <svg 
+          x="${result.position.x}" 
+          y="${result.position.y}" 
+          width="${result.position.width}" 
+          height="${result.position.height}"
+          viewBox="${viewBox}"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          ${result.svgContent.match(/<svg[^>]*>([\s\S]*)<\/svg>/)?.[1] || ''}
+        </svg>`;
       }
       
       // Add the word at the bottom if showText is enabled
