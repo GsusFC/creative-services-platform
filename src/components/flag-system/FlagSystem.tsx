@@ -19,9 +19,9 @@ const FlagDisplay = ({
   if (!word) {
     return (
       <div className="text-center p-8">
-        <span className="text-white/60 font-geist-mono text-xl block">
-          Ingresa o genera una palabra para visualizar las banderas
-        </span>
+          <span className="text-white/60 font-geist-mono text-xl block">
+            Enter or generate a word to display flags
+          </span>
       </div>
     );
   }
@@ -84,7 +84,7 @@ const FlagDisplay = ({
         
         {/* Palabra en el borde inferior */}
         <div className="absolute bottom-4 w-full text-center">
-          <span className="text-white font-geist-mono text-4xl font-bold tracking-wider">{word}</span>
+          <span className="text-white font-geist-mono text-4xl tracking-wider">{word}</span>
         </div>
       </div>
     );
@@ -120,7 +120,7 @@ const FlagDisplay = ({
       
       {/* Palabra en el borde inferior */}
       <div className="absolute bottom-4 w-full text-center">
-          <span className="text-white font-geist-mono text-4xl font-bold tracking-wider">{word}</span>
+          <span className="text-white font-geist-mono text-4xl tracking-wider">{word}</span>
       </div>
     </div>
   );
@@ -139,8 +139,8 @@ const HistoryPanel = () => {
   if (history.length === 0) {
     return (
       <div className="w-full mt-6 bg-black/30 border border-white/10 rounded-md p-4">
-        <h3 className="font-geist-mono text-sm text-white/80 mb-2 uppercase tracking-wide">Historial</h3>
-        <p className="text-white/40 text-center py-4 font-geist-mono text-sm">No hay palabras en el historial</p>
+        <h3 className="font-geist-mono text-sm text-white/80 mb-2 uppercase tracking-wide">History</h3>
+        <p className="text-white/40 text-center py-4 font-geist-mono text-sm">No words in history</p>
       </div>
     );
   }
@@ -148,12 +148,12 @@ const HistoryPanel = () => {
   return (
     <div className="w-full mt-6 bg-black/30 border border-white/10 rounded-md p-4">
       <div className="flex justify-between items-center mb-3">
-        <h3 className="font-geist-mono text-sm text-white/80 uppercase tracking-wide">Historial</h3>
+        <h3 className="font-geist-mono text-sm text-white/80 uppercase tracking-wide">History</h3>
         <button 
           onClick={clearHistory}
           className="text-xs text-white/40 hover:text-white/70 transition-colors font-geist-mono px-2 py-1 bg-white/5 rounded hover:bg-white/10"
         >
-          Limpiar
+          Clear
         </button>
       </div>
       
@@ -232,8 +232,8 @@ export default function FlagSystem() {
 
   return (
     <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 mb-8">
-      {/* Área de visualización de banderas */}
-      <div className="w-full lg:w-2/3 flex justify-center mx-auto">
+      {/* Flag display area */}
+      <div className="w-full lg:w-3/5 flex justify-center mx-auto">
         <div className="w-full aspect-square">
           <div className="flex justify-center w-full relative">
             <div 
@@ -265,26 +265,41 @@ export default function FlagSystem() {
         </div>
       </div>
       
-      {/* Panel de controles */}
-      <div className="w-full lg:w-1/3">
+      {/* Control panel */}
+      <div className="w-full lg:w-2/5">
         <div className="w-full bg-black/50 backdrop-blur-sm rounded-lg p-6 border border-white/10">
           <div className="flex flex-col gap-5">
-            {/* Opciones de visualización - ahora encima del input */}
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-geist-mono text-sm text-white/80 uppercase tracking-wide">Modo visualización</h3>
+            {/* Display mode toggle - now with icons */}
+            <div className="flex items-center justify-end mb-3">
               <div className="flex items-center gap-3">
-                <label className="text-white text-sm">Fila</label>
+                <div className="flex items-center justify-center w-6 h-6">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/70">
+                    <line x1="8" y1="6" x2="21" y2="6" />
+                    <line x1="8" y1="12" x2="21" y2="12" />
+                    <line x1="8" y1="18" x2="21" y2="18" />
+                    <line x1="3" y1="6" x2="3.01" y2="6" />
+                    <line x1="3" y1="12" x2="3.01" y2="12" />
+                    <line x1="3" y1="18" x2="3.01" y2="18" />
+                  </svg>
+                </div>
                 <Switch 
                   checked={isGridMode}
                   onCheckedChange={toggleGridMode}
                 />
-                <label className="text-white text-sm">Columnas</label>
+                <div className="flex items-center justify-center w-6 h-6">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/70">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                  </svg>
+                </div>
               </div>
             </div>
             
-            {/* Entrada de texto */}
+            {/* Text input */}
             <div className="w-full">
-              <label className="block mb-2 text-sm font-geist-mono text-white/80 uppercase tracking-wide">Crear palabra (máx {maxLength} letras)</label>
+              <label className="block mb-2 text-sm font-geist-mono text-white/80 uppercase tracking-wide">Create word (max {maxLength} letters)</label>
               <input
                 type="text"
                 ref={inputRef}
@@ -295,40 +310,40 @@ export default function FlagSystem() {
               />
             </div>
             
-            {/* Botones de acción */}
-            <div className="flex flex-col gap-3 w-full">
+            {/* Action buttons - now in a row */}
+            <div className="flex gap-3 w-full mb-3">
               <button
                 onClick={generateRandomWord}
                 disabled={isGenerating}
-                className="px-6 py-3 bg-[#00ff00] text-black font-geist-mono uppercase tracking-wider disabled:opacity-50 hover:brightness-110 transition-all duration-300"
+                className="flex-grow-[3] px-6 py-3 bg-[#00ff00] text-black font-geist-mono uppercase tracking-wider disabled:opacity-50 hover:brightness-110 transition-all duration-300"
               >
-                {isGenerating ? 'GENERANDO...' : 'PALABRA ALEATORIA'}
+                {isGenerating ? 'GENERATING...' : 'RANDOM WORD'}
               </button>
               
               <button
                 onClick={() => {
-                  // Usar solo colores RGB, blanco y negro
+                  // Using only RGB colors, black and white
                   const colors = ['#000000', '#ffffff', '#ff0000', '#00ff00', '#0000ff'];
                   const randomIndex = Math.floor(Math.random() * colors.length);
                   changeBackgroundColor(colors[randomIndex]);
                 }}
-                className="px-6 py-3 bg-blue-500 text-white font-geist-mono uppercase tracking-wider hover:bg-blue-600 transition-all duration-300"
+                className="flex-grow-[1] px-4 py-3 bg-blue-500 text-white font-geist-mono uppercase tracking-wider hover:bg-blue-600 transition-all duration-300"
               >
-                ALTERNAR FONDO
+                BG
               </button>
               
               <button
                 disabled={!displayWord}
                 onClick={exportAsSvg}
-                className="px-6 py-3 bg-white/10 border border-white/20 text-white font-geist-mono uppercase tracking-wider disabled:opacity-30 hover:bg-white/20 transition-all duration-300"
+                className="w-full px-6 py-3 bg-white/10 border border-white/20 text-white font-geist-mono uppercase tracking-wider disabled:opacity-30 hover:bg-white/20 transition-all duration-300 mt-1"
               >
-                EXPORTAR SVG
+                EXPORT SVG
               </button>
             </div>
             
-            {/* Control de longitud */}
+            {/* Length control */}
             <div className="w-full border-t border-white/10 pt-4">
-              <label className="block mb-2 text-sm font-geist-mono text-white/80 uppercase tracking-wide">Longitud máxima</label>
+              <label className="block mb-2 text-sm font-geist-mono text-white/80 uppercase tracking-wide">Maximum length</label>
               <div className="flex items-center gap-4">
                 <input
                   type="range"
