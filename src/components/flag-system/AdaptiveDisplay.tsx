@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { letterToFlag } from '@/lib/flag-system/flagMap';
 
 // Tipo para la configuración de layout
@@ -11,37 +11,77 @@ type LayoutConfig = {
 };
 
 // Función para calcular la configuración de layout según cantidad de letras
-const calculateLayout = (letterCount: number): LayoutConfig => {
+// Usando un enfoque porcentual para escalar con el tamaño del canvas
+const calculateLayout = (letterCount: number, containerSize: number): LayoutConfig => {
+  // El tamaño de la composición será el 50% del contenedor
+  const compositionSize = containerSize * 0.5;
+  
   switch(letterCount) {
     case 1:
-      return { size: 500, rows: [1], alignment: ['center'] };
+      return { 
+        size: compositionSize, 
+        rows: [1], 
+        alignment: ['center'] 
+      };
     case 2:
-      return { size: 250, rows: [2], alignment: ['center'] };
+      return { 
+        size: compositionSize / 2, 
+        rows: [2], 
+        alignment: ['center'] 
+      };
     case 3:
-      return { size: 166.7, rows: [3], alignment: ['center'] };
+      return { 
+        size: compositionSize / 3, 
+        rows: [3], 
+        alignment: ['center'] 
+      };
     case 4:
-      return { size: 250, rows: [2, 2], alignment: ['center', 'center'] };
+      return { 
+        size: compositionSize / 2, 
+        rows: [2, 2], 
+        alignment: ['center', 'center'] 
+      };
     case 5:
-      return { size: 166.7, rows: [3, 2], alignment: ['center', 'flex-end'] };
+      return { 
+        size: compositionSize / 3, 
+        rows: [3, 2], 
+        alignment: ['center', 'flex-end'] 
+      };
     case 6:
-      return { size: 166.7, rows: [3, 3], alignment: ['center', 'center'] };
+      return { 
+        size: compositionSize / 3, 
+        rows: [3, 3], 
+        alignment: ['center', 'center'] 
+      };
     case 7:
-      return { size: 166.7, rows: [3, 3, 1], alignment: ['center', 'center', 'flex-start'] };
+      return { 
+        size: compositionSize / 3, 
+        rows: [3, 3, 1], 
+        alignment: ['center', 'center', 'flex-start'] 
+      };
     case 8:
-      return { size: 166.7, rows: [3, 3, 2], alignment: ['center', 'center', 'center'] };
+      return { 
+        size: compositionSize / 3, 
+        rows: [3, 3, 2], 
+        alignment: ['center', 'center', 'center'] 
+      };
     case 9:
-      return { size: 166.7, rows: [3, 3, 3], alignment: ['center', 'center', 'center'] };
+      return { 
+        size: compositionSize / 3, 
+        rows: [3, 3, 3], 
+        alignment: ['center', 'center', 'center'] 
+      };
     case 10:
       return { 
-        size: 125, 
+        size: compositionSize / 4, 
         rows: [4, 4, 2], 
-        alignment: ['center', 'center', 'center']
+        alignment: ['center', 'center', 'center'] 
       };
     default:
       // Para más de 10 letras, usar un grid adaptativo
       const rowSize = Math.ceil(Math.sqrt(letterCount));
       return { 
-        size: 500 / rowSize, 
+        size: compositionSize / rowSize, 
         rows: Array(Math.ceil(letterCount / rowSize)).fill(rowSize),
         alignment: Array(Math.ceil(letterCount / rowSize)).fill('center')
       };
@@ -54,6 +94,29 @@ interface AdaptiveDisplayProps {
 }
 
 const AdaptiveDisplay: React.FC<AdaptiveDisplayProps> = ({ word, backgroundColor }) => {
+  // Referencia al contenedor para medir su tamaño
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerSize, setContainerSize] = useState(1000); // Tamaño inicial por defecto
+  
+  // Detectar el tamaño del contenedor
+  useEffect(() => {
+    const updateSize = () => {
+      if (containerRef.current) {
+        const { width, height } = containerRef.current.getBoundingClientRect();
+        // Usar el valor más pequeño entre ancho y alto para asegurar aspecto cuadrado
+        const size = Math.min(width, height);
+        setContainerSize(size);
+      }
+    };
+    
+    // Actualizar tamaño inicial
+    updateSize();
+    
+    // Actualizar cuando cambie el tamaño de la ventana
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
   if (!word) {
     return (
       <div className="text-center p-8">
@@ -63,49 +126,38 @@ const AdaptiveDisplay: React.FC<AdaptiveDisplayProps> = ({ word, backgroundColor
       </div>
     );
   }
-
+  
   // Array de letras para mostrar
   const letters = word.split('').map(letter => letter.toUpperCase());
   
-  // Calcular la configuración de layout según la cantidad de letras
-  const layout = calculateLayout(letters.length);
+  // Calcular la configuración de layout según la cantidad de letras y tamaño del contenedor
+  const layout = calculateLayout(letters.length, containerSize);
   
-  // Preparar las filas
+  // Crear filas y banderas directamente con dimensiones basadas en el containerSize
+  const flagRows = [];
   let letterIndex = 0;
-  const rows = [];
   
-  // Caso especial para 10 letras - las últimas 2 banderas son más grandes
-  const isSpecialTenCase = letters.length === 10;
-  
-  for (let rowIndex = 0; rowIndex < layout.rows.length; rowIndex++) {
-    const rowCount = layout.rows[rowIndex];
-    const rowLetters = [];
+  for (let rowIdx = 0; rowIdx < layout.rows.length; rowIdx++) {
+    const flagsInRow = layout.rows[rowIdx];
+    const rowFlags = [];
     
-    // Determinar el tamaño de las banderas en esta fila
-    let flagSize = layout.size;
-    // Para la última fila del caso de 10 letras, duplicar el tamaño
-    if (isSpecialTenCase && rowIndex === 2) {
-      flagSize = 250; // Doble tamaño para la última fila de 10 letras
-    }
-    
-    // Crear las banderas para esta fila
-    for (let i = 0; i < rowCount && letterIndex < letters.length; i++) {
+    for (let colIdx = 0; colIdx < flagsInRow && letterIndex < letters.length; colIdx++) {
       const letter = letters[letterIndex++];
       const flag = letterToFlag(letter);
       if (!flag) continue;
       
-      rowLetters.push(
+      // Calcular tamaño dinámico basado en containerSize
+      rowFlags.push(
         <div 
-          key={`${rowIndex}-${i}`} 
+          key={`flag-${rowIdx}-${colIdx}`} 
           style={{ 
-            width: `${flagSize}px`, 
-            height: `${flagSize}px`, 
+            width: `${layout.size}px`, 
+            height: `${layout.size}px`,
             flexShrink: 0,
             flexGrow: 0,
-            margin: 0, 
+            margin: 0,
             padding: 0
           }}
-          className="relative"
         >
           <img 
             src={flag.flagPath} 
@@ -121,31 +173,31 @@ const AdaptiveDisplay: React.FC<AdaptiveDisplayProps> = ({ word, backgroundColor
       );
     }
     
-    // Añadir la fila al conjunto
-    if (rowLetters.length > 0) {
-      rows.push(
+    if (rowFlags.length > 0) {
+      flagRows.push(
         <div 
-          key={`row-${rowIndex}`} 
+          key={`row-${rowIdx}`} 
           style={{ 
             display: 'flex',
-            justifyContent: layout.alignment?.[rowIndex] || 'center',
-            width: '500px',
-            margin: '0 auto'
+            justifyContent: layout.alignment?.[rowIdx] || 'center',
+            margin: '0 auto',
+            width: `${containerSize * 0.5}px`
           }}
         >
-          {rowLetters}
+          {rowFlags}
         </div>
       );
     }
   }
-  
+
   return (
     <div 
+      ref={containerRef}
       className="flex flex-col justify-center items-center h-full w-full transition-colors duration-300"
       style={{ backgroundColor }}
     >
       <div className="mx-auto flex flex-col items-center justify-center">
-        {rows}
+        {flagRows}
       </div>
       
       {/* Palabra en el borde inferior */}

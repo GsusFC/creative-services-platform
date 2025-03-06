@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { letterToFlag } from '@/lib/flag-system/flagMap';
 
 interface GridDisplayProps {
@@ -9,6 +9,29 @@ interface GridDisplayProps {
 }
 
 const GridDisplay: React.FC<GridDisplayProps> = ({ word, backgroundColor }) => {
+  // Referencia al contenedor para medir su tamaño
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerSize, setContainerSize] = useState(1000); // Tamaño inicial por defecto
+  
+  // Detectar el tamaño del contenedor
+  useEffect(() => {
+    const updateSize = () => {
+      if (containerRef.current) {
+        const { width, height } = containerRef.current.getBoundingClientRect();
+        // Usar el valor más pequeño entre ancho y alto para asegurar aspecto cuadrado
+        const size = Math.min(width, height);
+        setContainerSize(size);
+      }
+    };
+    
+    // Actualizar tamaño inicial
+    updateSize();
+    
+    // Actualizar cuando cambie el tamaño de la ventana
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
   if (!word) {
     return (
       <div className="text-center p-8">
@@ -22,16 +45,27 @@ const GridDisplay: React.FC<GridDisplayProps> = ({ word, backgroundColor }) => {
   // Array de letras para mostrar
   const letters = word.split('').map(letter => letter.toUpperCase());
   
+  // Calcular el tamaño de las banderas (50% del contenedor dividido por columnas)
+  const compositionSize = containerSize * 0.5; // 50% del canvas
+  const numColumns = 2; // Grid de 2 columnas
+  const flagSize = compositionSize / numColumns;
+  
   return (
     <div 
+      ref={containerRef}
       className="flex flex-col justify-center items-center h-full w-full transition-colors duration-300"
       style={{ backgroundColor }}
     >
-      <div className="w-[70%] mx-auto">
-        {/* Display usando flexbox + flexwrap con SVG directos */}
+      <div className="flex justify-center items-center">
+        {/* Display usando flexbox + flexwrap con tamaño adaptativo */}
         <div 
-          style={{ display: 'flex', flexWrap: 'wrap', width: '140px', margin: '0 auto' }}
-          className="sm:scale-100 scale-75 transform origin-center"
+          style={{ 
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            width: `${compositionSize}px`, 
+            margin: '0 auto',
+            justifyContent: 'center'
+          }}
         >
           {letters.map((letter, index) => {
             const flag = letterToFlag(letter);
@@ -41,15 +75,13 @@ const GridDisplay: React.FC<GridDisplayProps> = ({ word, backgroundColor }) => {
               <div 
                 key={index} 
                 style={{ 
-                  width: '70px', 
-                  height: '70px', 
+                  width: `${flagSize}px`, 
+                  height: `${flagSize}px`, 
                   flexShrink: 0,
                   flexGrow: 0,
                   margin: 0, 
-                  padding: 0, 
-                  float: 'left'
+                  padding: 0
                 }}
-                className="sm:w-[70px] sm:h-[70px] w-[50px] h-[50px]"
               >
                 <img 
                   src={flag.flagPath} 
