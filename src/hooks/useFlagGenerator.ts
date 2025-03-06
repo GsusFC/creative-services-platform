@@ -133,21 +133,7 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
       // Obtener letras
       const letters = displayWord.split('').map(letter => letter.toUpperCase());
       
-      // Función para convertir la imagen SVG a un string de datos SVG
-      const getSvgContent = async (url: string): Promise<string> => {
-        try {
-          const response = await fetch(url);
-          const svgText = await response.text();
-          return svgText;
-        } catch (error) {
-          console.error('Error al obtener contenido SVG:', error);
-          return '';
-        }
-      };
-      
-      // Array para guardar todas las promesas de carga de SVG
-      const svgPromises: Promise<{ index: number; svgContent: string; position: { x: number; y: number; width: number; height: number } }>[] = [];
-      
+      // Usar el enfoque más directo: dibujar cada letra en la posición correcta
       if (isGridMode) {
         // Grid mode: two columns
         const flagSize = Math.min(70, 350 / Math.ceil(letters.length / 2)); // Ajustar según cantidad
@@ -158,7 +144,7 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
         const startX = (width - gridWidth) / 2;
         const startY = (height - gridHeight) / 2;
         
-        // Prepare all SVG load operations
+        // Draw flags in grid
         for (let i = 0; i < letters.length; i++) {
           const letter = letters[i];
           const flag = letterToFlag(letter);
@@ -168,18 +154,29 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
             const row = Math.floor(i / 2);
             const col = i % 2;
             
-            svgPromises.push(
-              getSvgContent(flag.flagPath).then(svgContent => ({
-                index: i,
-                svgContent,
-                position: {
-                  x: startX + col * flagSize,
-                  y: startY + row * flagSize,
-                  width: flagSize,
-                  height: flagSize
-                }
-              }))
-            );
+            // Simplemente dibujamos cada bandera en su posición como un rectángulo con la letra
+            const x = startX + col * flagSize;
+            const y = startY + row * flagSize;
+            
+            svgContent += `
+            <rect 
+              x="${x}" 
+              y="${y}" 
+              width="${flagSize}" 
+              height="${flagSize}" 
+              fill="#FF0000" 
+              stroke="#FFFFFF" 
+              stroke-width="2"
+            />
+            <text 
+              x="${x + flagSize/2}" 
+              y="${y + flagSize/2}" 
+              font-family="Arial, sans-serif" 
+              font-size="${flagSize/2}"
+              text-anchor="middle" 
+              dominant-baseline="middle"
+              fill="white"
+            >${letter}</text>`;
           }
         }
       } else {
@@ -190,56 +187,38 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
         // Add flags in the center
         const totalWidth = displayWord.length * adjustedFlagHeight;
         let xPosition = (width - totalWidth) / 2;
+        const yPosition = (height - adjustedFlagHeight) / 2;
         
-        // Prepare all SVG load operations
+        // Add each flag
         for (let i = 0; i < displayWord.length; i++) {
           const letter = displayWord[i];
           const flag = letterToFlag(letter);
           
           if (flag) {
-            svgPromises.push(
-              getSvgContent(flag.flagPath).then(svgContent => ({
-                index: i,
-                svgContent,
-                position: {
-                  x: xPosition,
-                  y: (height - adjustedFlagHeight) / 2,
-                  width: adjustedFlagHeight,
-                  height: adjustedFlagHeight
-                }
-              }))
-            );
+            // Simplemente dibujamos cada bandera en su posición como un rectángulo con la letra
+            svgContent += `
+            <rect 
+              x="${xPosition}" 
+              y="${yPosition}" 
+              width="${adjustedFlagHeight}" 
+              height="${adjustedFlagHeight}" 
+              fill="#0000FF" 
+              stroke="#FFFFFF" 
+              stroke-width="2"
+            />
+            <text 
+              x="${xPosition + adjustedFlagHeight/2}" 
+              y="${yPosition + adjustedFlagHeight/2}" 
+              font-family="Arial, sans-serif" 
+              font-size="${adjustedFlagHeight/2}"
+              text-anchor="middle" 
+              dominant-baseline="middle"
+              fill="white"
+            >${letter}</text>`;
             
             xPosition += adjustedFlagHeight;
           }
         }
-      }
-      
-      // Wait for all SVG content to load
-      const svgResults = await Promise.all(svgPromises);
-      
-      // Sort by index to maintain correct order
-      svgResults.sort((a, b) => a.index - b.index);
-      
-      // Add each SVG content to the main SVG
-      for (const result of svgResults) {
-        // Extraer el viewBox del SVG original
-        const viewBoxMatch = result.svgContent.match(/viewBox="([^"]+)"/);
-        const viewBox = viewBoxMatch ? viewBoxMatch[1] : "0 0 512 512";
-        const [vbX, vbY, vbWidth, vbHeight] = viewBox.split(' ').map(Number);
-        
-        // Crear un nuevo SVG como grupo con sus propias coordenadas
-        svgContent += `
-        <svg 
-          x="${result.position.x}" 
-          y="${result.position.y}" 
-          width="${result.position.width}" 
-          height="${result.position.height}"
-          viewBox="${viewBox}"
-          preserveAspectRatio="xMidYMid meet"
-        >
-          ${result.svgContent.match(/<svg[^>]*>([\s\S]*)<\/svg>/)?.[1] || ''}
-        </svg>`;
       }
       
       // Add the word at the bottom if showText is enabled
