@@ -6,9 +6,10 @@ import { letterToFlag } from '@/lib/flag-system/flagMap';
 interface GridDisplayProps {
   word: string;
   backgroundColor: string;
+  showText?: boolean;
 }
 
-const GridDisplay: React.FC<GridDisplayProps> = ({ word, backgroundColor }) => {
+const GridDisplay: React.FC<GridDisplayProps> = ({ word, backgroundColor, showText = true }) => {
   // Referencia al contenedor para medir su tamaño
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState(1000); // Tamaño inicial por defecto
@@ -45,10 +46,10 @@ const GridDisplay: React.FC<GridDisplayProps> = ({ word, backgroundColor }) => {
   // Array de letras para mostrar
   const letters = word.split('').map(letter => letter.toUpperCase());
   
-  // Calcular el tamaño de las banderas (50% del contenedor dividido por columnas)
+  // Calcular el tamaño de las banderas (50% del contenedor dividido por cantidad de letras)
   const compositionSize = containerSize * 0.5; // 50% del canvas
-  const numColumns = 2; // Grid de 2 columnas
-  const flagSize = compositionSize / numColumns;
+  // Usar el mismo cálculo que en ClassicDisplay para mantener proporciones consistentes
+  const flagSize = compositionSize / letters.length;
   
   return (
     <div 
@@ -99,10 +100,12 @@ const GridDisplay: React.FC<GridDisplayProps> = ({ word, backgroundColor }) => {
         </div>
       </div>
       
-      {/* Palabra en el borde inferior */}
-      <div className="absolute bottom-4 w-full text-center">
-        <span className="text-white font-sans text-xl sm:text-2xl md:text-4xl tracking-wider">{word}</span>
-      </div>
+      {/* Palabra en el borde inferior (condicionalmente visible) */}
+      {showText && (
+        <div className="absolute bottom-4 w-full text-center">
+          <span className="text-white font-sans text-xl sm:text-2xl md:text-4xl tracking-wider">{word}</span>
+        </div>
+      )}
     </div>
   );
 };

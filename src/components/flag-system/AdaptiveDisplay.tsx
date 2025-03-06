@@ -91,9 +91,10 @@ const calculateLayout = (letterCount: number, containerSize: number): LayoutConf
 interface AdaptiveDisplayProps {
   word: string;
   backgroundColor: string;
+  showText?: boolean;
 }
 
-const AdaptiveDisplay: React.FC<AdaptiveDisplayProps> = ({ word, backgroundColor }) => {
+const AdaptiveDisplay: React.FC<AdaptiveDisplayProps> = ({ word, backgroundColor, showText = true }) => {
   // Referencia al contenedor para medir su tamaño
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState(1000); // Tamaño inicial por defecto
@@ -200,10 +201,12 @@ const AdaptiveDisplay: React.FC<AdaptiveDisplayProps> = ({ word, backgroundColor
         {flagRows}
       </div>
       
-      {/* Palabra en el borde inferior */}
-      <div className="absolute bottom-4 w-full text-center">
-        <span className="text-white font-sans text-xl sm:text-2xl md:text-4xl tracking-wider">{word}</span>
-      </div>
+      {/* Palabra en el borde inferior (condicionalmente visible) */}
+      {showText && (
+        <div className="absolute bottom-4 w-full text-center">
+          <span className="text-white font-sans text-xl sm:text-2xl md:text-4xl tracking-wider">{word}</span>
+        </div>
+      )}
     </div>
   );
 };

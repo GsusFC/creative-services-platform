@@ -144,8 +144,8 @@ const MobileHistoryPanel = () => {
 export default function FlagSystem() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [
-    { word, displayWord, isGenerating, isGeneratedRandomly, maxLength, isGridMode, backgroundColor },
-    { setWord, generateRandomWord, setMaxLength, exportAsSvg, toggleGridMode, changeBackgroundColor }
+    { word, displayWord, isGenerating, isGeneratedRandomly, maxLength, isGridMode, backgroundColor, showText },
+    { setWord, generateRandomWord, setMaxLength, exportAsSvg, toggleGridMode, toggleShowText, changeBackgroundColor }
   ] = useFlagGenerator();
   
   const { addToHistory } = useFlagHistory();
@@ -204,13 +204,13 @@ export default function FlagSystem() {
             >
               {/* Renderizar el componente adecuado según el modo activo */}
               {displayMode === 'classic' && (
-                <ClassicDisplay word={displayWord} backgroundColor={backgroundColor} />
+                <ClassicDisplay word={displayWord} backgroundColor={backgroundColor} showText={showText} />
               )}
               {displayMode === 'grid' && (
-                <GridDisplay word={displayWord} backgroundColor={backgroundColor} />
+                <GridDisplay word={displayWord} backgroundColor={backgroundColor} showText={showText} />
               )}
               {displayMode === 'adaptive' && (
-                <AdaptiveDisplay word={displayWord} backgroundColor={backgroundColor} />
+                <AdaptiveDisplay word={displayWord} backgroundColor={backgroundColor} showText={showText} />
               )}
             </div>
           </div>
@@ -346,7 +346,7 @@ export default function FlagSystem() {
             </div>
             
             {/* Length control */}
-            <div className="w-full border-t border-white/10 pt-4">
+            <div className="w-full border-t border-white/10 pt-4 mb-3">
               <div className="flex items-center gap-4">
                 <input
                   type="range"
@@ -358,6 +358,15 @@ export default function FlagSystem() {
                 />
                 <span className="font-sans text-base text-white">{maxLength}</span>
               </div>
+            </div>
+            
+            {/* Text visibility toggle */}
+            <div className="w-full flex items-center justify-between">
+              <span className="font-sans text-sm text-white/80">Mostrar texto</span>
+              <Switch 
+                checked={showText}
+                onCheckedChange={toggleShowText}
+              />
             </div>
           </div>
         </div>

@@ -23,6 +23,7 @@ export interface FlagGeneratorState {
   maxLength: number;
   isGridMode: boolean;
   backgroundColor: string;
+  showText: boolean;
 }
 
 export interface FlagGeneratorActions {
@@ -31,6 +32,7 @@ export interface FlagGeneratorActions {
   setMaxLength: (length: number) => void;
   exportAsSvg: () => void;
   toggleGridMode: () => void;
+  toggleShowText: () => void;
   changeBackgroundColor: (specificColor?: string) => void;
 }
 
@@ -42,6 +44,7 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
   const [maxLength, setMaxLengthInternal] = useState(DEFAULT_MAX_LENGTH);
   const [isGridMode, setIsGridMode] = useState(false); // Inicialmente en modo estándar
   const [backgroundColor, setBackgroundColor] = useState('#000000'); // Color inicial: negro
+  const [showText, setShowText] = useState(true); // Mostrar texto por defecto
 
   // Handle word change
   const setWord = useCallback((value: string) => {
@@ -85,6 +88,11 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
   // Toggle grid mode
   const toggleGridMode = useCallback(() => {
     setIsGridMode(prevMode => !prevMode);
+  }, []);
+  
+  // Toggle text visibility
+  const toggleShowText = useCallback(() => {
+    setShowText(prevShow => !prevShow);
   }, []);
   
   // Change background color randomly or to a specific color
@@ -190,17 +198,19 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
       }
     }
     
-    // Always add the word at the bottom
-    svgContent += `
-    <text 
-      x="${width/2}" 
-      y="${height - 40}" 
-      font-family="Arial, sans-serif" 
-      font-size="48"
-      text-anchor="middle" 
-      fill="white" 
-      letter-spacing="0.1em"
-    >${displayWord}</text>`;
+    // Add the word at the bottom if showText is enabled
+    if (showText) {
+      svgContent += `
+      <text 
+        x="${width/2}" 
+        y="${height - 40}" 
+        font-family="Arial, sans-serif" 
+        font-size="48"
+        text-anchor="middle" 
+        fill="white" 
+        letter-spacing="0.1em"
+      >${displayWord}</text>`;
+    }
     
     // Add FLAG SYSTEM signature
     svgContent += `
@@ -233,10 +243,10 @@ export const useFlagGenerator = (): [FlagGeneratorState, FlagGeneratorActions] =
       console.error('Error al exportar SVG:', error);
       alert('Error al exportar SVG. Revisa la consola para más detalles.');
     }
-  }, [displayWord, isGridMode, backgroundColor]);
+  }, [displayWord, isGridMode, backgroundColor, showText]);
 
   return [
-    { word, displayWord, isGenerating, isGeneratedRandomly, maxLength, isGridMode, backgroundColor },
-    { setWord, generateRandomWord, setMaxLength, exportAsSvg, toggleGridMode, changeBackgroundColor }
+    { word, displayWord, isGenerating, isGeneratedRandomly, maxLength, isGridMode, backgroundColor, showText },
+    { setWord, generateRandomWord, setMaxLength, exportAsSvg, toggleGridMode, toggleShowText, changeBackgroundColor }
   ];
 };

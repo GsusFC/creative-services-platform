@@ -6,9 +6,10 @@ import { letterToFlag } from '@/lib/flag-system/flagMap';
 interface ClassicDisplayProps {
   word: string;
   backgroundColor: string;
+  showText?: boolean;
 }
 
-const ClassicDisplay: React.FC<ClassicDisplayProps> = ({ word, backgroundColor }) => {
+const ClassicDisplay: React.FC<ClassicDisplayProps> = ({ word, backgroundColor, showText = true }) => {
   // Referencia al contenedor para medir su tamaño
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState(1000); // Tamaño inicial por defecto
@@ -95,10 +96,12 @@ const ClassicDisplay: React.FC<ClassicDisplayProps> = ({ word, backgroundColor }
         </div>
       </div>
       
-      {/* Palabra en el borde inferior */}
-      <div className="absolute bottom-4 w-full text-center">
-        <span className="text-white font-sans text-xl sm:text-2xl md:text-4xl tracking-wider">{word}</span>
-      </div>
+      {/* Palabra en el borde inferior (condicionalmente visible) */}
+      {showText && (
+        <div className="absolute bottom-4 w-full text-center">
+          <span className="text-white font-sans text-xl sm:text-2xl md:text-4xl tracking-wider">{word}</span>
+        </div>
+      )}
     </div>
   );
 };
