@@ -310,7 +310,7 @@ export default function FlagSystem() {
               />
             </div>
             
-            {/* Action buttons - now in a row */}
+            {/* Action buttons - main buttons in row */}
             <div className="flex gap-3 w-full mb-3">
               <button
                 onClick={generateRandomWord}
@@ -331,11 +331,14 @@ export default function FlagSystem() {
               >
                 BG
               </button>
-              
+            </div>
+            
+            {/* Export button on second line */}
+            <div className="w-full mb-3">
               <button
                 disabled={!displayWord}
                 onClick={exportAsSvg}
-                className="w-full px-6 py-3 bg-white/10 border border-white/20 text-white font-geist-mono uppercase tracking-wider disabled:opacity-30 hover:bg-white/20 transition-all duration-300 mt-1"
+                className="w-full px-6 py-3 bg-white/10 border border-white/20 text-white font-geist-mono uppercase tracking-wider disabled:opacity-30 hover:bg-white/20 transition-all duration-300"
               >
                 EXPORT SVG
               </button>
