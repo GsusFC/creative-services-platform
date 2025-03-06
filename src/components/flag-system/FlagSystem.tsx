@@ -299,12 +299,11 @@ export default function FlagSystem() {
             
             {/* Text input */}
             <div className="w-full">
-              <label className="block mb-2 text-sm font-geist-mono text-white/80 uppercase tracking-wide">Create word (max {maxLength} letters)</label>
               <input
                 type="text"
                 ref={inputRef}
                 className="w-full bg-black border border-white/20 rounded-md py-3 px-4 text-xl font-geist-mono uppercase tracking-wider focus:border-[#00ff00] focus:outline-none"
-                placeholder="AAA..."
+                placeholder="TYPE OR GENERATE WORD..."
                 value={word}
                 onChange={(e) => setWord(e.target.value)}
               />
