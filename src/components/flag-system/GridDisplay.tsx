@@ -58,12 +58,12 @@ const GridDisplay: React.FC<GridDisplayProps> = ({ word, backgroundColor, showTe
       style={{ backgroundColor }}
     >
       <div className="flex justify-center items-center">
-        {/* Display usando flexbox + flexwrap con tamaño adaptativo */}
+        {/* Display usando flexbox + flexwrap con ancho fijo de 2 banderas */}
         <div 
           style={{ 
             display: 'flex', 
             flexWrap: 'wrap', 
-            width: `${compositionSize}px`, 
+            width: `${flagSize * 2}px`, 
             margin: '0 auto',
             justifyContent: 'center'
           }}
