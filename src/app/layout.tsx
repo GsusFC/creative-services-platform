@@ -12,11 +12,6 @@ const drukTextWide = localFont({
   variable: '--font-druk-text-wide',
 })
 
-const geist = localFont({
-  src: '../../public/fonts/Geist-Regular.woff2',
-  variable: '--font-geist',
-})
-
 const geistMono = localFont({
   src: '../../public/fonts/GeistMono-Regular.woff2',
   variable: '--font-geist-mono',
@@ -34,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`antialiased font-sans ${geist.variable} ${geistMono.variable} ${drukTextWide.variable}`}>
+      <body className={`antialiased ${geistMono.variable} ${drukTextWide.variable}`}>
         <Providers>
           <TooltipProvider>
             <Navbar />
