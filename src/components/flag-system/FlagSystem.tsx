@@ -68,6 +68,7 @@ const FlagDisplay = ({
                     padding: 0, 
                     float: 'left'
                   }}
+                  className="sm:w-[70px] sm:h-[70px] w-[50px] h-[50px]"
                 >
                   <img 
                     src={flag.flagPath} 
@@ -111,10 +112,9 @@ const FlagDisplay = ({
                 alt={`Bandera para la letra ${letter}`}
                   style={{ 
                     display: 'inline-block', 
-                    width: '70px', 
-                    height: '70px',
                     objectFit: 'contain'
                   }}
+                  className="sm:w-[70px] sm:h-[70px] w-[50px] h-[50px]"
               />
             </div>
           );
