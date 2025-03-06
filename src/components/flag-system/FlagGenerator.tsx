@@ -207,7 +207,7 @@ export default function FlagGenerator() {
           style={{ maxWidth: "min(66.66%, -200px + 100vh)", opacity: 1, transform: "none" }}
         >
           <div className="w-full aspect-square">
-            <FlagCanvas word={generatedWord} isRandom={isRandomWord} />
+            <FlagCanvas word={word} />
           </div>
         </div>
         

@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../admin/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/admin/components/ui/card"
 import Link from "next/link"
 import { DatabaseIcon, ArrowRightIcon, Settings2Icon } from "lucide-react"
 
@@ -13,21 +13,65 @@ export default function AdminPage() {
           <p className="text-gray-400">Accede a las herramientas de administración de la plataforma</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Link href="/admin/field-mapper" className="block group">
-            <Card className="bg-black/30 border border-white/10 hover:border-blue-500/70 transition-all duration-300">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <Link href="/flag-system" className="block group col-span-1">
+            <Card className="bg-black/30 border border-white/10 hover:border-yellow-500/70 transition-all duration-300">
               <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-white group-hover:text-blue-400 transition-colors">
+                <CardTitle className="flex items-center gap-2 text-white group-hover:text-yellow-400 transition-colors">
                   <DatabaseIcon className="h-5 w-5" />
-                  Field Mapper
+                  Flag System
                 </CardTitle>
                 <CardDescription className="text-gray-400">
-                  Versión original del Field Mapper
+                  Sistema de generación de banderas
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-500 mb-4">
-                  Herramienta para mapear campos entre Notion y el sitio web con validación de compatibilidad.
+                  Visualiza y genera imágenes de banderas náuticas a partir de texto.
+                </p>
+                <div className="flex justify-end">
+                  <ArrowRightIcon className="h-5 w-5 text-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+          
+          <Link href="/flag-system-v2" className="block group col-span-1">
+            <Card className="bg-black/30 border border-white/10 hover:border-green-500/70 transition-all duration-300">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2 text-white group-hover:text-green-400 transition-colors">
+                  <DatabaseIcon className="h-5 w-5" />
+                  Flag System V2
+                </CardTitle>
+                <CardDescription className="text-gray-400">
+                  Versión responsive del sistema
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-500 mb-4">
+                  Visualización adaptativa de banderas según el número de letras en diseño grid.
+                </p>
+                <div className="flex justify-end">
+                  <ArrowRightIcon className="h-5 w-5 text-green-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+          
+          <Link href="/flag-system-v3" className="block group col-span-1">
+            <Card className="bg-black/30 border border-white/10 hover:border-blue-500/70 transition-all duration-300">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2 text-white group-hover:text-blue-400 transition-colors">
+                  <DatabaseIcon className="h-5 w-5" />
+                  Flag System V3
+                </CardTitle>
+                <CardDescription className="text-gray-400">
+                  Versión optimizada del sistema
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-500 mb-4">
+                  Sistema mejorado con historial, cacheo de imágenes y exportación a SVG. Usando hooks personalizados.
                 </p>
                 <div className="flex justify-end">
                   <ArrowRightIcon className="h-5 w-5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -35,30 +79,32 @@ export default function AdminPage() {
               </CardContent>
             </Card>
           </Link>
-          <Link href="/admin/field-mapper-v2" className="block group">
-            <Card className="bg-black/30 border border-white/10 hover:border-purple-500/70 transition-all duration-300">
+          
+          <Link href="/admin/case-studies" className="block group col-span-1">
+            <Card className="bg-black/30 border border-white/10 hover:border-green-500/70 transition-all duration-300">
               <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-white group-hover:text-purple-400 transition-colors">
+                <CardTitle className="flex items-center gap-2 text-white group-hover:text-green-400 transition-colors">
                   <DatabaseIcon className="h-5 w-5" />
-                  Field Mapper v2
+                  CMS Case Studies
                 </CardTitle>
                 <CardDescription className="text-gray-400">
-                  Mapear campos de Notion a la web
+                  Gestionar estudios de caso
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-500 mb-4">
-                  Configura cómo se muestran los campos de Notion en el sitio web, estableciendo las relaciones entre ambos.
+                  Crear, editar y publicar estudios de caso para el sitio web.
                 </p>
                 <div className="flex justify-end">
-                  <ArrowRightIcon className="h-5 w-5 text-purple-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ArrowRightIcon className="h-5 w-5 text-green-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
               </CardContent>
             </Card>
           </Link>
           
+          
           {/* Puedes agregar más tarjetas para otras herramientas de administración aquí */}
-          <Link href="#" className="block group opacity-70 cursor-not-allowed">
+          <Link href="#" className="block group opacity-70 cursor-not-allowed col-span-1">
             <Card className="bg-black/30 border border-white/10">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-white">

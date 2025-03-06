@@ -3,8 +3,9 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRef } from 'react'
-import { featuredProjects } from '@/data/projects'
+import { useRef, useEffect, useState } from 'react'
+import { CaseStudy } from '@/types/case-study'
+import { getFeaturedCaseStudies } from '@/lib/case-studies/service'
 
 export function CaseStudies() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -15,8 +16,25 @@ export function CaseStudies() {
 
   const y = useTransform(scrollYProgress, [0, 1], [100, 0])
   const opacity = useTransform(scrollYProgress, [0, 0.2], [0, 1])
+  
+  const [featuredCases, setFeaturedCases] = useState<CaseStudy[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  const projects = featuredProjects.slice(0, 4)
+  useEffect(() => {
+    const fetchCases = async () => {
+      try {
+        setIsLoading(true)
+        const cases = await getFeaturedCaseStudies()
+        setFeaturedCases(cases.filter(cs => cs.status === 'published').slice(0, 4))
+      } catch (error) {
+        console.error('Error al cargar los estudios de caso destacados:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchCases()
+  }, [])
 
   return (
     <div className="relative bg-black">
@@ -79,46 +97,79 @@ export function CaseStudies() {
           </motion.div>
 
           <div className="relative">
-            <div className="relative z-20">
-              {projects.map((project, index) => (
-                <motion.div
-                  key={project.slug}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="last:mb-0"
-                >
-                  <Link 
-                    href={`/cases/${project.slug}`}
-                    className="group block"
-                  >
-                    <div className="border-t border-white/10 py-6 group-hover:bg-white/5 transition-colors">
-                      <div className="flex gap-2">
-                        <div className="w-[40px] flex-shrink-0">
-                          <p 
-                            className="text-sm text-[#00ff00] tracking-wider uppercase" 
-                            style={{ fontFamily: 'var(--font-geist-mono)' }}
-                          >
-                            C{String(index + 1).padStart(2, '0')}
-                          </p>
-                        </div>
-                        <div className="flex-1 space-y-6">
-                          <h3 className="text-6xl md:text-8xl xl:text-9xl font-druk text-white group-hover:text-[#ff0000] transition-colors leading-[0.85] uppercase">
-                            {project.title}
-                          </h3>
-                          <p 
-                            className="text-white/60 text-lg max-w-3xl" 
-                            style={{ fontFamily: 'var(--font-geist-mono)' }}
-                          >
-                            {project.description}
-                          </p>
-                        </div>
+            {isLoading ? (
+              <div className="space-y-6 py-6">
+                {[1, 2, 3, 4].map((_, index) => (
+                  <div key={index} className="border-t border-white/10 py-6">
+                    <div className="flex gap-2">
+                      <div className="w-[40px] flex-shrink-0">
+                        <div className="h-4 bg-white/10 animate-pulse w-full rounded"></div>
+                      </div>
+                      <div className="flex-1 space-y-6">
+                        <div className="h-16 bg-white/10 animate-pulse w-3/4 rounded"></div>
+                        <div className="h-4 bg-white/10 animate-pulse w-full rounded"></div>
                       </div>
                     </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
+                  </div>
+                ))}
+              </div>
+            ) : featuredCases.length > 0 ? (
+              <div className="relative z-20">
+                {featuredCases.map((project, index) => (
+                  <motion.div
+                    key={project.slug}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="last:mb-0"
+                  >
+                    <Link 
+                      href={`/cases/${project.slug}`}
+                      className="group block"
+                    >
+                      <div className="border-t border-white/10 py-6 group-hover:bg-white/5 transition-colors">
+                        <div className="flex gap-2">
+                          <div className="w-[40px] flex-shrink-0">
+                            <p 
+                              className="text-sm text-[#00ff00] tracking-wider uppercase" 
+                              style={{ fontFamily: 'var(--font-geist-mono)' }}
+                            >
+                              C{String(index + 1).padStart(2, '0')}
+                            </p>
+                          </div>
+                          <div className="flex-1 space-y-6">
+                            <h3 className="text-6xl md:text-8xl xl:text-9xl font-druk text-white group-hover:text-[#ff0000] transition-colors leading-[0.85] uppercase">
+                              {project.title}
+                            </h3>
+                            <p 
+                              className="text-white/60 text-lg max-w-3xl" 
+                              style={{ fontFamily: 'var(--font-geist-mono)' }}
+                            >
+                              {project.description}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-10 text-center">
+                <p 
+                  className="text-white/40 text-lg" 
+                  style={{ fontFamily: 'var(--font-geist-mono)' }}
+                >
+                  No hay proyectos destacados disponibles.
+                </p>
+                <Link 
+                  href="/admin/case-studies/new" 
+                  className="mt-4 inline-block py-2 px-4 bg-[#00ff00] text-black font-medium rounded hover:bg-[#00cc00] transition-colors"
+                >
+                  Crear Proyecto
+                </Link>
+              </div>
+            )}
           </div>
 
 

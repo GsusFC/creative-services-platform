@@ -8,7 +8,6 @@ export const inter = Inter({
 })
 
 export const clash = localFont({
-  src: '../fonts/ClashDisplay-Variable.woff2',
   display: 'swap',
   variable: '--font-clash',
 })

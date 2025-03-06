@@ -3,7 +3,22 @@ export interface FlagData {
   letter: string;
   flagPath: string;
   name: string;
+  letterCode?: string;
 }
+
+// Set para caché de imágenes precargadas
+const imageCache = new Set<string>();
+
+// Función para precargar imágenes de banderas
+export const preloadFlagImages = (): void => {
+  Object.values(FLAGS).forEach(flag => {
+    if (!imageCache.has(flag.flagPath)) {
+      const img = new Image();
+      img.src = flag.flagPath;
+      imageCache.add(flag.flagPath);
+    }
+  });
+};
 
 // Mapeo de letras a banderas náuticas reales desde los archivos SVG
 const FLAGS: Record<string, FlagData> = {

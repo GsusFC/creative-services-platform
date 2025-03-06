@@ -47,7 +47,6 @@ export default function FlagVisualizerApp() {
   const [word, setWord] = useState('');
   const [maxLength, setMaxLength] = useState(6);
   const [isGenerating, setIsGenerating] = useState(false);
-  const canvasRef = useRef<HTMLDivElement>(null);
   
   // Manejar entrada del usuario
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
