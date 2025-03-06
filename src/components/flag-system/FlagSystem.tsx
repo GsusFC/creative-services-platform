@@ -425,8 +425,7 @@ export default function FlagSystem() {
           <HistoryPanel />
         </div>
         
-        {/* Versión móvil compacta del historial */}
-        <MobileHistoryPanel />
+        {/* Historial eliminado en versión móvil según requisito */}
       </div>
     </div>
   );
