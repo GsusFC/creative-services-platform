@@ -1,211 +1,103 @@
-import { CaseStudy, FeaturedCaseUpdate } from "@/types/case-study";
+import { v4 as uuidv4 } from 'uuid';
+import { CaseStudy, FeaturedCaseUpdate } from '@/types/case-study';
+import { getMockCaseStudies, getMockCaseStudyBySlug } from './mock-service';
 
-// Base URL para las peticiones API
-const API_BASE_URL = "/api/cms/case-studies";
+// Almacenamiento temporal para simular una base de datos
+let localCaseStudies: CaseStudy[] = [];
+
+// Inicializar con los case studies de mock
+(async () => {
+  try {
+    localCaseStudies = await getMockCaseStudies();
+  } catch (error) {
+    console.error('Error al inicializar case studies:', error);
+  }
+})();
 
 /**
- * Obtiene todos los case studies
- * @returns Promise con el arreglo de case studies
+ * Crear un nuevo case study
  */
-export async function getAllCaseStudies(): Promise<CaseStudy[]> {
-  try {
-    // En Next.js, cuando se ejecuta en el servidor, necesitamos una URL absoluta
-    // Como solución alternativa, vamos a usar directamente el servicio mock
-    // para evitar problemas con las URLs relativas en el servidor
-    const { getMockCaseStudies } = await import('./mock-service');
-    return await getMockCaseStudies();
+export async function createCaseStudy(caseStudyData: Omit<CaseStudy, 'id'>): Promise<CaseStudy> {
+  // Generar un ID único
+  const id = uuidv4();
+  
+  // Crear el nuevo case study con valores por defecto para campos faltantes
+  const newCaseStudy: CaseStudy = {
+    id,
+    title: caseStudyData.title,
+    client: caseStudyData.client,
+    description: caseStudyData.description,
+    description2: caseStudyData.description2 || '',
+    mediaItems: caseStudyData.mediaItems || [],
+    tags: caseStudyData.tags || [],
+    order: caseStudyData.order || localCaseStudies.length + 1,
+    slug: caseStudyData.slug || `case-study-${id.substring(0, 8)}`,
+    status: caseStudyData.status || 'draft',
+    featured: caseStudyData.featured || false,
+    featuredOrder: caseStudyData.featuredOrder || 999
+  };
+  
+  // Agregar a nuestro almacenamiento local
+  localCaseStudies.push(newCaseStudy);
+  
+  return newCaseStudy;
+}
+
+/**
+ * Actualizar un case study existente
+ */
+export async function updateCaseStudy(id: string, caseStudyData: Partial<CaseStudy>): Promise<CaseStudy> {
+  // Buscar el índice del case study en nuestro almacenamiento local
+  const index = localCaseStudies.findIndex(cs => cs.id === id);
+  
+  if (index === -1) {
+    throw new Error(`Case study con ID ${id} no encontrado`);
+  }
+  
+  // Actualizar el case study, manteniendo el ID original
+  const updatedCaseStudy: CaseStudy = {
+    ...localCaseStudies[index],
+    ...caseStudyData,
+    id // Asegurar que el ID no cambie
+  };
+  
+  // Actualizar en nuestro almacenamiento local
+  localCaseStudies[index] = updatedCaseStudy;
+  
+  return updatedCaseStudy;
+}
+
+/**
+ * Eliminar un case study
+ */
+export async function deleteCaseStudy(id: string): Promise<void> {
+  // Filtrar el case study a eliminar
+  localCaseStudies = localCaseStudies.filter(cs => cs.id !== id);
+}
+
+/**
+ * Actualizar el estado de destacado de los case studies
+ */
+export async function updateFeaturedCaseStudies(updates: FeaturedCaseUpdate[]): Promise<void> {
+  // Para cada actualización, modificar el case study correspondiente
+  for (const update of updates) {
+    const index = localCaseStudies.findIndex(cs => cs.id === update.id);
     
-    /* Código original comentado:
-    const res = await fetch(API_BASE_URL, {
-      next: { revalidate: 60 } // ISR - revalidar cada 60 segundos
-    });
-
-    if (!res.ok) {
-      throw new Error("Error al obtener los case studies");
+    if (index !== -1) {
+      localCaseStudies[index] = {
+        ...localCaseStudies[index],
+        featured: update.featured,
+        featuredOrder: update.featuredOrder
+      };
     }
-
-    return await res.json();
-    */
-  } catch (error) {
-    console.error("Error al obtener los case studies:", error);
-    return [];
   }
 }
 
 /**
- * Obtiene un case study por su slug
- * @param slug El slug del case study
- * @returns Promise con el case study o null si no existe
- */
-export async function getCaseStudyBySlug(slug: string): Promise<CaseStudy | null> {
-  try {
-    // Como solución alternativa, vamos a usar directamente el servicio mock
-    const { getMockCaseStudyBySlug } = await import('./mock-service');
-    return await getMockCaseStudyBySlug(slug);
-    
-    /* Código original comentado:
-    const res = await fetch(`${API_BASE_URL}/${slug}`, {
-      next: { revalidate: 60 } // ISR - revalidar cada 60 segundos
-    });
-
-    if (!res.ok) {
-      throw new Error(`Error al obtener el case study con slug ${slug}`);
-    }
-
-    return await res.json();
-    */
-  } catch (error) {
-    console.error(`Error al obtener el case study con slug ${slug}:`, error);
-    return null;
-  }
-}
-
-/**
- * Obtiene los case studies destacados para la home
- * @returns Promise con el arreglo de case studies destacados
+ * Obtener los case studies destacados
  */
 export async function getFeaturedCaseStudies(): Promise<CaseStudy[]> {
-  try {
-    // Como solución alternativa, vamos a usar directamente el servicio mock
-    const { getMockFeaturedCaseStudies } = await import('./mock-service');
-    return await getMockFeaturedCaseStudies();
-    
-    /* Código original comentado:
-    const res = await fetch(`${API_BASE_URL}/featured`, {
-      next: { revalidate: 60 } // ISR - revalidar cada 60 segundos
-    });
-
-    if (!res.ok) {
-      throw new Error("Error al obtener los case studies destacados");
-    }
-
-    return await res.json();
-    */
-  } catch (error) {
-    console.error("Error al obtener los case studies destacados:", error);
-    return [];
-  }
-}
-
-/**
- * Crea un nuevo case study
- * @param caseStudy El case study a crear
- * @returns Promise con el case study creado
- */
-export async function createCaseStudy(caseStudy: Omit<CaseStudy, "id">): Promise<CaseStudy | null> {
-  try {
-    const res = await fetch(API_BASE_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(caseStudy),
-    });
-
-    if (!res.ok) {
-      throw new Error("Error al crear el case study");
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("Error al crear el case study:", error);
-    return null;
-  }
-}
-
-/**
- * Actualiza un case study existente
- * @param slug El slug del case study a actualizar
- * @param caseStudy Los datos a actualizar
- * @returns Promise con el case study actualizado
- */
-export async function updateCaseStudy(slug: string, caseStudy: Partial<CaseStudy>): Promise<CaseStudy | null> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/${slug}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(caseStudy),
-    });
-
-    if (!res.ok) {
-      throw new Error(`Error al actualizar el case study con slug ${slug}`);
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error(`Error al actualizar el case study con slug ${slug}:`, error);
-    return null;
-  }
-}
-
-/**
- * Publica un case study
- * @param slug El slug del case study a publicar
- * @returns Promise con el case study publicado
- */
-export async function publishCaseStudy(slug: string): Promise<CaseStudy | null> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/${slug}/publish`, {
-      method: "POST",
-    });
-
-    if (!res.ok) {
-      throw new Error(`Error al publicar el case study con slug ${slug}`);
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error(`Error al publicar el case study con slug ${slug}:`, error);
-    return null;
-  }
-}
-
-/**
- * Actualiza los case studies destacados
- * @param updates Arreglo con las actualizaciones de los case studies destacados
- * @returns Promise con el resultado de la operación
- */
-export async function updateFeaturedCaseStudies(updates: FeaturedCaseUpdate[]): Promise<{ success: boolean }> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/featured`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ cases: updates }),
-    });
-
-    if (!res.ok) {
-      throw new Error("Error al actualizar los case studies destacados");
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("Error al actualizar los case studies destacados:", error);
-    return { success: false };
-  }
-}
-
-/**
- * Elimina un case study
- * @param slug El slug del case study a eliminar
- * @returns Promise con el resultado de la operación
- */
-export async function deleteCaseStudy(slug: string): Promise<{ success: boolean }> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/${slug}`, {
-      method: "DELETE",
-    });
-
-    if (!res.ok) {
-      throw new Error(`Error al eliminar el case study con slug ${slug}`);
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error(`Error al eliminar el case study con slug ${slug}:`, error);
-    return { success: false };
-  }
+  return localCaseStudies
+    .filter(cs => cs.featured && cs.status === 'published')
+    .sort((a, b) => a.featuredOrder - b.featuredOrder);
 }

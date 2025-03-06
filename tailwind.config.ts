@@ -46,7 +46,6 @@ export default {
         },
       },
       fontFamily: {
-        'geist-mono': ['var(--font-geist-mono)', 'monospace'],
         'druk': ['var(--font-druk-text-wide)', 'sans-serif'],
         sans: ['var(--font-geist-mono)', 'monospace'],
       },

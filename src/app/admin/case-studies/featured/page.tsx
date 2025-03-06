@@ -1,43 +1,27 @@
-import FeaturedCasesManager from "@/components/admin/FeaturedCasesManager";
+'use client'
 
-/**
- * Página de administración para gestionar los casos destacados
- * Integra el componente FeaturedCasesManager
- */
-export default function FeaturedCasesPage() {
+import FeaturedCasesManager from '@/components/admin/FeaturedCasesManager'
+import Link from 'next/link'
+import { ArrowLeftIcon } from 'lucide-react'
+
+export default function FeaturedCaseStudiesPage() {
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="container mx-auto py-8">
-        <header className="mb-8">
-          <h1 className="text-4xl font-druk mb-2">CASOS DESTACADOS</h1>
-          <p className="text-gray-400 font-mono">
-            Gestiona los casos de estudio que aparecen en la página principal
-          </p>
-        </header>
-
-        <div className="flex flex-col gap-4">
-          <div className="bg-gray-900/30 rounded-lg p-2 mb-6">
-            <h2 className="font-druk text-2xl mb-4">INSTRUCCIONES</h2>
-            <ul className="list-disc pl-6 space-y-2 text-gray-300 font-mono text-sm">
-              <li>Solo puedes destacar un máximo de 4 casos de estudio</li>
-              <li>El orden en que aparecen en la lista determina su posición en la página principal</li>
-              <li>Usa las flechas para reorganizar los casos destacados</li>
-              <li>Usa el botón ❌ para quitar un caso de los destacados</li>
-              <li>Usa el botón ➕ para añadir un caso a los destacados</li>
-              <li>Recuerda guardar los cambios cuando termines</li>
-            </ul>
+    <div className="min-h-screen bg-black bg-gradient-to-br from-black via-black/95 to-purple-950/10 text-white p-8 pt-24">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Gestión de Proyectos Destacados</h1>
+            <p className="text-gray-400">Administra los proyectos que aparecerán en la sección destacada de la home</p>
           </div>
-
-          {/* Componente principal para gestionar casos destacados */}
-          <FeaturedCasesManager />
           
-          <div className="mt-8 text-gray-400 font-mono text-xs">
-            <h3 className="font-druk text-gray-300 text-sm mb-2">CONSIDERACIONES:</h3>
-            <p>Los cambios realizados en esta página afectarán inmediatamente a la visualización de los casos destacados en la página principal.</p>
-            <p className="mt-2">Si no ves tus cambios reflejados, puede ser necesario regenerar la página home o limpiar la caché del navegador.</p>
-          </div>
+          <Link href="/admin/case-studies" className="inline-flex items-center px-4 py-2 bg-white/10 hover:bg-white/20 rounded-md text-white font-medium transition-colors">
+            <ArrowLeftIcon className="mr-2 h-5 w-5" />
+            Volver
+          </Link>
         </div>
+        
+        <FeaturedCasesManager />
       </div>
     </div>
-  );
+  )
 }

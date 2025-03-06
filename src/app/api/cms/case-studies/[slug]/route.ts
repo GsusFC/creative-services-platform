@@ -1,30 +1,39 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getMockCaseStudyBySlug } from '@/lib/case-studies/mock-service';
+
+interface RouteParams {
+  params: {
+    slug: string;
+  };
+}
 
 /**
  * GET /api/cms/case-studies/[slug]
  * Obtiene un case study específico por su slug
  */
-export async function GET(
-  request: Request,
-  { params }: { params: { slug: string } }
-) {
+export async function GET(_request: NextRequest, { params }: RouteParams) {
   try {
     const { slug } = params;
     
-    // Como el CMS no está activo, usamos el servicio mock
+    if (!slug) {
+      return NextResponse.json(
+        { error: 'Slug no proporcionado' },
+        { status: 400 }
+      );
+    }
+    
     const caseStudy = await getMockCaseStudyBySlug(slug);
     
     if (!caseStudy) {
       return NextResponse.json(
-        { error: `No se encontró el case study con slug ${slug}` },
+        { error: 'Case study no encontrado' },
         { status: 404 }
       );
     }
     
     return NextResponse.json(caseStudy);
   } catch (error) {
-    console.error(`Error al obtener el case study:`, error);
+    console.error(`Error al obtener el case study con slug ${params.slug}:`, error);
     return NextResponse.json(
       { error: 'Error interno al obtener el case study' },
       { status: 500 }

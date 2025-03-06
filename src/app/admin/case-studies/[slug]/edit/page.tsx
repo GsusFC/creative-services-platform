@@ -1,159 +1,133 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useParams } from 'next/navigation';
-import { CaseStudy } from '@/types/case-study';
-import CaseStudyForm from '@/components/admin/CaseStudyForm';
-import { updateCaseStudy, getCaseStudyBySlug } from '@/lib/case-studies/service';
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import CaseStudyForm from '@/components/admin/CaseStudyForm'
+import { CaseStudy } from '@/types/case-study'
 
-export default function EditCaseStudyPage() {
-  const router = useRouter();
-  const params = useParams();
-  const slug = params.slug as string;
+interface EditCaseStudyPageProps {
+  params: {
+    slug: string
+  }
+}
+
+export default function EditCaseStudyPage({ params }: EditCaseStudyPageProps) {
+  const router = useRouter()
+  const { slug } = params
   
-  const [caseStudy, setCaseStudy] = useState<CaseStudy | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
+  const [caseStudy, setCaseStudy] = useState<CaseStudy | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  // Cargar datos del case study
   useEffect(() => {
     const fetchCaseStudy = async () => {
       try {
-        setLoading(true);
-        const data = await getCaseStudyBySlug(slug);
+        setIsLoading(true)
+        setError(null)
         
-        if (!data) {
-          throw new Error('No se encontró el estudio de caso');
+        const response = await fetch(`/api/cms/case-studies/${slug}`)
+        
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('El estudio de caso no existe')
+          }
+          throw new Error('Error al cargar el estudio de caso')
         }
         
-        setCaseStudy(data);
+        const data = await response.json()
+        setCaseStudy(data)
       } catch (err) {
-        console.error('Error fetching case study:', err);
-        setError('Error al cargar el estudio de caso. Por favor, intenta de nuevo.');
+        console.error('Error al cargar el case study:', err)
+        setError(err instanceof Error ? err.message : 'Error desconocido')
       } finally {
-        setLoading(false);
+        setIsLoading(false)
       }
-    };
-    
-    if (slug) {
-      fetchCaseStudy();
     }
-  }, [slug]);
-  
-  const handleSubmit = async (caseStudyData: Omit<CaseStudy, 'id'>) => {
-    if (!caseStudy) return;
-    
-    setError(null);
-    setIsSubmitting(true);
+
+    if (slug) {
+      fetchCaseStudy()
+    }
+  }, [slug])
+
+  const handleSubmit = async (data: Omit<CaseStudy, 'id'>) => {
+    if (!caseStudy) return
     
     try {
-      // Asegurar que los campos obligatorios estén presentes
-      if (!caseStudyData.title) throw new Error('El título es obligatorio');
-      if (!caseStudyData.client) throw new Error('El cliente es obligatorio');
-      if (!caseStudyData.description) throw new Error('La descripción corta es obligatoria');
+      setIsSubmitting(true)
+      setError(null)
       
-      // Actualizar el case study
-      const updatedCaseStudy = await updateCaseStudy(caseStudy.id, {
-        ...caseStudyData,
-        // Si el slug ha cambiado, asegúrate de que esté formateado correctamente
-        slug: caseStudyData.slug !== caseStudy.slug 
-          ? caseStudyData.slug
-              .toLowerCase()
-              .normalize('NFD').replace(/[\u0300-\u036f]/g, '') 
-              .replace(/[^\w\s-]/g, '')
-              .replace(/\s+/g, '-')
-              .replace(/-+/g, '-')
-          : caseStudyData.slug
-      });
+      const response = await fetch('/api/cms/case-studies', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          id: caseStudy.id, // Incluir el ID para la actualización
+        }),
+      })
       
-      if (!updatedCaseStudy) {
-        throw new Error('Error al actualizar el estudio de caso');
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Error al actualizar el estudio de caso')
       }
       
-      // Redirigir a la lista de estudios de caso
-      router.push('/admin/case-studies');
-      router.refresh(); // Actualizar los datos en la página de listado
+      // Redireccionar a la lista después de actualizar
+      router.push('/admin/case-studies')
+      router.refresh()
     } catch (err) {
-      console.error('Error updating case study:', err);
-      setError(err instanceof Error ? err.message : 'Error desconocido');
+      console.error('Error al actualizar el case study:', err)
+      setError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
-  
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-black bg-gradient-to-br from-black via-black/95 to-purple-950/10 text-white p-8 pt-24">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-8 flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Cargando...</h1>
-              <p className="text-gray-400">Obteniendo datos del estudio de caso</p>
-            </div>
-          </div>
-          
-          <div className="animate-pulse space-y-4">
-            <div className="h-12 bg-white/5 rounded-md"></div>
-            <div className="h-40 bg-white/5 rounded-md"></div>
-            <div className="h-80 bg-white/5 rounded-md"></div>
-          </div>
-        </div>
-      </div>
-    );
   }
-  
-  if (error || !caseStudy) {
-    return (
-      <div className="min-h-screen bg-black bg-gradient-to-br from-black via-black/95 to-purple-950/10 text-white p-8 pt-24">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Error</h1>
-            <p className="text-red-400">{error || 'No se pudo cargar el estudio de caso'}</p>
-            
-            <button
-              onClick={() => router.push('/admin/case-studies')}
-              className="mt-4 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-md text-white transition"
-            >
-              Volver al listado
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  
+
   return (
     <div className="min-h-screen bg-black bg-gradient-to-br from-black via-black/95 to-purple-950/10 text-white p-8 pt-24">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Editar Case Study</h1>
-              <p className="text-gray-400">Actualiza los detalles del estudio de caso</p>
-            </div>
-            
+          <h1 className="text-3xl font-bold mb-2">
+            Editar Estudio de Caso
+            {caseStudy && `: ${caseStudy.title}`}
+          </h1>
+          <p className="text-gray-400">Actualiza la información del estudio de caso</p>
+        </div>
+        
+        {error && (
+          <div className="bg-red-900/50 border border-red-500 text-white p-4 rounded-md mb-6">
+            {error}
+          </div>
+        )}
+        
+        {isLoading ? (
+          <div className="animate-pulse space-y-6">
+            <div className="h-12 bg-white/10 rounded"></div>
+            <div className="h-64 bg-white/10 rounded"></div>
+            <div className="h-96 bg-white/10 rounded"></div>
+          </div>
+        ) : caseStudy ? (
+          <CaseStudyForm
+            initialData={caseStudy}
+            onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+          />
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className="text-xl text-red-400 mb-4">
+              No se pudo cargar el estudio de caso
+            </p>
             <button
               onClick={() => router.push('/admin/case-studies')}
-              className="px-4 py-2 border border-gray-700 rounded-md text-gray-300 hover:bg-gray-900 transition"
+              className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-md text-white font-medium transition-colors"
             >
               Volver al listado
             </button>
           </div>
-          
-          {error && (
-            <div className="mb-8 bg-red-900/50 border border-red-500 p-4 rounded-md">
-              <p className="text-red-200">{error}</p>
-            </div>
-          )}
-          
-          <CaseStudyForm 
-            initialData={caseStudy} 
-            onSubmit={handleSubmit} 
-            isSubmitting={isSubmitting}
-          />
-        </div>
+        ) : null}
       </div>
     </div>
-  );
+  )
 }

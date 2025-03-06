@@ -1,51 +1,30 @@
 'use client'
 
-import { useEffect } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { ArrowLeftIcon } from 'lucide-react'
 
 export default function CaseStudiesLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  // Ocultamos cualquier campo de texto extra que pueda aparecer en la interfaz
-  useEffect(() => {
-    // Ocultar los campos de texto problemáticos después de cargar
-    const hideExtraFields = () => {
-      // Identificar y ocultar los campos de texto utilizando los selectores específicos
-      const extraTextFields = document.querySelectorAll('.extra-input-field, .legacy-text-field')
-      
-      if (extraTextFields.length > 0) {
-        extraTextFields.forEach(field => {
-          // Ocultar el campo
-          (field as HTMLElement).style.display = 'none'
-        })
-        console.log(`Se ocultaron ${extraTextFields.length} campos de texto adicionales`)
-      }
-    }
-    
-    // Ejecutar inmediatamente y nuevamente después de un pequeño retraso 
-    // para asegurar que los elementos estén en el DOM
-    hideExtraFields()
-    const timer = setTimeout(hideExtraFields, 500)
-    
-    // También escuchar cambios en el DOM por si los campos aparecen dinámicamente
-    const observer = new MutationObserver(() => {
-      hideExtraFields()
-    })
-    
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    })
-    
-    return () => {
-      clearTimeout(timer)
-      observer.disconnect()
-    }
-  }, [])
-
+  const pathname = usePathname()
+  const isRoot = pathname === '/admin/case-studies'
+  
   return (
     <>
+      {isRoot ? null : (
+        <div className="fixed top-24 left-8 z-10">
+          <Link 
+            href="/admin/case-studies" 
+            className="flex items-center px-3 py-2 bg-black/50 backdrop-blur-sm border border-white/10 rounded-md text-gray-300 hover:text-white transition-colors"
+          >
+            <ArrowLeftIcon className="mr-2 h-4 w-4" />
+            Volver al listado
+          </Link>
+        </div>
+      )}
       {children}
     </>
   )
