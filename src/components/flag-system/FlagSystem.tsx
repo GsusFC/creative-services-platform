@@ -180,7 +180,7 @@ export default function FlagSystem() {
   return (
     <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-4 md:gap-8 mb-8 p-0">
       {/* Flag display area - optimized for all screen sizes */}
-      <div className="w-full lg:w-[75%] flex justify-center mx-auto px-4 lg:px-0">
+      <div className="w-full lg:w-[65%] flex justify-center mx-auto px-4 lg:px-0">
         <div className="w-full aspect-square">
           <div className="flex justify-center w-full relative">
             <div 
@@ -202,33 +202,23 @@ export default function FlagSystem() {
               }}
               className="transition-all duration-300"
             >
-              {/* Sistema de tabs y visualización adaptativa */}
-              <>
-                <div className="absolute top-3 left-0 right-0 flex justify-center z-10">
-                  <TabSelector 
-                    activeMode={displayMode} 
-                    onChange={setDisplayMode} 
-                  />
-                </div>
-                
-                {/* Renderizar el componente adecuado según el modo activo */}
-                {displayMode === 'classic' && (
-                  <ClassicDisplay word={displayWord} backgroundColor={backgroundColor} />
-                )}
-                {displayMode === 'grid' && (
-                  <GridDisplay word={displayWord} backgroundColor={backgroundColor} />
-                )}
-                {displayMode === 'adaptive' && (
-                  <AdaptiveDisplay word={displayWord} backgroundColor={backgroundColor} />
-                )}
-              </>
+              {/* Renderizar el componente adecuado según el modo activo */}
+              {displayMode === 'classic' && (
+                <ClassicDisplay word={displayWord} backgroundColor={backgroundColor} />
+              )}
+              {displayMode === 'grid' && (
+                <GridDisplay word={displayWord} backgroundColor={backgroundColor} />
+              )}
+              {displayMode === 'adaptive' && (
+                <AdaptiveDisplay word={displayWord} backgroundColor={backgroundColor} />
+              )}
             </div>
           </div>
         </div>
       </div>
       
       {/* Control panel - mobile optimized */}
-      <div className="w-full lg:w-[25%] px-4 lg:px-0">
+      <div className="w-full lg:w-[35%] px-4 lg:px-0">
         {/* Mobile compact controls - optimizados */}
         <div className="lg:hidden w-full bg-black/50 backdrop-blur-sm rounded-lg p-3 border border-white/10">
           <div className="flex flex-col gap-2">
