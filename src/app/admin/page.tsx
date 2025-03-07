@@ -140,12 +140,12 @@ export default function AdminPage() {
           </Card>
         </motion.div>
         
-        {/* Secciones principales */}
+        {/* Secciones principales - Quitamos Flag System ya que está en navbar */}
         <motion.div 
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           <motion.div variants={itemVariants}>
             <Link href="/admin/case-studies" className="block group">
@@ -192,40 +192,40 @@ export default function AdminPage() {
           </motion.div>
           
           <motion.div variants={itemVariants}>
-            <Link href="/flag-system-v3" className="block group">
-              <Card className="bg-gradient-to-br from-gray-900/90 to-gray-950/95 border border-white/10 hover:border-blue-500/50 hover:bg-gray-900/80 transition-all duration-300 shadow-xl h-full">
+            <Link href="/admin/settings" className="block group">
+              <Card className="bg-gradient-to-br from-gray-900/90 to-gray-950/95 border border-white/10 hover:border-purple-500/50 hover:bg-gray-900/80 transition-all duration-300 shadow-xl h-full">
                 <CardHeader className="pb-4 border-b border-white/5 bg-black/20">
-                  <CardTitle className="flex items-center gap-3 text-xl text-white group-hover:text-blue-400 transition-colors">
-                    <div className="p-2 bg-blue-500/20 rounded-lg">
-                      <DatabaseIcon className="h-5 w-5 text-blue-400" />
+                  <CardTitle className="flex items-center gap-3 text-xl text-white group-hover:text-purple-400 transition-colors">
+                    <div className="p-2 bg-purple-500/20 rounded-lg">
+                      <Settings2Icon className="h-5 w-5 text-purple-400" />
                     </div>
-                    Flag System V3
+                    Configuración
                   </CardTitle>
                   <CardDescription className="text-gray-400">
-                    Sistema avanzado de generación de banderas
+                    Configuración y opciones del sistema
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-6">
                   <ul className="text-gray-300 space-y-3 mb-8">
                     <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                      Historial avanzado de combinaciones
+                      <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
+                      Gestionar shortcuts
                     </li>
                     <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                      Cacheo automático de imágenes
+                      <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
+                      Configurar accesos rápidos
                     </li>
                     <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                      Exportación a formatos vectoriales
+                      <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
+                      Enlaces personalizados
                     </li>
                     <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                      Personalización avanzada
+                      <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
+                      Opciones del sistema
                     </li>
                   </ul>
                   <div className="flex justify-end">
-                    <div className="flex items-center gap-2 text-blue-400 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-0 group-hover:translate-x-1">
+                    <div className="flex items-center gap-2 text-purple-400 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-0 group-hover:translate-x-1">
                       <span className="text-sm font-medium">Acceder</span>
                       <ArrowRightIcon className="h-4 w-4" />
                     </div>
@@ -233,47 +233,6 @@ export default function AdminPage() {
                 </CardContent>
               </Card>
             </Link>
-          </motion.div>
-          
-          <motion.div variants={itemVariants}>
-            <div className="cursor-not-allowed opacity-80">
-              <Card className="bg-gradient-to-br from-gray-900/90 to-gray-950/95 border border-white/10 transition-all duration-300 shadow-xl h-full">
-                <CardHeader className="pb-4 border-b border-white/5 bg-black/20">
-                  <CardTitle className="flex items-center gap-3 text-xl text-white transition-colors">
-                    <div className="p-2 bg-purple-500/20 rounded-lg">
-                      <Settings2Icon className="h-5 w-5 text-purple-400" />
-                    </div>
-                    Configuración
-                  </CardTitle>
-                  <CardDescription className="text-gray-400">
-                    Configuración global del sitio
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <ul className="text-gray-500 space-y-3 mb-8">
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-purple-500/50"></div>
-                      Opciones generales
-                    </li>
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-purple-500/50"></div>
-                      Usuarios y permisos
-                    </li>
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-purple-500/50"></div>
-                      Configuración API
-                    </li>
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-purple-500/50"></div>
-                      Informes analytics
-                    </li>
-                  </ul>
-                  <div className="flex justify-end">
-                    <span className="text-xs font-medium text-white/40 uppercase bg-white/5 px-2 py-1 rounded">Próximamente</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
           </motion.div>
         </motion.div>
       </div>

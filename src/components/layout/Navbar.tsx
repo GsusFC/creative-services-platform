@@ -120,8 +120,14 @@ const Navbar = () => {
           />
         </AnimatePresence>
 
-        {/* Admin Button (reemplaza Start Button) */}
+        {/* Admin Button y Settings */}
         <div className="flex items-center gap-4">
+          <Link
+            href="/settings"
+            className="hidden md:flex items-center text-[13px] font-medium text-white/75 hover:text-white font-mono uppercase transition-colors duration-300"
+          >
+            SETTINGS
+          </Link>
           <Link
             href="/admin"
             className="hidden md:flex justify-center items-center w-[200px] h-[80px] bg-[#00ff00] text-[13px] font-medium text-black font-mono uppercase gap-[10px] hover:bg-[#00ff00]/90 transition-all duration-300 hover:tracking-wider"
