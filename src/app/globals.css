@@ -158,7 +158,8 @@ body {
     @apply uppercase;
   }
   
-  /* Admin specific text */
+  /* Admin specific text - Todo el texto usa GeistMono */
+  .admin-page,
   .admin-page p, 
   .admin-page span, 
   .admin-page a, 
@@ -166,18 +167,24 @@ body {
   .admin-page input, 
   .admin-page select, 
   .admin-page textarea,
-  .admin-page label {
-    font-family: var(--font-inter);
-    text-transform: none;
+  .admin-page label,
+  .admin-page h1,
+  .admin-page h2,
+  .admin-page h3,
+  .admin-page h4,
+  .admin-page h5,
+  .admin-page h6,
+  .admin-page div {
+    font-family: var(--font-geist-mono) !important;
+    letter-spacing: -0.02em;
   }
   
-  /* Technical terms in admin */
+  /* Technical terms in admin - Mantenemos el estilo visual pero con GeistMono */
   .admin-page .technical-term,
   .admin-page .api-key,
   .admin-page .url,
   .admin-page code,
   .admin-page .code {
-    font-family: var(--font-roboto-mono);
     @apply text-sm bg-gray-900/30 px-1.5 py-0.5 rounded border border-gray-700/50;
   }
 
