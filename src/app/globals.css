@@ -158,7 +158,28 @@ body {
     @apply uppercase;
   }
   
-  /* Admin specific text - Todo el texto usa GeistMono */
+  /* Admin headings - Druk Text Wide con tamaños moderados */
+  .admin-page h1,
+  .admin-page h2,
+  .admin-page h3 {
+    font-family: var(--font-druk-text-wide) !important;
+    @apply font-black uppercase tracking-tight;
+    letter-spacing: 0.02em;
+  }
+  
+  .admin-page h1 {
+    @apply text-3xl md:text-4xl mb-6;
+  }
+  
+  .admin-page h2 {
+    @apply text-2xl md:text-3xl mb-4;
+  }
+  
+  .admin-page h3 {
+    @apply text-xl md:text-2xl mb-3;
+  }
+  
+  /* Admin specific text - Todo el texto excepto encabezados h1-h3 usa GeistMono */
   .admin-page,
   .admin-page p, 
   .admin-page span, 
@@ -168,9 +189,6 @@ body {
   .admin-page select, 
   .admin-page textarea,
   .admin-page label,
-  .admin-page h1,
-  .admin-page h2,
-  .admin-page h3,
   .admin-page h4,
   .admin-page h5,
   .admin-page h6,
@@ -253,9 +271,4 @@ body {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
 }
