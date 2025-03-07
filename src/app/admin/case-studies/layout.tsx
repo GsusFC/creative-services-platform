@@ -18,7 +18,7 @@ export default function CaseStudiesLayout({
         <div className="fixed top-24 left-8 z-10">
           <Link 
             href="/admin/case-studies" 
-            className="flex items-center px-3 py-2 bg-black/50 backdrop-blur-sm border border-white/10 rounded-md text-gray-300 hover:text-white transition-colors"
+            className="admin-page flex items-center px-3 py-2 bg-black/50 backdrop-blur-sm border border-white/10 rounded-md text-gray-300 hover:text-white transition-colors"
           >
             <ArrowLeftIcon className="mr-2 h-4 w-4" />
             Volver al listado

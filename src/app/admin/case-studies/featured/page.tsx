@@ -6,7 +6,7 @@ import { ArrowLeftIcon } from 'lucide-react'
 
 export default function FeaturedCaseStudiesPage() {
   return (
-    <div className="min-h-screen bg-black bg-gradient-to-br from-black via-black/95 to-purple-950/10 text-white p-8 pt-24">
+    <div className="admin-page min-h-screen bg-black bg-gradient-to-br from-black via-black/95 to-purple-950/10 text-white p-8 pt-24">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
