@@ -108,9 +108,44 @@ export default function NotionSettingsPage() {
 
   // Guardar configuración
   const handleSaveConfig = async () => {
-    alert('En una implementación real, esto guardaría las credenciales de forma segura en el servidor')
-    // En una implementación real, esto enviaría los datos a una API segura
-    // que almacenaría las credenciales de forma encriptada
+    setConnectionStatus('checking')
+    setConnectionError(null)
+    
+    try {
+      const response = await fetch('/api/cms/config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          supabaseUrl,
+          supabaseKey,
+        }),
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Error al guardar la configuración')
+      }
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        setConnectionStatus('success')
+        alert(data.message)
+        
+        // Intentar conectarse con la nueva configuración
+        setTimeout(() => {
+          handleTestConnection()
+        }, 1000)
+      } else {
+        throw new Error('Error al guardar la configuración')
+      }
+    } catch (error) {
+      setConnectionStatus('error')
+      setConnectionError('Error al guardar la configuración: ' + 
+        (error instanceof Error ? error.message : String(error)))
+    }
   }
 
   return (
