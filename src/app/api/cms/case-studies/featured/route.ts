@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFeaturedCaseStudies, updateFeaturedCaseStudies } from '@/lib/case-studies/service';
+import { getFeaturedCaseStudies, updateFeaturedCaseStudies } from '@/lib/case-studies/supabase-service';
 import { FeaturedCaseUpdate } from '@/types/case-study';
 
 /**

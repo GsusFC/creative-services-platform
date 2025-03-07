@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMockCaseStudyBySlug } from '@/lib/case-studies/mock-service';
+import { getCaseStudyBySlug } from '@/lib/case-studies/supabase-service';
 
 interface RouteParams {
   params: {
@@ -22,7 +22,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
       );
     }
     
-    const caseStudy = await getMockCaseStudyBySlug(slug);
+    const caseStudy = await getCaseStudyBySlug(slug);
     
     if (!caseStudy) {
       return NextResponse.json(

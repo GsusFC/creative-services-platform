@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMockCaseStudies, getMockCaseStudyBySlug } from '@/lib/case-studies/mock-service';
-import { createCaseStudy, updateCaseStudy, deleteCaseStudy } from '@/lib/case-studies/service';
+import { 
+  getAllCaseStudies, 
+  getCaseStudyBySlug, 
+  createCaseStudy, 
+  updateCaseStudy, 
+  deleteCaseStudy 
+} from '@/lib/case-studies/supabase-service';
 import { CaseStudy } from '@/types/case-study';
 
 /**
@@ -9,8 +14,7 @@ import { CaseStudy } from '@/types/case-study';
  */
 export async function GET() {
   try {
-    // Como el CMS no está activo, usamos el servicio mock
-    const caseStudies = await getMockCaseStudies();
+    const caseStudies = await getAllCaseStudies();
     
     return NextResponse.json(caseStudies);
   } catch (error) {
@@ -68,7 +72,7 @@ export async function PUT(request: NextRequest) {
     }
     
     // Verificar que el case study existe
-    const existingCaseStudy = await getMockCaseStudyBySlug(data.slug);
+    const existingCaseStudy = await getCaseStudyBySlug(data.slug);
     if (!existingCaseStudy) {
       return NextResponse.json(
         { error: 'Case study no encontrado' },
