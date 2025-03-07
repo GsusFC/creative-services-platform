@@ -140,13 +140,14 @@ export default function AdminPage() {
           </Card>
         </motion.div>
         
-        {/* Secciones principales - Quitamos Flag System ya que está en navbar */}
+        {/* Secciones principales */}
         <motion.div 
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
         >
+          {/* CMS Case Studies */}
           <motion.div variants={itemVariants}>
             <Link href="/admin/case-studies" className="block group">
               <Card className="bg-gradient-to-br from-gray-900/90 to-gray-950/95 border border-white/10 hover:border-green-500/50 hover:bg-gray-900/80 transition-all duration-300 shadow-xl h-full">
@@ -191,6 +192,52 @@ export default function AdminPage() {
             </Link>
           </motion.div>
           
+          {/* Flag System */}
+          <motion.div variants={itemVariants}>
+            <Link href="/flag-system-v3" className="block group">
+              <Card className="bg-gradient-to-br from-gray-900/90 to-gray-950/95 border border-white/10 hover:border-blue-500/50 hover:bg-gray-900/80 transition-all duration-300 shadow-xl h-full">
+                <CardHeader className="pb-4 border-b border-white/5 bg-black/20">
+                  <CardTitle className="flex items-center gap-3 text-xl text-white group-hover:text-blue-400 transition-colors">
+                    <div className="p-2 bg-blue-500/20 rounded-lg">
+                      <DatabaseIcon className="h-5 w-5 text-blue-400" />
+                    </div>
+                    Flag System V3
+                  </CardTitle>
+                  <CardDescription className="text-gray-400">
+                    Sistema avanzado de generación de banderas
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <ul className="text-gray-300 space-y-3 mb-8">
+                    <li className="flex items-center gap-2 text-sm">
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                      Historial avanzado de combinaciones
+                    </li>
+                    <li className="flex items-center gap-2 text-sm">
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                      Cacheo automático de imágenes
+                    </li>
+                    <li className="flex items-center gap-2 text-sm">
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                      Exportación a formatos vectoriales
+                    </li>
+                    <li className="flex items-center gap-2 text-sm">
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                      Personalización avanzada
+                    </li>
+                  </ul>
+                  <div className="flex justify-end">
+                    <div className="flex items-center gap-2 text-blue-400 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-0 group-hover:translate-x-1">
+                      <span className="text-sm font-medium">Acceder</span>
+                      <ArrowRightIcon className="h-4 w-4" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          </motion.div>
+          
+          {/* Settings */}
           <motion.div variants={itemVariants}>
             <Link href="/admin/settings" className="block group">
               <Card className="bg-gradient-to-br from-gray-900/90 to-gray-950/95 border border-white/10 hover:border-purple-500/50 hover:bg-gray-900/80 transition-all duration-300 shadow-xl h-full">
