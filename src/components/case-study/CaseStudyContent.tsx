@@ -101,8 +101,7 @@ export function CaseStudyContent({ caseStudy }: CaseStudyContentProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
-                <p className="mb-6">{caseStudy.description}</p>
-                
+                {/* Solo mostramos description2 (descripción larga) */}
                 {caseStudy.description2?.split('\n').map((paragraph, index) => (
                   <p key={index} className="mb-6">{paragraph}</p>
                 ))}
