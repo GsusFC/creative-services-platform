@@ -15,6 +15,32 @@ let localCaseStudies: CaseStudy[] = [];
 })();
 
 /**
+ * Obtener todos los case studies
+ */
+export async function getAllCaseStudies(): Promise<CaseStudy[]> {
+  return [...localCaseStudies].sort((a, b) => a.order - b.order);
+}
+
+/**
+ * Obtener un case study por su slug
+ */
+export async function getCaseStudyBySlug(slug: string): Promise<CaseStudy | null> {
+  const caseStudy = localCaseStudies.find(cs => cs.slug === slug);
+  
+  if (!caseStudy) {
+    // Intentar obtener del servicio de mock como fallback
+    try {
+      return await getMockCaseStudyBySlug(slug);
+    } catch (error) {
+      console.error(`Error al obtener case study por slug ${slug}:`, error);
+      return null;
+    }
+  }
+  
+  return caseStudy;
+}
+
+/**
  * Crear un nuevo case study
  */
 export async function createCaseStudy(caseStudyData: Omit<CaseStudy, 'id'>): Promise<CaseStudy> {
