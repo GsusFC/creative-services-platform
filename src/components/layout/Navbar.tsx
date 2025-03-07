@@ -15,7 +15,7 @@ const navLinks = [
   { href: '/process', label: 'PROCESS' },
   { href: '/pricing', label: 'PRICING' },
   { href: '/game', label: 'GAME' },
-  { href: '/admin', label: 'ADMIN' }
+  { href: '/flag-system-v3', label: 'FLAGSYSTEM' }
 ];
 
 const rgbGradient = 'linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(255, 0, 0) 14.12%, rgb(0, 255, 0) 51.80%, rgb(0, 0, 255) 89.37%, rgb(0, 0, 0) 101.35%)';
@@ -120,19 +120,13 @@ const Navbar = () => {
           />
         </AnimatePresence>
 
-        {/* Start Button */}
+        {/* Admin Button (reemplaza Start Button) */}
         <div className="flex items-center gap-4">
           <Link
-            href="/settings"
-            className="hidden md:flex items-center text-[13px] font-medium text-white/75 hover:text-white font-mono uppercase transition-colors duration-300"
-          >
-            SETTINGS
-          </Link>
-          <Link
-            href="/start"
+            href="/admin"
             className="hidden md:flex justify-center items-center w-[200px] h-[80px] bg-[#00ff00] text-[13px] font-medium text-black font-mono uppercase gap-[10px] hover:bg-[#00ff00]/90 transition-all duration-300 hover:tracking-wider"
           >
-            START
+            ADMIN
           </Link>
         </div>
       </div>
@@ -166,11 +160,11 @@ const Navbar = () => {
                 transition={{ duration: 0.3, delay: 0.2 }}
               >
                 <Link
-                  href="/start"
+                  href="/admin"
                   className="inline-flex justify-center items-center px-8 py-4 bg-[#00ff00] text-[13px] font-medium text-black font-mono uppercase gap-[10px] hover:bg-[#00ff00]/90 transition-all duration-300 hover:tracking-wider"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  START
+                  ADMIN
                 </Link>
               </motion.div>
             </nav>
