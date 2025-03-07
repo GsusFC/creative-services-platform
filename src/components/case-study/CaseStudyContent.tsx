@@ -15,19 +15,60 @@ export function CaseStudyContent({ caseStudy }: CaseStudyContentProps) {
     ? caseStudy.mediaItems.find(item => item.type === 'image')?.url || '/projects/quantum.svg'
     : '/projects/quantum.svg';
 
-  // Encontrar la primera imagen para el caso de estudio
-  const firstImage = caseStudy.mediaItems?.find(item => item.type === 'image');
+  // Encontrar el primer video para usar como hero si existe
+  const heroVideo = caseStudy.mediaItems?.find(item => item.type === 'video' && item.order === 1);
   
   // Filtrar las imágenes restantes para la galería principal (excluyendo la primera)
   const galleryImages = caseStudy.mediaItems?.filter(item => 
-    item.type === 'image' && item !== firstImage
+    item.type === 'image' && item.url !== heroImage
   );
 
-  // Filtrar videos
-  const videos = caseStudy.mediaItems?.filter(item => item.type === 'video');
+  // Filtrar videos (excluyendo el hero video si existe)
+  const videos = caseStudy.mediaItems?.filter(item => 
+    item.type === 'video' && (!heroVideo || item !== heroVideo)
+  );
 
   return (
     <div className="bg-black text-white">
+      {/* Hero Section */}
+      <section className="relative w-full h-screen">
+        {/* Hero media (imagen o video) */}
+        <div className="absolute inset-0 z-0">
+          {heroVideo ? (
+            <video
+              src={heroVideo.url}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <Image 
+              src={heroImage}
+              alt={caseStudy.title}
+              fill
+              priority
+              className="object-cover"
+            />
+          )}
+          <div className="absolute inset-0 bg-black/50 z-10" />
+        </div>
+        
+        {/* Overlay con flecha de scroll down */}
+        <div className="absolute bottom-10 left-0 right-0 flex justify-center z-20">
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="text-white/60"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Content Section - Fullscreen */}
       <section className="min-h-screen flex items-center w-full">
         <div className="px-16 py-40 w-full">
