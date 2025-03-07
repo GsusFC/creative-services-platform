@@ -13,7 +13,8 @@ interface EditCaseStudyPageProps {
 
 export default function EditCaseStudyPage({ params }: EditCaseStudyPageProps) {
   const router = useRouter()
-  const { slug } = params
+  // Obtener el slug de manera segura
+  const slugValue = params?.slug || '';
   
   const [caseStudy, setCaseStudy] = useState<CaseStudy | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -27,7 +28,7 @@ export default function EditCaseStudyPage({ params }: EditCaseStudyPageProps) {
         setIsLoading(true)
         setError(null)
         
-        const response = await fetch(`/api/cms/case-studies/${slug}`)
+        const response = await fetch(`/api/cms/case-studies/${slugValue}`)
         
         if (!response.ok) {
           if (response.status === 404) {
@@ -46,10 +47,10 @@ export default function EditCaseStudyPage({ params }: EditCaseStudyPageProps) {
       }
     }
 
-    if (slug) {
+    if (slugValue) {
       fetchCaseStudy()
     }
-  }, [slug])
+  }, [slugValue])
 
   const handleSubmit = async (data: Omit<CaseStudy, 'id'>) => {
     if (!caseStudy) return

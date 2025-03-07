@@ -29,6 +29,8 @@ export interface CaseStudy {
   status: 'draft' | 'published';
   featured: boolean; // Para mostrar en home
   featuredOrder: number; // Posición en el listado de la home (1-4)
+  createdAt?: string; // Fecha de creación
+  updatedAt?: string; // Fecha de última actualización
 }
 
 // Tipo para actualizar el estado de destacado

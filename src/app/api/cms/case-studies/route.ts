@@ -5,7 +5,7 @@ import {
   createCaseStudy, 
   updateCaseStudy, 
   deleteCaseStudy 
-} from '@/lib/case-studies/supabase-service';
+} from '@/lib/case-studies/service';
 import { CaseStudy } from '@/types/case-study';
 
 /**

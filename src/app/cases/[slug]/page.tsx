@@ -28,18 +28,29 @@ export async function generateStaticParams() {
     }));
 }
 
-export default async function CaseStudyPage(
-  { params }: { params: { slug: string } }
-) {
-  const caseStudy = await getCaseStudyBySlug(params.slug);
-
-  if (!caseStudy || caseStudy.status !== 'published') {
+// Componente principal de la página
+export default async function CaseStudyPage({ params }: { params: { slug: string } }) {
+  // Extraemos de manera segura para evitar errores de Next.js
+  const slugValue = params?.slug;
+  
+  if (!slugValue) {
     return notFound();
   }
+  
+  try {
+    const caseStudy = await getCaseStudyBySlug(slugValue);
 
-  return (
-    <Suspense fallback={<LoadingCaseStudy />}>
-      <CaseStudyContent caseStudy={caseStudy} />
-    </Suspense>
-  );
+    if (!caseStudy || caseStudy.status !== 'published') {
+      return notFound();
+    }
+
+    return (
+      <Suspense fallback={<LoadingCaseStudy />}>
+        <CaseStudyContent caseStudy={caseStudy} />
+      </Suspense>
+    );
+  } catch (error) {
+    console.error('Error cargando case study:', error);
+    return notFound();
+  }
 }

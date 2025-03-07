@@ -6,17 +6,16 @@ import ProjectsList from './projects-list'
 // Componente para mostrar durante la carga
 function ProjectsLoading() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-10">
       {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-        <div key={i} className="relative aspect-square bg-white/5 animate-pulse">
-          <div className="absolute bottom-6 left-6 right-6 space-y-2">
-            <div className="h-4 bg-white/10 w-16 rounded"></div>
-            <div className="h-10 bg-white/10 w-full rounded"></div>
-            <div className="h-4 bg-white/10 w-full rounded mt-4"></div>
-            <div className="flex gap-2 pt-2">
-              <div className="h-6 w-12 bg-white/10 rounded"></div>
-              <div className="h-6 w-12 bg-white/10 rounded"></div>
-            </div>
+        <div key={i} className="max-w-[420px] w-full mx-auto">
+          {/* Esqueleto de la imagen cuadrada */}
+          <div className="aspect-square bg-white/5 animate-pulse mb-6"></div>
+          
+          {/* Esqueleto para nombre de empresa y descripción */}
+          <div className="space-y-3">
+            <div className="h-7 bg-white/10 w-1/2 animate-pulse rounded"></div>
+            <div className="h-14 bg-white/5 animate-pulse rounded"></div>
           </div>
         </div>
       ))}
@@ -53,18 +52,11 @@ export default function CasesPage() {
   return (
     <main className="min-h-screen bg-black text-white">
       <div className="pt-32 pb-12 md:pt-40">
-        <div className="px-6 mb-16">
-          <h1 
-            className="text-6xl md:text-8xl font-druk text-white uppercase mb-4" 
-          >
-            Projects
+        {/* Cabecera con solo WORK en Druk Wide a ancho completo */}
+        <div className="px-4 mb-16 md:mb-24 overflow-hidden">
+          <h1 className="font-druk text-white uppercase leading-none tracking-tight w-full" style={{ fontSize: '15vw' }}>
+            WORK
           </h1>
-          <p 
-            className="text-[#00ff00] text-lg tracking-wider uppercase" 
-            style={{ fontFamily: 'var(--font-geist-mono)' }}
-          >
-            Selected Work
-          </p>
         </div>
         
         {/* Projects Grid with Suspense */}
