@@ -19,7 +19,7 @@ export const robotoMono = Roboto_Mono({
 export const drukText = localFont({
   src: [
     {
-      path: '../fonts/Druk-Text-Wide-Heavy.woff2',
+      path: '../../public/fonts/Druk Text Wide Heavy.woff2',
       weight: '900',
       style: 'normal',
     },
@@ -32,7 +32,7 @@ export const drukText = localFont({
 export const geistMono = localFont({
   src: [
     {
-      path: '../fonts/GeistMono-Regular.woff2',
+      path: '../../public/fonts/GeistMono-Regular.woff2',
       weight: '400',
       style: 'normal',
     },
