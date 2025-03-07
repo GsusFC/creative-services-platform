@@ -114,7 +114,7 @@ export default function NotionSettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black bg-gradient-to-br from-black via-black/95 to-purple-950/10 text-white p-8 pt-24">
+    <div className="admin-page min-h-screen bg-black bg-gradient-to-br from-black via-black/95 to-purple-950/10 text-white p-8 pt-24">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Integración Supabase + Notion</h1>
@@ -129,7 +129,7 @@ export default function NotionSettingsPage() {
             <div className="space-y-4 mb-6">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
-                  URL de Supabase
+                  URL de Supabase <span className="technical-term">https://[proyecto].supabase.co</span>
                 </label>
                 <input
                   type="text"
@@ -145,7 +145,7 @@ export default function NotionSettingsPage() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
-                  API Key de Supabase
+                  API Key de Supabase <span className="technical-term api-key">************</span>
                 </label>
                 <input
                   type="password"
@@ -255,7 +255,7 @@ export default function NotionSettingsPage() {
                     Base de datos: <span className="font-semibold">{notionInfo.name}</span>
                   </p>
                   <p className="text-gray-400 text-sm mt-1">
-                    ID: {notionInfo.id}
+                    ID: <span className="technical-term code">{notionInfo.id}</span>
                   </p>
                 </div>
               )}
@@ -369,7 +369,7 @@ export default function NotionSettingsPage() {
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-700 rounded bg-black/50"
                   />
                   <label htmlFor="autoSync" className="ml-2 block text-sm text-gray-300">
-                    Sincronizar automáticamente cada 24 horas
+                    Sincronizar automáticamente cada <span className="technical-term">24 horas</span>
                   </label>
                 </div>
                 
@@ -380,7 +380,7 @@ export default function NotionSettingsPage() {
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-700 rounded bg-black/50"
                   />
                   <label htmlFor="realTimeSync" className="ml-2 block text-sm text-gray-300">
-                    Activar sincronización en tiempo real mediante webhooks
+                    Activar sincronización en tiempo real mediante <span className="technical-term url">webhooks</span>
                   </label>
                 </div>
               </div>

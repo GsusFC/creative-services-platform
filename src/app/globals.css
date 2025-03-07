@@ -142,10 +142,43 @@ body {
     @apply text-2xl mb-2;
   }
 
-  /* Body Text - Geist Mono */
-  p, span, a, button, input, select, textarea {
+  /* Body Text - General */
+  body {
+    font-family: var(--font-inter);
+  }
+  
+  /* Monospace text for code, technical terms */
+  code, pre, .mono, .technical {
+    font-family: var(--font-roboto-mono);
+  }
+  
+  /* Styled text with Geist Mono */
+  .geist-mono, .brand-text {
     font-family: var(--font-geist-mono);
     @apply uppercase;
+  }
+  
+  /* Admin specific text */
+  .admin-page p, 
+  .admin-page span, 
+  .admin-page a, 
+  .admin-page button, 
+  .admin-page input, 
+  .admin-page select, 
+  .admin-page textarea,
+  .admin-page label {
+    font-family: var(--font-inter);
+    text-transform: none;
+  }
+  
+  /* Technical terms in admin */
+  .admin-page .technical-term,
+  .admin-page .api-key,
+  .admin-page .url,
+  .admin-page code,
+  .admin-page .code {
+    font-family: var(--font-roboto-mono);
+    @apply text-sm bg-gray-900/30 px-1.5 py-0.5 rounded border border-gray-700/50;
   }
 
   /* Navigation */

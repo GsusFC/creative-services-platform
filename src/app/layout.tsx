@@ -2,20 +2,10 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
-import localFont from 'next/font/local'
 import { Toaster } from 'sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Providers } from './providers'
-
-const drukTextWide = localFont({
-  src: '../../public/fonts/Druk Text Wide Heavy.woff2',
-  variable: '--font-druk-text-wide',
-})
-
-const geistMono = localFont({
-  src: '../../public/fonts/GeistMono-Regular.woff2',
-  variable: '--font-geist-mono',
-})
+import { inter, drukText, geistMono, robotoMono } from './fonts'
 
 export const metadata: Metadata = {
   title: 'FLOC - Strategic Design Studio',
@@ -29,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`antialiased ${geistMono.variable} ${drukTextWide.variable}`}>
+      <body className={`antialiased ${inter.variable} ${geistMono.variable} ${drukText.variable} ${robotoMono.variable}`}>
         <Providers>
           <TooltipProvider>
             <Navbar />

@@ -117,7 +117,7 @@ export default function CaseStudiesAdmin() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950/95 text-white">
+    <div className="admin-page min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950/95 text-white">
       {/* Header con efecto de vidrio esmerilado */}
       <div className="sticky top-0 z-10 backdrop-blur-xl bg-black/40 border-b border-white/10 px-8 py-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
