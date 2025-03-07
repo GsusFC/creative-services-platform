@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeftIcon, RefreshCwIcon, CheckCircleIcon, XCircleIcon, DatabaseIcon } from 'lucide-react'
-import { testSupabaseConnection, checkNotionFdwStatus, syncNotionData } from '@/lib/supabase'
+import { testSupabaseConnection } from '@/lib/supabase'
+import { testNotionConnection, syncNotionDataToSupabase, getSyncHistory } from '@/lib/supabase-notion-sync'
 
 export default function NotionSettingsPage() {
   const [supabaseUrl, setSupabaseUrl] = useState('')
@@ -12,9 +13,9 @@ export default function NotionSettingsPage() {
   const [connectionStatus, setConnectionStatus] = useState<'idle' | 'checking' | 'success' | 'error'>('idle')
   const [connectionError, setConnectionError] = useState<string | null>(null)
   
-  const [fdwStatus, setFdwStatus] = useState<'idle' | 'checking' | 'configured' | 'not-configured' | 'error'>('idle')
-  const [fdwInfo, setFdwInfo] = useState<{ configured: boolean; databaseCount: number } | null>(null)
-  const [fdwError, setFdwError] = useState<string | null>(null)
+  const [notionStatus, setNotionStatus] = useState<'idle' | 'checking' | 'connected' | 'error'>('idle')
+  const [notionInfo, setNotionInfo] = useState<{ id: string; name: string } | null>(null)
+  const [notionError, setNotionError] = useState<string | null>(null)
   
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle')
   const [syncResult, setSyncResult] = useState<{ added: number; updated: number; errors: string[] } | null>(null)
@@ -38,9 +39,9 @@ export default function NotionSettingsPage() {
       setConnectionStatus(result.connected ? 'success' : 'error')
       setConnectionError(result.error || null)
       
-      // Si se conectó exitosamente, verificar el estado del FDW de Notion
+      // Si se conectó exitosamente, verificar la conexión con Notion
       if (result.connected) {
-        checkFdwStatus();
+        checkNotionConnection();
       }
     } catch (error) {
       setIsConnected(false)
@@ -50,36 +51,35 @@ export default function NotionSettingsPage() {
     }
   }
   
-  // Verificar estado del FDW de Notion
-  const checkFdwStatus = async () => {
-    setFdwStatus('checking')
-    setFdwError(null)
+  // Verificar conexión con Notion
+  const checkNotionConnection = async () => {
+    setNotionStatus('checking')
+    setNotionError(null)
     
     try {
-      const result = await checkNotionFdwStatus();
+      const result = await testNotionConnection();
       
-      setFdwStatus(result.configured ? 'configured' : 'not-configured')
-      setFdwInfo({
-        configured: result.configured,
-        databaseCount: result.databaseCount || 0
-      })
-      setFdwError(result.error || null)
+      setNotionStatus(result.connected ? 'connected' : 'error')
+      if (result.database) {
+        setNotionInfo(result.database)
+      }
+      setNotionError(result.error || null)
     } catch (error) {
-      setFdwStatus('error')
-      setFdwError('Error al verificar la configuración de Notion: ' + 
+      setNotionStatus('error')
+      setNotionError('Error al verificar la conexión con Notion: ' + 
         (error instanceof Error ? error.message : String(error)))
     }
   }
 
-  // Sincronizar datos desde Notion a través de Supabase
+  // Sincronizar datos desde Notion a Supabase
   const handleSyncFromNotion = async () => {
     if (!isConnected) {
       setConnectionError('Debes conectar primero con Supabase')
       return
     }
     
-    if (fdwStatus !== 'configured') {
-      setFdwError('El Foreign Data Wrapper de Notion no está configurado correctamente')
+    if (notionStatus !== 'connected') {
+      setNotionError('Debes verificar primero la conexión con Notion')
       return
     }
     
@@ -87,18 +87,14 @@ export default function NotionSettingsPage() {
     setSyncResult(null)
     
     try {
-      const result = await syncNotionData();
+      const result = await syncNotionDataToSupabase();
       
-      if (result.success) {
-        setSyncStatus('success')
-        setSyncResult({
-          added: result.added || 0,
-          updated: result.updated || 0,
-          errors: []
-        })
-      } else {
-        throw new Error(result.error || 'Error desconocido')
-      }
+      setSyncStatus(result.success ? 'success' : 'error')
+      setSyncResult({
+        added: result.added,
+        updated: result.updated,
+        errors: result.errors
+      })
     } catch (error) {
       setSyncStatus('error')
       setSyncResult({
@@ -122,7 +118,7 @@ export default function NotionSettingsPage() {
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Integración Supabase + Notion</h1>
-          <p className="text-gray-400">Configura la conexión con Supabase y el Foreign Data Wrapper de Notion</p>
+          <p className="text-gray-400">Configura la sincronización de datos entre Notion y Supabase</p>
         </div>
         
         <div className="space-y-8">
@@ -219,76 +215,59 @@ export default function NotionSettingsPage() {
             )}
           </div>
           
-          {/* Panel de estado del FDW de Notion */}
+          {/* Panel de conexión a Notion */}
           {isConnected && (
             <div className="bg-black/30 p-6 rounded-lg border border-white/10">
-              <h2 className="text-xl font-bold mb-4 text-white">Estado del Foreign Data Wrapper de Notion</h2>
+              <h2 className="text-xl font-bold mb-4 text-white">Configuración de Notion</h2>
               
               <div className="mb-6">
                 <p className="text-gray-300">
-                  El Foreign Data Wrapper (FDW) permite a Supabase conectarse directamente a la API de Notion.
-                  Esta configuración debe realizarse a través del panel de administración de Supabase.
+                  Verifica la conexión con tu base de datos de Notion. Esto comprobará que podemos
+                  acceder a los datos que luego se sincronizarán con Supabase.
                 </p>
               </div>
               
-              {fdwStatus === 'idle' && (
+              {notionStatus === 'idle' && (
                 <button
-                  onClick={checkFdwStatus}
+                  onClick={checkNotionConnection}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white font-medium transition-colors"
                 >
-                  Verificar Estado
+                  Verificar Conexión
                 </button>
               )}
               
-              {fdwStatus === 'checking' && (
+              {notionStatus === 'checking' && (
                 <div className="p-4 bg-blue-900/30 border border-blue-800 rounded-md">
                   <p className="flex items-center">
                     <RefreshCwIcon className="animate-spin mr-2 h-4 w-4" />
-                    Verificando configuración del FDW de Notion...
+                    Verificando conexión con Notion...
                   </p>
                 </div>
               )}
               
-              {fdwStatus === 'configured' && fdwInfo && (
+              {notionStatus === 'connected' && notionInfo && (
                 <div className="p-4 bg-green-900/30 border border-green-800 rounded-md">
                   <p className="flex items-center text-green-400 font-medium">
                     <CheckCircleIcon className="mr-2 h-5 w-5" />
-                    Foreign Data Wrapper de Notion configurado correctamente
+                    Conexión con Notion establecida correctamente
                   </p>
                   <p className="text-gray-300 mt-2">
-                    Bases de datos disponibles: {fdwInfo.databaseCount}
+                    Base de datos: <span className="font-semibold">{notionInfo.name}</span>
+                  </p>
+                  <p className="text-gray-400 text-sm mt-1">
+                    ID: {notionInfo.id}
                   </p>
                 </div>
               )}
               
-              {fdwStatus === 'not-configured' && (
-                <div className="p-4 bg-yellow-900/30 border border-yellow-800 rounded-md">
-                  <p className="flex items-center text-yellow-400 font-medium">
-                    <XCircleIcon className="mr-2 h-5 w-5" />
-                    Foreign Data Wrapper de Notion no configurado
-                  </p>
-                  <p className="text-gray-300 mt-2">
-                    Debes configurar el FDW de Notion en tu proyecto de Supabase siguiendo la documentación.
-                  </p>
-                  <a 
-                    href="https://supabase.com/docs/guides/database/extensions/wrappers/notion" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 inline-block text-blue-400 hover:underline"
-                  >
-                    Ver documentación de configuración →
-                  </a>
-                </div>
-              )}
-              
-              {fdwStatus === 'error' && (
+              {notionStatus === 'error' && (
                 <div className="p-4 bg-red-900/30 border border-red-800 rounded-md">
                   <p className="flex items-center text-red-400 font-medium">
                     <XCircleIcon className="mr-2 h-5 w-5" />
-                    Error al verificar el FDW de Notion
+                    Error al conectar con Notion
                   </p>
-                  {fdwError && (
-                    <p className="text-gray-300 mt-2">{fdwError}</p>
+                  {notionError && (
+                    <p className="text-gray-300 mt-2">{notionError}</p>
                   )}
                 </div>
               )}
@@ -296,14 +275,14 @@ export default function NotionSettingsPage() {
           )}
           
           {/* Panel de sincronización de datos */}
-          {isConnected && fdwStatus === 'configured' && (
+          {isConnected && notionStatus === 'connected' && (
             <div className="bg-black/30 p-6 rounded-lg border border-white/10">
               <h2 className="text-xl font-bold mb-4 text-white">Sincronizar Datos</h2>
               
               <div className="mb-6">
                 <p className="text-gray-300">
                   Sincroniza los estudios de caso desde Notion hacia tu base de datos de Supabase.
-                  Esto ejecutará la función RPC configurada en Supabase para importar los datos.
+                  Esta operación extraerá los datos de Notion y los almacenará físicamente en Supabase.
                 </p>
               </div>
               
