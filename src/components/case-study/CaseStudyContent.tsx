@@ -30,7 +30,7 @@ export function CaseStudyContent({ caseStudy }: CaseStudyContentProps) {
     <div className="bg-black text-white">
       {/* Content Section - Fullscreen */}
       <section className="min-h-screen flex items-center w-full">
-        <div className="container mx-auto px-6 md:px-10 py-32">
+        <div className="px-16 py-40 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24">
             {/* Left column - Title and client */}
             <div>
@@ -40,10 +40,12 @@ export function CaseStudyContent({ caseStudy }: CaseStudyContentProps) {
                 transition={{ duration: 0.8 }}
                 className="text-left"
               >
-                <p className="mb-6 font-mono text-sm">{caseStudy.client}</p>
+                <p className="mb-6 font-mono text-2xl uppercase">
+                  {caseStudy.client}
+                </p>
                 
                 <h1 
-                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight leading-[0.95] mb-8"
+                  className="text-[50px] font-black uppercase tracking-tight leading-[0.95] mb-8"
                   style={{ fontFamily: 'var(--font-druk-text-wide)' }}
                 >
                   {caseStudy.title}
@@ -52,7 +54,7 @@ export function CaseStudyContent({ caseStudy }: CaseStudyContentProps) {
             </div>
             
             {/* Right column - Description and tags */}
-            <div className="font-mono text-sm md:text-base leading-relaxed">
+            <div className="font-mono text-2xl leading-relaxed">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -64,7 +66,10 @@ export function CaseStudyContent({ caseStudy }: CaseStudyContentProps) {
                   <p key={index} className="mb-6">{paragraph}</p>
                 ))}
                 
-                <div className="mt-10 font-mono text-xs tracking-wider">
+                {/* Línea divisoria */}
+                <div className="border-t border-white/20 my-10 pt-6"></div>
+                
+                <div className="font-mono text-sm tracking-wider">
                   {caseStudy.tags?.map((tag, index) => (
                     <span key={index}>
                       {tag.toUpperCase()}
@@ -82,8 +87,8 @@ export function CaseStudyContent({ caseStudy }: CaseStudyContentProps) {
 
       {/* Gallery Section */}
       {galleryImages && galleryImages.length > 0 && (
-        <section className="bg-black w-full py-24">
-          <div className="container mx-auto px-6 md:px-10">
+        <section className="bg-black w-full pt-0 pb-24">
+          <div className="px-16 w-full">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               {galleryImages.map((item, index) => (
                 <motion.div 
@@ -113,8 +118,8 @@ export function CaseStudyContent({ caseStudy }: CaseStudyContentProps) {
 
       {/* Videos Section */}
       {videos && videos.length > 0 && (
-        <section className="bg-black w-full py-24 pt-0">
-          <div className="container mx-auto px-6 md:px-10">
+        <section className="bg-black w-full pt-0 pb-24">
+          <div className="px-16 w-full">
             <div className="grid grid-cols-1 gap-20">
               {videos.map((video, index) => (
                 <motion.div 
@@ -122,7 +127,7 @@ export function CaseStudyContent({ caseStudy }: CaseStudyContentProps) {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="relative w-full max-w-5xl mx-auto"
+                  className="relative w-full"
                 >
                   {video.videoType === 'vimeo' ? (
                     <div className="aspect-video">
@@ -153,7 +158,7 @@ export function CaseStudyContent({ caseStudy }: CaseStudyContentProps) {
 
       {/* Next Projects Navigation */}
       <div className="border-t border-white/10 py-10">
-        <div className="container mx-auto px-6 md:px-10">
+        <div className="px-16 w-full">
           <div className="flex justify-between items-center">
             <Link 
               href="/cases"
