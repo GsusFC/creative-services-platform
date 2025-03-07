@@ -202,7 +202,7 @@ export default function FeaturedCasesManager() {
   }
 
   return (
-    <div className="bg-black/30 p-6 rounded-lg border border-white/10">
+    <div className="admin-page bg-black/30 p-6 rounded-lg border border-white/10">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-bold text-white">Proyectos Destacados</h2>

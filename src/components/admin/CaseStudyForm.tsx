@@ -155,7 +155,7 @@ const CaseStudyForm: React.FC<CaseStudyFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={handleSubmit} className="admin-page space-y-8">
       {/* Tabs para edición/previsualización */}
       <div className="bg-black/30 p-4 rounded-t-lg border-b border-white/10 flex">
         <button

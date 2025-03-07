@@ -104,7 +104,7 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="admin-page space-y-6">
       <h3 className="text-lg font-medium text-white">Elementos Multimedia</h3>
       
       {/* Lista de elementos multimedia existentes */}
