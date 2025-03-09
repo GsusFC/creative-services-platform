@@ -15,10 +15,12 @@ const navLinks = [
   { href: '/process', label: 'PROCESS' },
   { href: '/pricing', label: 'PRICING' },
   { href: '/game', label: 'GAME' },
-  { href: '/flag-system-v3', label: 'FLAGSYSTEM' }
+  { href: '/flag-system-v3', label: 'FLAGSYSTEM' },
+  { href: '/svg', label: 'SVG' },
+  { href: '/do-it-yourself', label: 'DO IT YOURSELF' }
 ];
 
-const rgbGradient = 'linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(255, 0, 0) 14.12%, rgb(0, 255, 0) 51.80%, rgb(0, 0, 255) 89.37%, rgb(0, 0, 0) 101.35%)';
+const rgbGradient = 'linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(255, 0, 0) 14.12%, rgb(0, 255, 0) 51.80%, rgb(0, 0, 255) 89.37%, rgb(255, 255, 255) 101.35%)';
 
 const Navbar = () => {
   const pathname = usePathname();
