@@ -44,7 +44,8 @@ const ServiceCard = ({ id, name, description, price, category_id }: ServiceProps
 
   return (
     <div
-      className={`service-card p-2 border border-white/10 bg-black/20 hover:border-white/30 transition-all 
+      className={`service-card p-3 border border-white/15 bg-black/40 hover:border-[#00ff00]/70 hover:bg-black/60 
+                 transition-all shadow-md shadow-black/40
                  ${isDragging ? 'opacity-50 scale-95 border-[#00ff00]/50' : 'opacity-100'} 
                  cursor-grab group relative`}
       draggable
@@ -59,7 +60,7 @@ const ServiceCard = ({ id, name, description, price, category_id }: ServiceProps
         </h3>
         
         <div className="flex justify-end mt-2">
-          <span className="text-[#00ff00] text-xs whitespace-nowrap uppercase" style={{ fontFamily: 'var(--font-geist-mono)' }}>
+          <span className="text-[#00ff00] text-xs whitespace-nowrap uppercase bg-[#00ff00]/10 px-2 py-1 rounded" style={{ fontFamily: 'var(--font-geist-mono)' }}>
             {new Intl.NumberFormat('en-US', { 
               style: 'currency', 
               currency: 'USD' 
@@ -69,7 +70,7 @@ const ServiceCard = ({ id, name, description, price, category_id }: ServiceProps
       </div>
 
       {/* Add visual indicator */}
-      <div className="absolute top-0 right-0 w-0 h-0 border-t-[12px] border-r-[12px] border-t-transparent border-r-[#00ff00]/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      <div className="absolute top-0 right-0 w-0 h-0 border-t-[16px] border-r-[16px] border-t-transparent border-r-[#00ff00]/40 opacity-0 group-hover:opacity-100 transition-opacity"></div>
     </div>
   );
 };
