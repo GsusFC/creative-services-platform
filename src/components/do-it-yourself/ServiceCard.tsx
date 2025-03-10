@@ -54,15 +54,12 @@ const ServiceCard = ({ id, name, description, price, category_id }: ServiceProps
       style={{ fontFamily: 'var(--font-geist-mono)' }}
     >
       <div className="flex flex-col">
-        <h3 className="text-xs text-white uppercase group-hover:text-[#00ff00] transition-colors">
+        <h3 className="text-xs text-white uppercase group-hover:text-[#00ff00] transition-colors" style={{ fontFamily: 'var(--font-geist-mono)' }}>
           {name}
         </h3>
         
-        <div className="flex justify-between mt-2">
-          <span className="text-white/60 text-[10px] line-clamp-1 max-w-[70%]">
-            {description}
-          </span>
-          <span className="text-[#00ff00] text-xs whitespace-nowrap ml-auto">
+        <div className="flex justify-end mt-2">
+          <span className="text-[#00ff00] text-xs whitespace-nowrap">
             {new Intl.NumberFormat('en-US', { 
               style: 'currency', 
               currency: 'USD' 
