@@ -22,7 +22,7 @@ const BudgetSummary = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<{type: string, text: string} | null>(null);
 
-  // Manejar cambio de notas en un servicio
+  // Handle service note changes
   const handleServiceNotesChange = (serviceId: string, notes: string) => {
     setServiceNotes({
       ...serviceNotes,
@@ -30,30 +30,30 @@ const BudgetSummary = () => {
     });
   };
 
-  // Guardar notas en servicio
+  // Save notes for a service
   const saveServiceNotes = (serviceId: string) => {
     if (serviceNotes[serviceId] !== undefined) {
       updateServiceNotes(serviceId, serviceNotes[serviceId]);
     }
   };
 
-  // Guardar presupuesto
+  // Save budget
   const handleSaveBudget = () => {
-    // Validar que tenga al menos un servicio
+    // Validate at least one service
     if (selectedServices.length === 0) {
       setSaveMessage({
         type: 'error',
-        text: 'Debes añadir al menos un servicio para guardar el presupuesto'
+        text: 'Please add at least one service to save the budget'
       });
       return;
     }
 
-    // Validar información del cliente
+    // Validate client info
     if (!clientInfo.name || !clientInfo.email) {
       setActiveTab('client');
       setSaveMessage({
         type: 'error',
-        text: 'Se requiere el nombre y email del cliente'
+        text: 'Client name and email are required'
       });
       return;
     }
@@ -61,7 +61,7 @@ const BudgetSummary = () => {
     setIsSaving(true);
 
     try {
-      // Crear objeto para guardar
+      // Create object to save
       const budgetData = {
         client: clientInfo,
         project: projectInfo,
@@ -69,16 +69,16 @@ const BudgetSummary = () => {
         totalPrice: getTotalPrice(),
       };
 
-      // Guardar usando el servicio
+      // Save using the service
       const code = saveBudget(budgetData);
 
-      // Mostrar mensaje de éxito
+      // Show success message
       setSaveMessage({
         type: 'success',
-        text: `Presupuesto guardado correctamente con código: ${code}`
+        text: `Budget saved successfully with code: ${code}`
       });
 
-      // Limpiar formulario tras 2 segundos
+      // Clear form after 2 seconds
       setTimeout(() => {
         clearSelection();
         updateClientInfo({
@@ -90,91 +90,97 @@ const BudgetSummary = () => {
         setServiceNotes({});
       }, 2000);
     } catch (error) {
-      console.error('Error al guardar presupuesto:', error);
+      console.error('Error saving budget:', error);
       setSaveMessage({
         type: 'error',
-        text: 'Error al guardar el presupuesto'
+        text: 'Error saving the budget'
       });
     } finally {
       setIsSaving(false);
     }
   };
 
-  // Formatear precio para mostrar en EUR
+  // Format price to show in USD
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('es-ES', { 
+    return new Intl.NumberFormat('en-US', { 
       style: 'currency', 
-      currency: 'EUR' 
+      currency: 'USD' 
     }).format(price);
   };
 
   return (
-    <div className="bg-gray-900 rounded-xl p-6 mt-6">
-      {/* Pestañas */}
-      <div className="flex border-b border-gray-700 mb-6">
+    <div className="mt-6" style={{ fontFamily: 'var(--font-geist-mono)' }}>
+      {/* Tabs */}
+      <div className="flex border-b border-white/10 mb-6">
         <button 
-          className={`px-4 py-2 text-sm font-medium ${activeTab === 'services' 
-            ? 'text-[#00ff00] border-b-2 border-[#00ff00]' 
-            : 'text-gray-400 hover:text-white'}`}
+          className={`px-4 py-2 text-xs font-medium uppercase transition-colors ${
+            activeTab === 'services' 
+              ? 'text-[#00ff00] border-b border-[#00ff00]' 
+              : 'text-white/60 hover:text-white'
+          }`}
           onClick={() => setActiveTab('services')}
         >
-          Servicios ({selectedServices.length})
+          Services ({selectedServices.length})
         </button>
         <button 
-          className={`px-4 py-2 text-sm font-medium ${activeTab === 'client' 
-            ? 'text-[#00ff00] border-b-2 border-[#00ff00]' 
-            : 'text-gray-400 hover:text-white'}`}
+          className={`px-4 py-2 text-xs font-medium uppercase transition-colors ${
+            activeTab === 'client' 
+              ? 'text-[#00ff00] border-b border-[#00ff00]' 
+              : 'text-white/60 hover:text-white'
+          }`}
           onClick={() => setActiveTab('client')}
         >
-          Cliente
+          Client
         </button>
         <button 
-          className={`px-4 py-2 text-sm font-medium ${activeTab === 'project' 
-            ? 'text-[#00ff00] border-b-2 border-[#00ff00]' 
-            : 'text-gray-400 hover:text-white'}`}
+          className={`px-4 py-2 text-xs font-medium uppercase transition-colors ${
+            activeTab === 'project' 
+              ? 'text-[#00ff00] border-b border-[#00ff00]' 
+              : 'text-white/60 hover:text-white'
+          }`}
           onClick={() => setActiveTab('project')}
         >
-          Proyecto
+          Project
         </button>
       </div>
 
-      {/* Mensajes */}
+      {/* Messages */}
       {saveMessage && (
-        <div className={`p-3 mb-4 rounded-lg text-sm ${
+        <div className={`p-3 mb-4 text-xs border ${
           saveMessage.type === 'error' 
-            ? 'bg-red-900/30 border border-red-700 text-red-200' 
-            : 'bg-green-900/30 border border-green-700 text-green-200'
+            ? 'bg-red-900/20 border-red-500/30 text-red-300' 
+            : 'bg-green-900/20 border-green-500/30 text-green-300'
         }`}>
           {saveMessage.text}
         </div>
       )}
 
-      {/* Contenido según pestaña */}
+      {/* Content based on active tab */}
       <div className="mb-6">
-        {/* Tab Servicios */}
+        {/* Services Tab */}
         {activeTab === 'services' && (
           <div>
             {selectedServices.length === 0 ? (
-              <div className="text-center py-8 text-gray-400">
-                No has añadido ningún servicio aún
+              <div className="text-center py-8 text-white/40">
+                NO SERVICES ADDED YET
               </div>
             ) : (
               <ul className="space-y-2">
                 {selectedServices.map(service => (
-                  <li key={service.id} className="border-l-2 border-[#00ff00]/50 bg-black/20 py-1.5 px-2 flex group">
+                  <li key={service.id} className="border-l border-[#00ff00]/50 bg-black/10 py-1.5 px-2 flex group">
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-center mb-1">
-                        <h4 className="font-mono text-sm truncate pr-2">{service.name}</h4>
-                        <span className="text-[#00ff00] font-mono text-xs">
+                        <h4 className="text-xs uppercase text-white truncate pr-2">{service.name}</h4>
+                        <span className="text-[#00ff00] text-xs">
                           {formatPrice(service.price)}
                         </span>
                       </div>
                       
                       <button 
-                        className="text-[10px] text-gray-500 hover:text-white inline-flex items-center"
+                        className="text-[10px] text-white/40 hover:text-white inline-flex items-center"
                         onClick={() => {
-                          // Mostrar modal para notas o expandir la tarjeta
-                          const notes = prompt("Añadir notas:", serviceNotes[service.id] || service.notes || '');
+                          // Show prompt for notes
+                          const notes = prompt("Add notes:", serviceNotes[service.id] || service.notes || '');
                           if (notes !== null) {
                             handleServiceNotesChange(service.id, notes);
                             saveServiceNotes(service.id);
@@ -184,14 +190,14 @@ const BudgetSummary = () => {
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                         </svg>
-                        {service.notes ? 'Editar notas' : 'Añadir notas'}
+                        {service.notes ? 'EDIT NOTES' : 'ADD NOTES'}
                       </button>
                     </div>
                     
                     <button 
                       onClick={() => removeService(service.id)}
                       className="text-red-500/40 group-hover:text-red-500 ml-2 self-center p-1"
-                      aria-label="Eliminar"
+                      aria-label="Remove"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -204,148 +210,148 @@ const BudgetSummary = () => {
           </div>
         )}
 
-        {/* Tab Cliente */}
+        {/* Client Tab */}
         {activeTab === 'client' && (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Nombre <span className="text-red-500">*</span>
+              <label className="block text-xs text-white/80 mb-1 uppercase">
+                Name <span className="text-red-500">*</span>
               </label>
               <input 
                 type="text" 
                 value={clientInfo.name} 
                 onChange={(e) => updateClientInfo({ name: e.target.value })} 
-                className="w-full bg-black border border-gray-800 rounded-lg p-2.5 text-white"
-                placeholder="Nombre del cliente"
+                className="w-full bg-black border border-white/10 rounded p-2.5 text-white text-sm focus:border-white/30 focus:outline-none"
+                placeholder="Client name"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-xs text-white/80 mb-1 uppercase">
                 Email <span className="text-red-500">*</span>
               </label>
               <input 
                 type="email" 
                 value={clientInfo.email} 
                 onChange={(e) => updateClientInfo({ email: e.target.value })} 
-                className="w-full bg-black border border-gray-800 rounded-lg p-2.5 text-white"
-                placeholder="email@ejemplo.com"
+                className="w-full bg-black border border-white/10 rounded p-2.5 text-white text-sm focus:border-white/30 focus:outline-none"
+                placeholder="email@example.com"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Teléfono
+              <label className="block text-xs text-white/80 mb-1 uppercase">
+                Phone
               </label>
               <input 
                 type="tel" 
                 value={clientInfo.phone} 
                 onChange={(e) => updateClientInfo({ phone: e.target.value })} 
-                className="w-full bg-black border border-gray-800 rounded-lg p-2.5 text-white"
-                placeholder="+34 600 000 000"
+                className="w-full bg-black border border-white/10 rounded p-2.5 text-white text-sm focus:border-white/30 focus:outline-none"
+                placeholder="+1 (555) 000-0000"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Empresa
+              <label className="block text-xs text-white/80 mb-1 uppercase">
+                Company
               </label>
               <input 
                 type="text" 
                 value={clientInfo.company} 
                 onChange={(e) => updateClientInfo({ company: e.target.value })} 
-                className="w-full bg-black border border-gray-800 rounded-lg p-2.5 text-white"
-                placeholder="Nombre de la empresa (opcional)"
+                className="w-full bg-black border border-white/10 rounded p-2.5 text-white text-sm focus:border-white/30 focus:outline-none"
+                placeholder="Company name (optional)"
               />
             </div>
           </div>
         )}
 
-        {/* Tab Proyecto */}
+        {/* Project Tab */}
         {activeTab === 'project' && (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Descripción del proyecto
+              <label className="block text-xs text-white/80 mb-1 uppercase">
+                Project Description
               </label>
               <textarea 
                 value={projectInfo.description} 
                 onChange={(e) => updateProjectInfo({ description: e.target.value })} 
-                className="w-full bg-black border border-gray-800 rounded-lg p-2.5 text-white"
-                placeholder="Describe brevemente el proyecto o sus objetivos..."
+                className="w-full bg-black border border-white/10 rounded p-2.5 text-white text-sm focus:border-white/30 focus:outline-none"
+                placeholder="Briefly describe the project or its objectives..."
                 rows={4}
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Plazo de tiempo
+              <label className="block text-xs text-white/80 mb-1 uppercase">
+                Timeline
               </label>
               <select 
                 value={projectInfo.timeline} 
                 onChange={(e) => updateProjectInfo({ timeline: e.target.value })} 
-                className="w-full bg-black border border-gray-800 rounded-lg p-2.5 text-white"
+                className="w-full bg-black border border-white/10 rounded p-2.5 text-white text-sm focus:border-white/30 focus:outline-none"
               >
-                <option value="urgent">Urgente (menos de 1 mes)</option>
-                <option value="short">Corto plazo (1-3 meses)</option>
-                <option value="medium">Medio plazo (3-6 meses)</option>
-                <option value="flexible">Flexible / No definido</option>
+                <option value="urgent">URGENT (less than 1 month)</option>
+                <option value="short">SHORT TERM (1-3 months)</option>
+                <option value="medium">MEDIUM TERM (3-6 months)</option>
+                <option value="flexible">FLEXIBLE / UNDEFINED</option>
               </select>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Preferencia de contacto
+              <label className="block text-xs text-white/80 mb-1 uppercase">
+                Contact Preference
               </label>
               <select 
                 value={projectInfo.contactPreference} 
                 onChange={(e) => updateProjectInfo({ contactPreference: e.target.value })} 
-                className="w-full bg-black border border-gray-800 rounded-lg p-2.5 text-white"
+                className="w-full bg-black border border-white/10 rounded p-2.5 text-white text-sm focus:border-white/30 focus:outline-none"
               >
-                <option value="email">Email</option>
-                <option value="phone">Teléfono</option>
-                <option value="videocall">Videollamada</option>
-                <option value="meeting">Reunión presencial</option>
+                <option value="email">EMAIL</option>
+                <option value="phone">PHONE</option>
+                <option value="videocall">VIDEO CALL</option>
+                <option value="meeting">IN-PERSON MEETING</option>
               </select>
             </div>
           </div>
         )}
       </div>
 
-      {/* Resumen y total */}
-      <div className="bg-black/40 p-4 rounded-lg border border-gray-800">
+      {/* Summary and total */}
+      <div className="border border-white/10 p-4">
         <div className="flex justify-between items-center mb-4">
-          <span className="text-gray-300">Subtotal ({selectedServices.length} servicios):</span>
-          <span className="font-bold">
+          <span className="text-white/60 text-sm">SUBTOTAL ({selectedServices.length} services):</span>
+          <span className="text-white">
             {formatPrice(getTotalPrice())}
           </span>
         </div>
         
-        <div className="flex justify-between items-center text-lg font-bold">
-          <span>Total:</span>
-          <span className="text-[#00ff00] font-mono">
+        <div className="flex justify-between items-center text-lg">
+          <span className="font-bold text-white">TOTAL:</span>
+          <span className="text-[#00ff00] font-bold">
             {formatPrice(getTotalPrice())}
           </span>
         </div>
         
-        <div className="mt-4 flex justify-between gap-4">
+        <div className="mt-6 flex justify-between gap-4">
           <button
             onClick={clearSelection}
-            className="px-4 py-2 bg-transparent border border-gray-600 hover:border-gray-400 text-gray-300 rounded-lg text-sm transition-colors"
+            className="px-4 py-2 border border-white/20 hover:border-white/40 text-white/80 text-xs uppercase transition-colors"
           >
-            Limpiar
+            Clear
           </button>
           
           <button
             onClick={handleSaveBudget}
             disabled={isSaving || selectedServices.length === 0}
-            className={`flex-1 px-4 py-2 rounded-lg text-sm font-bold transition-colors ${
+            className={`flex-1 px-4 py-2 text-xs uppercase font-bold transition-colors ${
               isSaving || selectedServices.length === 0
-                ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
-                : 'bg-[#00ff00] text-black hover:bg-[#00ff00]/80'
+                ? 'bg-white/10 text-white/40 cursor-not-allowed'
+                : 'bg-[#00ff00] text-black hover:bg-[#00ff00]/90'
             }`}
           >
-            {isSaving ? 'Guardando...' : 'Guardar Presupuesto'}
+            {isSaving ? 'Saving...' : 'Save Budget'}
           </button>
         </div>
       </div>

@@ -27,28 +27,29 @@ const DropZone = () => {
         addService(serviceData);
       }
     } catch (error) {
-      console.error('Error al procesar el servicio:', error);
+      console.error('Error processing service:', error);
     }
   };
 
   return (
     <div
-      className={`drop-zone relative p-8 border-2 border-dashed rounded-xl transition-all min-h-[220px] flex flex-col items-center justify-center group
+      className={`drop-zone relative p-8 border rounded-lg transition-all min-h-[220px] flex flex-col items-center justify-center
                 ${isOver 
-                  ? 'border-[#00ff00] bg-[#00ff00]/10 shadow-[0_0_15px_rgba(0,255,0,0.2)]' 
-                  : 'border-gray-700 bg-black/20 hover:border-gray-400 hover:bg-black/30'}`}
+                  ? 'border-[#00ff00] bg-[#00ff00]/5 shadow-[0_0_20px_rgba(0,255,0,0.2)]' 
+                  : 'border-white/10 hover:border-white/30'}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
+      style={{ fontFamily: 'var(--font-geist-mono)' }}
     >
-      {/* Overlay de efecto de brillo cuando hay un objeto sobre la zona */}
-      <div className={`absolute inset-0 bg-gradient-to-b from-[#00ff00]/10 to-transparent rounded-xl transition-opacity ${isOver ? 'opacity-100' : 'opacity-0'}`}></div>
+      {/* Glow effect overlay when dragging over */}
+      <div className={`absolute inset-0 bg-gradient-to-b from-[#00ff00]/5 to-transparent rounded-lg transition-opacity ${isOver ? 'opacity-100' : 'opacity-0'}`}></div>
       
-      {/* Indicador de destino */}
+      {/* Target indicator */}
       <div className={`relative z-10 flex flex-col items-center ${isOver ? 'scale-110' : 'scale-100'} transition-transform duration-300`}>
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
-          className={`w-12 h-12 mb-4 transition-colors drop-shadow-glow ${isOver ? 'text-[#00ff00]' : 'text-gray-500 group-hover:text-gray-300'}`} 
+          className={`w-12 h-12 mb-4 transition-colors ${isOver ? 'text-[#00ff00]' : 'text-white/30'}`} 
           fill="none" 
           viewBox="0 0 24 24" 
           stroke="currentColor"
@@ -70,19 +71,17 @@ const DropZone = () => {
           )}
         </svg>
         
-        <p className={`text-center transition-colors font-mono ${isOver ? 'text-[#00ff00]' : 'text-gray-400 group-hover:text-white'}`}>
+        <p className={`text-center uppercase transition-colors ${isOver ? 'text-[#00ff00]' : 'text-white/50'}`}>
           {isOver 
-            ? '¡SUELTA AQUÍ!' 
-            : 'ARRASTRA SERVICIOS AQUÍ'}
+            ? 'DROP HERE' 
+            : 'DRAG SERVICES HERE'}
+        </p>
+        <p className="text-[11px] text-white/40 mt-2 max-w-[260px] text-center">
+          {isOver 
+            ? 'RELEASE TO ADD THIS SERVICE TO YOUR BUDGET' 
+            : 'OR CLICK ON SERVICES TO ADD THEM TO YOUR BUDGET'}
         </p>
       </div>
-      
-      {/* Estilo global para el efecto de brillo */}
-      <style jsx global>{`
-        .drop-shadow-glow {
-          filter: drop-shadow(0 0 4px rgba(0, 255, 0, 0.5));
-        }
-      `}</style>
     </div>
   );
 };

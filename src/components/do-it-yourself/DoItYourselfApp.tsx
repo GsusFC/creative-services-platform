@@ -12,12 +12,12 @@ const DoItYourselfApp = () => {
   const { categories, services, loading, error } = useNotionServices();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  // Obtener servicios filtrados por categoría
+  // Get services filtered by category
   const filteredServices = selectedCategory 
     ? services.filter(service => service.category_id === selectedCategory)
     : services;
 
-  // Obtener icono para la categoría
+  // Get icon for category
   const getCategoryIcon = (iconName: string) => {
     const icons: Record<string, React.ReactNode> = {
       'palette': (
@@ -65,64 +65,83 @@ const DoItYourselfApp = () => {
   if (error) {
     return (
       <div className="p-6 bg-red-900/30 border border-red-700 rounded-lg text-white">
-        <h3 className="text-xl font-bold mb-2">Error al cargar servicios</h3>
-        <p>{error}</p>
+        <h3 className="text-lg" style={{ fontFamily: 'var(--font-geist-mono)' }}>ERROR LOADING SERVICES</h3>
+        <p style={{ fontFamily: 'var(--font-geist-mono)' }}>{error}</p>
       </div>
     );
   }
 
   return (
     <DragDropProvider>
-      <div className="px-4 md:px-8 bg-gradient-to-b from-black/40 to-transparent">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-8">
-          <div className="lg:col-span-3">
-            <div className="sticky top-[100px] bg-black/30 p-5 rounded-2xl border border-gray-800 shadow-xl">
-              <h2 className="text-xl font-mono mb-6 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-[#00ff00]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
-                </svg>
-                Categorías
+      <div className="w-full max-w-[1600px] mx-auto">
+        <div className="grid md:grid-cols-2 gap-12 mt-8">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="h-full"
+          >
+            <div className="bg-black border border-white/10 p-6 rounded-lg shadow-2xl">
+              <h2 
+                className="text-2xl uppercase mb-6 text-white"
+                style={{ fontFamily: 'var(--font-geist-mono)' }}
+              >
+                <span className="inline-block w-8 h-8 mr-2 text-[#00ff00] bg-[#00ff00]/10 rounded flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+                  </svg>
+                </span>
+                CATEGORIES
               </h2>
               
               <div className="flex flex-wrap gap-2 mb-6">
                 <button
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all
+                  className={`px-3 py-2 text-sm transition-all border
                             ${selectedCategory === null 
-                              ? 'bg-[#00ff00] text-black shadow-[0_0_15px_rgba(0,255,0,0.4)]' 
-                              : 'bg-gray-800 text-gray-300 hover:bg-gray-700'}`}
+                              ? 'bg-[#00ff00] text-black border-[#00ff00] shadow-[0_0_15px_rgba(0,255,0,0.4)]' 
+                              : 'bg-transparent text-white/80 border-white/20 hover:border-white/40'}`}
                   onClick={() => setSelectedCategory(null)}
+                  style={{ fontFamily: 'var(--font-geist-mono)' }}
                 >
-                  Todos
+                  ALL
                 </button>
                 
                 {categories.map(category => (
                   <button 
                     key={category.id}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all
+                    className={`px-3 py-2 text-sm flex items-center gap-2 transition-all border
                               ${selectedCategory === category.id 
-                                ? 'bg-[#00ff00] text-black shadow-[0_0_15px_rgba(0,255,0,0.4)]' 
-                                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'}`}
+                                ? 'bg-[#00ff00] text-black border-[#00ff00] shadow-[0_0_15px_rgba(0,255,0,0.4)]' 
+                                : 'bg-transparent text-white/80 border-white/20 hover:border-white/40'}`}
                     onClick={() => setSelectedCategory(category.id)}
+                    style={{ fontFamily: 'var(--font-geist-mono)' }}
                   >
                     <span className="text-current">
                       {getCategoryIcon(category.icon)}
                     </span>
-                    {category.name}
+                    {category.name.toUpperCase()}
                   </button>
                 ))}
               </div>
               
-              <h2 className="text-xl font-mono mb-4 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-[#00ff00]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                </svg>
-                Servicios
+              <h2 
+                className="text-2xl uppercase mb-4 text-white"
+                style={{ fontFamily: 'var(--font-geist-mono)' }}
+              >
+                <span className="inline-block w-8 h-8 mr-2 text-[#00ff00] bg-[#00ff00]/10 rounded flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                  </svg>
+                </span>
+                SERVICES
               </h2>
               
               {filteredServices.length === 0 ? (
-                <p className="text-gray-400 text-center py-8">No hay servicios disponibles en esta categoría</p>
+                <p className="text-white/60 text-center py-8" style={{ fontFamily: 'var(--font-geist-mono)' }}>
+                  NO SERVICES AVAILABLE IN THIS CATEGORY
+                </p>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-2 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                   {filteredServices.map((service, index) => (
                     <motion.div
                       key={service.id}
@@ -130,7 +149,7 @@ const DoItYourselfApp = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ 
                         duration: 0.3,
-                        delay: index * 0.05 // Cada tarjeta aparece con un ligero retraso
+                        delay: index * 0.05 // Each card appears with a slight delay
                       }}
                     >
                       <ServiceCard 
@@ -145,30 +164,40 @@ const DoItYourselfApp = () => {
                 </div>
               )}
             </div>
-          </div>
+          </motion.div>
           
-          <div className="lg:col-span-1">
-            <div className="bg-black/30 p-6 rounded-2xl border border-gray-800 shadow-xl">
-              <h2 className="text-xl font-mono mb-4 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-[#00ff00]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                Tu Presupuesto
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="h-full"
+          >
+            <div className="bg-black border border-white/10 p-6 rounded-lg shadow-2xl">
+              <h2 
+                className="text-2xl uppercase mb-4 text-white"
+                style={{ fontFamily: 'var(--font-geist-mono)' }}
+              >
+                <span className="inline-block w-8 h-8 mr-2 text-[#00ff00] bg-[#00ff00]/10 rounded flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </span>
+                YOUR BUDGET
               </h2>
               
               <DropZone />
               <BudgetSummary />
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
       
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
+          width: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(0, 0, 0, 0.2);
+          background: rgba(255, 255, 255, 0.05);
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
