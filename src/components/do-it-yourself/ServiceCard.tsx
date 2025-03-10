@@ -59,7 +59,7 @@ const ServiceCard = ({ id, name, description, price, category_id }: ServiceProps
         </h3>
         
         <div className="flex justify-end mt-2">
-          <span className="text-[#00ff00] text-xs whitespace-nowrap">
+          <span className="text-[#00ff00] text-xs whitespace-nowrap uppercase" style={{ fontFamily: 'var(--font-geist-mono)' }}>
             {new Intl.NumberFormat('en-US', { 
               style: 'currency', 
               currency: 'USD' 
