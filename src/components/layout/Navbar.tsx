@@ -17,7 +17,8 @@ const navLinks = [
   { href: '/game', label: 'GAME' },
   { href: '/flag-system-v3', label: 'FLAGSYSTEM' },
   { href: '/svg', label: 'SVG' },
-  { href: '/do-it-yourself', label: 'DO IT YOURSELF' }
+  { href: '/do-it-yourself', label: 'DO IT YOURSELF' },
+  { href: '/do-it-yourself-v2', label: 'DIY V2' }
 ];
 
 const rgbGradient = 'linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(255, 0, 0) 14.12%, rgb(0, 255, 0) 51.80%, rgb(0, 0, 255) 89.37%, rgb(255, 255, 255) 101.35%)';
