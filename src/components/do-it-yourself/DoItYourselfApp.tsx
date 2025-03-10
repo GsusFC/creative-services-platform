@@ -89,7 +89,7 @@ const DoItYourselfApp = () => {
                   </svg>
                 </div>
                 <h2 
-                  className="text-2xl uppercase text-white"
+                  className="text-2xl uppercase text-white mb-0"
                   style={{ fontFamily: 'var(--font-druk-text-wide)' }}
                 >
                   CATEGORIES
@@ -133,7 +133,7 @@ const DoItYourselfApp = () => {
                   </svg>
                 </div>
                 <h2 
-                  className="text-2xl uppercase text-white"
+                  className="text-2xl uppercase text-white mb-0"
                   style={{ fontFamily: 'var(--font-druk-text-wide)' }}
                 >
                   SERVICES
@@ -184,7 +184,7 @@ const DoItYourselfApp = () => {
                   </svg>
                 </div>
                 <h2 
-                  className="text-2xl uppercase text-white"
+                  className="text-2xl uppercase text-white mb-0"
                   style={{ fontFamily: 'var(--font-druk-text-wide)' }}
                 >
                   YOUR BUDGET
