@@ -82,17 +82,19 @@ const DoItYourselfApp = () => {
             className="h-full"
           >
             <div className="bg-black border border-white/10 p-6 rounded-lg shadow-2xl">
-              <h2 
-                className="text-2xl uppercase mb-6 text-white"
-                style={{ fontFamily: 'var(--font-geist-mono)' }}
-              >
+              <div className="flex items-center mb-6">
                 <span className="inline-block w-8 h-8 mr-2 text-[#00ff00] bg-[#00ff00]/10 rounded flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
                   </svg>
                 </span>
-                CATEGORIES
-              </h2>
+                <h2 
+                  className="text-2xl uppercase text-white"
+                  style={{ fontFamily: 'var(--font-druk-text-wide)' }}
+                >
+                  CATEGORIES
+                </h2>
+              </div>
               
               <div className="flex flex-wrap gap-2 mb-6">
                 <button
@@ -124,17 +126,19 @@ const DoItYourselfApp = () => {
                 ))}
               </div>
               
-              <h2 
-                className="text-2xl uppercase mb-4 text-white"
-                style={{ fontFamily: 'var(--font-geist-mono)' }}
-              >
+              <div className="flex items-center mb-4">
                 <span className="inline-block w-8 h-8 mr-2 text-[#00ff00] bg-[#00ff00]/10 rounded flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
                   </svg>
                 </span>
-                SERVICES
-              </h2>
+                <h2 
+                  className="text-2xl uppercase text-white"
+                  style={{ fontFamily: 'var(--font-druk-text-wide)' }}
+                >
+                  SERVICES
+                </h2>
+              </div>
               
               {filteredServices.length === 0 ? (
                 <p className="text-white/60 text-center py-8" style={{ fontFamily: 'var(--font-geist-mono)' }}>
@@ -173,17 +177,19 @@ const DoItYourselfApp = () => {
             className="h-full"
           >
             <div className="bg-black border border-white/10 p-6 rounded-lg shadow-2xl">
-              <h2 
-                className="text-2xl uppercase mb-4 text-white"
-                style={{ fontFamily: 'var(--font-geist-mono)' }}
-              >
+              <div className="flex items-center mb-4">
                 <span className="inline-block w-8 h-8 mr-2 text-[#00ff00] bg-[#00ff00]/10 rounded flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
                 </span>
-                YOUR BUDGET
-              </h2>
+                <h2 
+                  className="text-2xl uppercase text-white"
+                  style={{ fontFamily: 'var(--font-druk-text-wide)' }}
+                >
+                  YOUR BUDGET
+                </h2>
+              </div>
               
               <DropZone />
               <BudgetSummary />
