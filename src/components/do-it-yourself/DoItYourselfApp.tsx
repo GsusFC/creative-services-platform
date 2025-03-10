@@ -82,7 +82,7 @@ const DoItYourselfApp = () => {
             className="h-full"
           >
             <div className="bg-black border border-white/10 p-6 rounded-lg shadow-2xl">
-              <div className="flex items-center">
+              <div className="flex items-center mb-4">
                 <div className="flex items-center justify-center w-8 h-8 mr-2 text-[#00ff00] bg-[#00ff00]/10 rounded">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
