@@ -126,9 +126,9 @@ const DoItYourselfV3App = () => {
         setModoSprint={setModoSprint}
       />
 
-      <div className="flex flex-1 gap-3 h-[calc(100vh-180px)]">
+      <div className="flex flex-col md:flex-row gap-3 min-h-[600px]">
         {/* Panel Central - Catálogo */}
-        <div className="w-4/5 flex flex-col bg-black p-3">
+        <div className="w-full md:w-4/5 flex flex-col bg-black p-3">
           <CatalogView 
             elementos={elementos}
             elementosTotales={elementosTotales}
@@ -143,7 +143,7 @@ const DoItYourselfV3App = () => {
         </div>
         
         {/* Panel de Presupuesto - Ocupa todo el alto disponible */}
-        <div className="w-1/5 h-full">
+        <div className="w-full md:w-1/5 mt-3 md:mt-0">
           <BudgetPanel 
             elementosSeleccionados={elementosSeleccionados}
             onEliminarElemento={handleEliminarElemento}
