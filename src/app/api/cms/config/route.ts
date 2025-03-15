@@ -37,20 +37,7 @@ export async function POST(request: NextRequest) {
       `NEXT_PUBLIC_SUPABASE_ANON_KEY="${data.supabaseKey}"`
     )
     
-    // Si hay configuración de Notion, actualizarla también
-    if (data.notionApiKey) {
-      envContent = envContent.replace(
-        /NOTION_API_KEY=".*"/,
-        `NOTION_API_KEY="${data.notionApiKey}"`
-      )
-    }
-    
-    if (data.notionDatabaseId) {
-      envContent = envContent.replace(
-        /NOTION_DATABASE_ID=".*"/,
-        `NOTION_DATABASE_ID="${data.notionDatabaseId}"`
-      )
-    }
+    // Configuración actualizada solo para Supabase
     
     // Guardar el archivo .env actualizado
     await fs.writeFile(envPath, envContent)
@@ -83,9 +70,8 @@ export async function GET() {
     return NextResponse.json({
       supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
       // No devolvemos la clave por seguridad, solo si está configurada
-      supabaseKeyConfigured: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
-      notionApiKeyConfigured: Boolean(process.env.NOTION_API_KEY),
-      notionDatabaseId: process.env.NOTION_DATABASE_ID || ''
+      supabaseKeyConfigured: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+      // Solo se administra la configuración de Supabase
     })
     
   } catch (error) {

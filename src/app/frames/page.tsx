@@ -1,6 +1,5 @@
 'use client';
 
-import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
 // Crear nuestro componente directamente aquí para evitar problemas de importación

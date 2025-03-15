@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import CaseStudyForm from '@/components/admin/CaseStudyForm'
+import CaseStudyFormContainer from '@/components/admin/CaseStudyFormContainer'
 import { CaseStudy } from '@/types/case-study'
 
 export default function NewCaseStudyPage() {
@@ -40,20 +40,20 @@ export default function NewCaseStudyPage() {
   }
 
   return (
-    <div className="admin-page min-h-screen bg-black bg-gradient-to-br from-black via-black/95 to-purple-950/10 text-white p-8 pt-24">
+    <div className="admin-page min-h-screen bg-black text-white p-8 pt-24">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Crear Nuevo Estudio de Caso</h1>
-          <p className="text-gray-400">Completa el formulario para crear un nuevo estudio de caso</p>
+          <h1 className="text-4xl font-black uppercase tracking-tighter mb-1">Nuevo Case Study</h1>
+          <p className="text-white/60 text-lg">Completa el formulario para crear un nuevo estudio de caso</p>
         </div>
         
         {error && (
-          <div className="bg-red-900/50 border border-red-500 text-white p-4 rounded-md mb-6">
+          <div className="bg-black/30 border border-red-500/30 text-red-400 p-4 rounded mb-6">
             {error}
           </div>
         )}
         
-        <CaseStudyForm
+        <CaseStudyFormContainer
           onSubmit={handleSubmit}
           isSubmitting={isSubmitting}
         />

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import CaseStudyForm from '@/components/admin/CaseStudyForm'
+import CaseStudyFormContainer from '@/components/admin/CaseStudyFormContainer'
 import { CaseStudy } from '@/types/case-study'
 
 interface EditCaseStudyPageProps {
@@ -11,10 +11,26 @@ interface EditCaseStudyPageProps {
   }
 }
 
-export default function EditCaseStudyPage({ params }: EditCaseStudyPageProps) {
+/**
+ * Este componente ignora los parámetros params.slug y usa el URL del navegador
+ * como fuente de verdad para obtener el slug del case study.
+ * 
+ * Esto evita el uso de React.use() y los problemas de Suspense asociados.
+ */
+export default function EditCaseStudyPage({ params: _params }: EditCaseStudyPageProps) {
   const router = useRouter()
-  // Obtener el slug de manera segura
-  const slugValue = params?.slug || '';
+  
+  // Obtenemos el slug a partir de la URL en lugar de params
+  const [slugValue, setSlugValue] = useState('')
+  
+  useEffect(() => {
+    // Extraer el slug de la URL actual
+    const path = window.location.pathname
+    const slugMatch = path.match(/\/admin\/case-studies\/([^\/]+)\/edit/)
+    if (slugMatch && slugMatch[1]) {
+      setSlugValue(slugMatch[1])
+    }
+  }, [])
   
   const [caseStudy, setCaseStudy] = useState<CaseStudy | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -53,56 +69,95 @@ export default function EditCaseStudyPage({ params }: EditCaseStudyPageProps) {
   }, [slugValue])
 
   const handleSubmit = async (data: Omit<CaseStudy, 'id'>) => {
-    if (!caseStudy) return
+    if (!caseStudy || !caseStudy.id) {
+      setError('No se puede actualizar: falta ID del case study');
+      return;
+    }
     
     try {
-      setIsSubmitting(true)
-      setError(null)
+      setIsSubmitting(true);
+      setError(null);
       
-      const response = await fetch('/api/cms/case-studies', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...data,
-          id: caseStudy.id, // Incluir el ID para la actualización
-        }),
-      })
+      console.log('Actualizando case study con ID:', caseStudy.id);
       
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Error al actualizar el estudio de caso')
-      }
+      // Preparar datos completos
+      const dataToUpdate = {
+        ...data,
+        id: caseStudy.id,
+      };
       
-      // Redireccionar a la lista después de actualizar
-      router.push('/admin/case-studies')
-      router.refresh()
+      // Usar CaseStudyFormContainer para manejar la actualización
+      // y delegar la lógica a través de una promesa directa
+      return new Promise<void>((resolve, reject) => {
+        fetch('/api/cms/case-studies', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataToUpdate),
+        })
+        .then(response => {
+          if (!response.ok) {
+            return response.text().then(text => {
+              let errorMsg = `Error de servidor: ${response.status}`;
+              try {
+                // Intentar parsear el texto como JSON
+                const errorData = JSON.parse(text);
+                if (errorData && errorData.error) {
+                  errorMsg = errorData.error;
+                }
+              } catch (e) {
+                // Si no es JSON, usar el texto tal cual si existe
+                if (text) errorMsg = text;
+              }
+              throw new Error(errorMsg);
+            });
+          }
+          return response.json();
+        })
+        .then(() => {
+          // Éxito - redirigir
+          router.push('/admin/case-studies');
+          router.refresh();
+          resolve();
+        })
+        .catch(err => {
+          console.error('Error completo:', err);
+          setError(err instanceof Error ? err.message : 'Error interno al actualizar');
+          reject(err);
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+        });
+      });
     } catch (err) {
-      console.error('Error al actualizar el case study:', err)
-      setError(err instanceof Error ? err.message : 'Error desconocido')
-    } finally {
-      setIsSubmitting(false)
+      console.error('Error en preparación de actualización:', err);
+      setError(err instanceof Error ? err.message : 'Error interno al preparar actualización');
+      setIsSubmitting(false);
     }
   }
 
   return (
-    <div className="admin-page min-h-screen bg-black bg-gradient-to-br from-black via-black/95 to-purple-950/10 text-white p-8 pt-24">
+    <div className="admin-page min-h-screen bg-black text-white p-8 pt-24">
       <div className="max-w-6xl mx-auto">
+        {/* Cabecera simple */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">
-            Editar Estudio de Caso
-            {caseStudy && `: ${caseStudy.title}`}
+          <h1 className="text-4xl font-black uppercase tracking-tighter mb-1">
+            {caseStudy?.client || 'Case Study'}
           </h1>
-          <p className="text-gray-400">Actualiza la información del estudio de caso</p>
+          {caseStudy && (
+            <p className="text-white/60 text-lg">{caseStudy.title}</p>
+          )}
         </div>
         
+        {/* Mensajes de error */}
         {error && (
-          <div className="bg-red-900/50 border border-red-500 text-white p-4 rounded-md mb-6">
+          <div className="bg-black/30 border border-red-500/30 text-red-400 p-4 rounded mb-6">
             {error}
           </div>
         )}
         
+        {/* Contenido principal */}
         {isLoading ? (
           <div className="animate-pulse space-y-6">
             <div className="h-12 bg-white/10 rounded"></div>
@@ -110,22 +165,16 @@ export default function EditCaseStudyPage({ params }: EditCaseStudyPageProps) {
             <div className="h-96 bg-white/10 rounded"></div>
           </div>
         ) : caseStudy ? (
-          <CaseStudyForm
+          <CaseStudyFormContainer
             initialData={caseStudy}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
           />
         ) : error ? (
-          <div className="text-center py-12">
-            <p className="text-xl text-red-400 mb-4">
+          <div className="text-center py-12 bg-black/30 border border-white/10 rounded-lg">
+            <p className="text-xl text-white/80">
               No se pudo cargar el estudio de caso
             </p>
-            <button
-              onClick={() => router.push('/admin/case-studies')}
-              className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-md text-white font-medium transition-colors"
-            >
-              Volver al listado
-            </button>
           </div>
         ) : null}
       </div>

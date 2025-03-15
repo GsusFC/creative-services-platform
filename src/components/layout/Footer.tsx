@@ -1,148 +1,85 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
+import { memo } from 'react';
+import Link from 'next/link';
+import { useFooter } from '@/hooks/useFooter';
+import NavigationSection from './NavigationSection';
 
-const navigation = {
-  services: [
-    { name: 'STRATEGY', href: '/services#strategy' },
-    { name: 'BRANDING', href: '/services#branding' },
-    { name: 'DIGITAL PRODUCT', href: '/services#digital' },
-  ],
-  resources: [
-    { name: 'BRAND GUIDE', href: '/resources/brand-guide' },
-    { name: 'DESIGN SYSTEM', href: '/resources/design-system' },
-    { name: 'CASE STUDIES', href: '/cases' },
-  ],
-  legal: [
-    { name: 'PRIVACY POLICY', href: '/privacy' },
-    { name: 'TERMS & CONDITIONS', href: '/terms' },
-    { name: 'COOKIE POLICY', href: '/cookies' },
-  ],
-  contact: [
-    { name: 'BOOK A CALL', href: '/contact' },
-    { name: 'HELP CENTER', href: '/help' },
-    { name: 'EMAIL', href: 'mailto:hello@floc.design' },
-  ],
-}
+const Footer = memo(function Footer() {
+  const {
+    navigation,
+    companyName,
+    companyTagline,
+    copyrightText,
+    a11y,
+    getNavigationSectionProps
+  } = useFooter();
 
-export function Footer() {
   return (
-    <footer className="bg-black border-t border-[#333333]">
+    <footer className="bg-black border-t border-[#333333]" aria-label="Pie de página">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-6 lg:px-8">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
-          <div className="space-y-4 xl:col-span-1">
-            <Link 
-              href="/" 
-              className="text-2xl text-white hover:text-white/90 transition-colors duration-300"
+          {/* Sección de información de la compañía */}
+          <div className="space-y-4 xl:col-span-1" aria-labelledby="company-info">
+            <h2 id="company-info" className="sr-only">{a11y.companyInfo}</h2>
+            <Link
+              href="/"
+              className="text-2xl text-white hover:text-white/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white/30 rounded px-2 py-1"
               style={{ fontFamily: 'var(--font-druk-text-wide)' }}
+              tabIndex={0}
             >
-              FLOC*
+              {companyName}
             </Link>
-            <p 
+            <p
               className="text-white/75 max-w-xs"
               style={{ fontFamily: 'var(--font-geist-mono)' }}
             >
-              STRATEGIC DESIGN FOR THE NEXT GENERATION OF BRANDS
+              {companyTagline}
             </p>
-
           </div>
-          <div className="mt-6 grid grid-cols-2 gap-6 xl:col-span-2 xl:mt-0">
+          
+          {/* Sección de enlaces de navegación */}
+          <nav 
+            className="mt-6 grid grid-cols-2 gap-6 xl:col-span-2 xl:mt-0"
+            aria-label={a11y.footerNav}
+          >
+            {/* Primera columna: Servicios y Recursos */}
             <div className="md:grid md:grid-cols-2 md:gap-8">
-              <div>
-                <h3 
-                  className="text-sm text-white"
-                  style={{ fontFamily: 'var(--font-druk-text-wide)' }}
-                >
-                  SERVICES
-                </h3>
-                <ul role="list" className="mt-3 space-y-2">
-                  {navigation.services.map((item) => (
-                    <li key={item.name}>
-                      <Link
-                        href={item.href}
-                        className="text-sm text-white/75 hover:text-white transition-colors duration-300"
-                        style={{ fontFamily: 'var(--font-geist-mono)' }}
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <NavigationSection 
+                {...getNavigationSectionProps('SERVICES', navigation.services, a11y.servicesSection)} 
+              />
               <div className="mt-6 md:mt-0">
-                <h3 
-                  className="text-sm text-white"
-                  style={{ fontFamily: 'var(--font-druk-text-wide)' }}
-                >
-                  RESOURCES
-                </h3>
-                <ul role="list" className="mt-3 space-y-2">
-                  {navigation.resources.map((item) => (
-                    <li key={item.name}>
-                      <Link
-                        href={item.href}
-                        className="text-sm text-white/75 hover:text-white transition-colors duration-300"
-                        style={{ fontFamily: 'var(--font-geist-mono)' }}
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                <NavigationSection 
+                  {...getNavigationSectionProps('RESOURCES', navigation.resources, a11y.resourcesSection)} 
+                />
               </div>
             </div>
+            
+            {/* Segunda columna: Legal y Contacto */}
             <div className="md:grid md:grid-cols-2 md:gap-8">
-              <div>
-                <h3 
-                  className="text-sm text-white"
-                  style={{ fontFamily: 'var(--font-druk-text-wide)' }}
-                >
-                  LEGAL
-                </h3>
-                <ul role="list" className="mt-3 space-y-2">
-                  {navigation.legal.map((item) => (
-                    <li key={item.name}>
-                      <Link
-                        href={item.href}
-                        className="text-sm text-white/75 hover:text-white transition-colors duration-300"
-                        style={{ fontFamily: 'var(--font-geist-mono)' }}
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <NavigationSection 
+                {...getNavigationSectionProps('LEGAL', navigation.legal, a11y.legalSection)} 
+              />
               <div className="mt-6 md:mt-0">
-                <h3 
-                  className="text-sm text-white"
-                  style={{ fontFamily: 'var(--font-druk-text-wide)' }}
-                >
-                  CONTACT
-                </h3>
-                <ul role="list" className="mt-3 space-y-2">
-                  {navigation.contact.map((item) => (
-                    <li key={item.name}>
-                      <Link
-                        href={item.href}
-                        className="text-sm text-white/75 hover:text-white transition-colors duration-300"
-                        style={{ fontFamily: 'var(--font-geist-mono)' }}
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                <NavigationSection 
+                  {...getNavigationSectionProps('CONTACT', navigation.contact, a11y.contactSection)} 
+                />
               </div>
             </div>
-          </div>
+          </nav>
         </div>
+        
+        {/* Copyright */}
         <div className="mt-12 border-t border-gray-200 pt-8">
           <p className="text-sm text-gray-400 xl:text-center">
-            &copy; {new Date().getFullYear()} FLOC Design Studio. Todos los derechos reservados.
+            {copyrightText}
           </p>
         </div>
       </div>
     </footer>
-  )
-}
+  );
+});
+
+Footer.displayName = 'Footer';
+
+export { Footer };

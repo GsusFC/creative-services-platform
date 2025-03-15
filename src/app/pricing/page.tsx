@@ -1,4 +1,4 @@
-import { Pricing } from '@/components/pricing/Pricing'
+import PricingContainer from '@/components/pricing/PricingContainer'
 import { PriceAdmin } from '@/components/pricing/PriceAdmin'
 import { PricingPlans } from '@/components/pricing/PricingPlans'
 import { faqs } from '@/lib/plans'
@@ -13,7 +13,7 @@ export default function PricingPage() {
   return (
     <main className="min-h-screen bg-black">
       <div className="pt-32 md:pt-40">
-        <Pricing />
+        <PricingContainer />
         <PriceAdmin />
 
         {/* Planes y FAQs */}

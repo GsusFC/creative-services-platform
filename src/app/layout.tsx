@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Navbar from '@/components/layout/Navbar'
+import NavbarContainer from '@/components/layout/NavbarContainer'
 import { Footer } from '@/components/layout/Footer'
 import { Toaster } from 'sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
@@ -22,7 +22,7 @@ export default function RootLayout({
       <body className={`antialiased ${inter.variable} ${geistMono.variable} ${drukText.variable} ${robotoMono.variable}`}>
         <Providers>
           <TooltipProvider>
-            <Navbar />
+            <NavbarContainer />
             {children}
             <Footer />
             <Toaster position="bottom-right" theme="dark" closeButton richColors />

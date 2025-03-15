@@ -31,6 +31,10 @@ export interface CaseStudy {
   featuredOrder: number; // Posición en el listado de la home (1-4)
   createdAt?: string; // Fecha de creación
   updatedAt?: string; // Fecha de última actualización
+  nextProject?: {
+    slug: string;
+    title?: string;
+  }; // Referencia al siguiente proyecto para navegación
 }
 
 // Tipo para actualizar el estado de destacado

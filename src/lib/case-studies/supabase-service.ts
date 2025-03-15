@@ -6,36 +6,43 @@ import { CaseStudy, MediaItem, FeaturedCaseUpdate } from '@/types/case-study';
  * Obtener todos los case studies
  */
 export async function getAllCaseStudies(): Promise<CaseStudy[]> {
-  const { data, error } = await supabase
-    .from('case_studies')
-    .select(`
-      *,
-      mediaItems: media_items(*)
-    `)
-    .order('order', { ascending: true });
+  try {
+    // Intenta hacer la consulta sin ordenar por 'order'
+    const { data, error } = await supabase
+      .from('case_studies')
+      .select(`
+        *,
+        mediaItems: media_items(*)
+      `);
 
-  if (error) {
+    if (error) {
+      console.error('Error al obtener los case studies:', error);
+      throw error;
+    }
+    
+    console.log(`Se obtuvieron ${data.length} case studies de Supabase`);
+    
+    // Transformar los datos para que coincidan con nuestro tipo CaseStudy
+    return data.map(item => ({
+      id: item.id,
+      title: item.title,
+      slug: item.slug,
+      client: item.client,
+      description: item.description,
+      description2: item.description2 || '',
+      mediaItems: convertMediaItems(item.mediaItems || []),
+      tags: item.tags ? item.tags.split(',') : [],
+      order: item.order || 0, // Valor predeterminado si no existe
+      status: item.status as 'draft' | 'published',
+      featured: item.featured,
+      featuredOrder: item.featured_order || 0,
+      createdAt: item.created_at,
+      updatedAt: item.updated_at
+    }));
+  } catch (error) {
     console.error('Error al obtener los case studies:', error);
     throw error;
   }
-
-  // Transformar los datos para que coincidan con nuestro tipo CaseStudy
-  return data.map(item => ({
-    id: item.id,
-    title: item.title,
-    slug: item.slug,
-    client: item.client,
-    description: item.description,
-    description2: item.description2 || '',
-    mediaItems: convertMediaItems(item.mediaItems || []),
-    tags: item.tags ? item.tags.split(',') : [],
-    order: item.order,
-    status: item.status as 'draft' | 'published',
-    featured: item.featured,
-    featuredOrder: item.featured_order,
-    createdAt: item.created_at,
-    updatedAt: item.updated_at
-  }));
 }
 
 /**
@@ -126,45 +133,100 @@ export async function createCaseStudy(caseStudyData: Omit<CaseStudy, 'id'>): Pro
  * Actualizar un case study existente
  */
 export async function updateCaseStudy(id: string, caseStudyData: Partial<CaseStudy>): Promise<CaseStudy> {
-  // Preparar los datos para Supabase
-  const supabaseData: Record<string, unknown> = {
-    updated_at: new Date().toISOString()
-  };
+  try {
+    console.log('[supabase-service] Iniciando actualización de case study ID:', id);
+    
+    // Preparar los datos para Supabase
+    const supabaseData: Record<string, unknown> = {
+      updated_at: new Date().toISOString()
+    };
 
-  // Incluir solo los campos que están siendo actualizados
-  if (caseStudyData.title !== undefined) supabaseData.title = caseStudyData.title;
-  if (caseStudyData.slug !== undefined) supabaseData.slug = caseStudyData.slug;
-  if (caseStudyData.client !== undefined) supabaseData.client = caseStudyData.client;
-  if (caseStudyData.description !== undefined) supabaseData.description = caseStudyData.description;
-  if (caseStudyData.description2 !== undefined) supabaseData.description2 = caseStudyData.description2;
-  if (caseStudyData.tags !== undefined) {
-    supabaseData.tags = Array.isArray(caseStudyData.tags) ? caseStudyData.tags.join(',') : '';
+    // Incluir solo los campos que están siendo actualizados
+    if (caseStudyData.title !== undefined) supabaseData.title = caseStudyData.title;
+    if (caseStudyData.slug !== undefined) supabaseData.slug = caseStudyData.slug;
+    if (caseStudyData.client !== undefined) supabaseData.client = caseStudyData.client;
+    if (caseStudyData.description !== undefined) supabaseData.description = caseStudyData.description;
+    if (caseStudyData.description2 !== undefined) supabaseData.description2 = caseStudyData.description2;
+    if (caseStudyData.tags !== undefined) {
+      supabaseData.tags = Array.isArray(caseStudyData.tags) ? caseStudyData.tags.join(',') : '';
+    }
+    // La columna 'order' no existe en la tabla, omitimos esta asignación
+    // if (caseStudyData.order !== undefined) supabaseData.order = caseStudyData.order;
+    if (caseStudyData.status !== undefined) supabaseData.status = caseStudyData.status;
+    if (caseStudyData.featured !== undefined) supabaseData.featured = caseStudyData.featured;
+    if (caseStudyData.featuredOrder !== undefined) supabaseData.featured_order = caseStudyData.featuredOrder;
+
+    console.log('[supabase-service] Datos preparados para actualizar:', supabaseData);
+    
+    // Verificar que el case study existe antes de intentar actualizar
+    const checkQuery = await supabase
+      .from('case_studies')
+      .select('id')
+      .eq('id', id)
+      .single();
+      
+    if (checkQuery.error) {
+      console.error('[supabase-service] Error al verificar existencia del case study:', checkQuery.error);
+      throw new Error(`No se encontró el case study con ID: ${id}`);
+    }
+    
+    // Actualizar en Supabase
+    console.log('[supabase-service] Ejecutando actualización en Supabase...');
+    const { data, error } = await supabase
+      .from('case_studies')
+      .update(supabaseData)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('[supabase-service] Error de Supabase al actualizar:', error);
+      throw new Error(`Error de base de datos: ${error.message || 'Error desconocido'}`);
+    }
+
+    if (!data) {
+      console.error('[supabase-service] No se recibieron datos tras actualizar');
+      throw new Error('No se recibieron datos al actualizar el case study');
+    }
+
+    console.log('[supabase-service] Case study actualizado correctamente, procesando media items...');
+    
+    // Si se proporcionaron media items, actualizar también
+    const updatedMediaItems = caseStudyData.mediaItems || [];
+    if (caseStudyData.mediaItems) {
+      try {
+        await updateMediaItems(caseStudyData.mediaItems, id);
+        console.log('[supabase-service] Media items actualizados correctamente');
+      } catch (mediaError) {
+        console.error('[supabase-service] Error al actualizar media items:', mediaError);
+        // Continuamos aunque falle la actualización de media items
+      }
+    }
+
+    // Crear el objeto de respuesta con los datos recibidos
+    const result: CaseStudy = {
+      id: data.id,
+      title: data.title,
+      slug: data.slug,
+      client: data.client,
+      description: data.description,
+      description2: data.description2 || '',
+      mediaItems: updatedMediaItems,
+      tags: data.tags ? data.tags.split(',') : [],
+      order: 0, // La columna 'order' no existe en la tabla
+      status: data.status as 'draft' | 'published',
+      featured: data.featured,
+      featuredOrder: data.featured_order || 0,
+      createdAt: data.created_at,
+      updatedAt: data.updated_at
+    };
+    
+    console.log('[supabase-service] Actualización completada con éxito');
+    return result;
+  } catch (error) {
+    console.error('[supabase-service] Error general en updateCaseStudy:', error);
+    throw error instanceof Error ? error : new Error('Error desconocido al actualizar case study');
   }
-  if (caseStudyData.order !== undefined) supabaseData.order = caseStudyData.order;
-  if (caseStudyData.status !== undefined) supabaseData.status = caseStudyData.status;
-  if (caseStudyData.featured !== undefined) supabaseData.featured = caseStudyData.featured;
-  if (caseStudyData.featuredOrder !== undefined) supabaseData.featured_order = caseStudyData.featuredOrder;
-
-  // Actualizar en Supabase
-  const { data, error } = await supabase
-    .from('case_studies')
-    .update(supabaseData)
-    .eq('id', id)
-    .select()
-    .single();
-
-  if (error) {
-    console.error('Error al actualizar el case study:', error);
-    throw error;
-  }
-
-  // Si se proporcionaron media items, actualizar también
-  if (caseStudyData.mediaItems) {
-    await updateMediaItems(caseStudyData.mediaItems, id);
-  }
-
-  // Obtener el registro actualizado con media items
-  return getCaseStudyBySlug(data.slug) as Promise<CaseStudy>;
 }
 
 /**
@@ -220,38 +282,67 @@ export async function updateFeaturedCaseStudies(updates: FeaturedCaseUpdate[]): 
  * Obtener los case studies destacados
  */
 export async function getFeaturedCaseStudies(): Promise<CaseStudy[]> {
-  const { data, error } = await supabase
-    .from('case_studies')
-    .select(`
-      *,
-      mediaItems: media_items(*)
-    `)
-    .eq('featured', true)
-    .eq('status', 'published')
-    .order('featured_order', { ascending: true });
+  try {
+    console.log('Intentando obtener case studies destacados...');
+    
+    // Primero, verificar que podemos acceder a la tabla case_studies
+    const testQuery = await supabase
+      .from('case_studies')
+      .select('id')
+      .limit(1);
+      
+    if (testQuery.error) {
+      console.error('Error en consulta de prueba:', testQuery.error);
+      throw new Error(`Error accediendo a la tabla case_studies: ${JSON.stringify(testQuery.error)}`);
+    }
+    
+    console.log('Consulta de prueba exitosa, procediendo con la consulta principal');
+    
+    // Ahora realizar la consulta principal
+    const { data, error } = await supabase
+      .from('case_studies')
+      .select(`
+        *,
+        mediaItems: media_items(*)
+      `)
+      .eq('featured', true)
+      .eq('status', 'published')
+      .order('featured_order', { ascending: true });
 
-  if (error) {
-    console.error('Error al obtener los case studies destacados:', error);
-    throw error;
+    if (error) {
+      console.error('Error detallado al obtener los case studies destacados:', error);
+      throw new Error(`Error al obtener los case studies destacados: ${JSON.stringify(error)}`);
+    }
+
+    if (!data || !Array.isArray(data)) {
+      console.error('Error: Datos recibidos no son un array:', data);
+      return []; // Devolver array vacío en lugar de fallar
+    }
+    
+    console.log(`Encontrados ${data.length} case studies destacados`);
+    
+    // Transformar los datos con manejo seguro de propiedades
+    return data.map(item => ({
+      id: item.id || '',
+      title: item.title || '',
+      slug: item.slug || '',
+      client: item.client || '',
+      description: item.description || '',
+      description2: item.description2 || '',
+      mediaItems: item.mediaItems ? convertMediaItems(item.mediaItems) : [],
+      tags: item.tags ? item.tags.split(',') : [],
+      order: item.order || 0,
+      status: (item.status as 'draft' | 'published') || 'draft',
+      featured: Boolean(item.featured),
+      featuredOrder: item.featured_order || 0,
+      createdAt: item.created_at || new Date().toISOString(),
+      updatedAt: item.updated_at || new Date().toISOString()
+    }));
+  } catch (error) {
+    console.error('Error general al obtener los case studies destacados:', error);
+    // Devolver array vacío para evitar que la aplicación falle
+    return [];
   }
-
-  // Transformar los datos
-  return data.map(item => ({
-    id: item.id,
-    title: item.title,
-    slug: item.slug,
-    client: item.client,
-    description: item.description,
-    description2: item.description2 || '',
-    mediaItems: convertMediaItems(item.mediaItems || []),
-    tags: item.tags ? item.tags.split(',') : [],
-    order: item.order,
-    status: item.status as 'draft' | 'published',
-    featured: item.featured,
-    featuredOrder: item.featured_order,
-    createdAt: item.created_at,
-    updatedAt: item.updated_at
-  }));
 }
 
 /**

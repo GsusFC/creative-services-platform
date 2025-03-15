@@ -1,52 +1,26 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { CaseStudy, FeaturedCaseUpdate } from '@/types/case-study'
+import { useState } from 'react'
+import { CaseStudy } from '@/types/case-study'
 import { ArrowUpCircleIcon, ArrowDownCircleIcon, StarIcon, XCircleIcon } from 'lucide-react'
+import { useFeaturedCases } from '@/hooks/useFeaturedCases'
 
 export default function FeaturedCasesManager() {
-  const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([])
-  const [loading, setLoading] = useState(true)
+  const { 
+    cases: caseStudies, 
+    loading, 
+    error: apiError, 
+    updateOrder
+  } = useFeaturedCases() as {
+    cases: CaseStudy[];
+    loading: boolean;
+    error: string | null;
+    updateOrder: (cases: CaseStudy[]) => Promise<boolean>;
+  }
+  
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
-
-  // Obtener todos los case studies
-  useEffect(() => {
-    const fetchCaseStudies = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch('/api/cms/case-studies')
-        
-        if (!response.ok) {
-          throw new Error('Error al cargar los estudios de caso')
-        }
-        
-        const data = await response.json()
-        // Ordenar por featuredOrder (los destacados primero) y luego por orden estándar
-        const sortedData = [...data].sort((a, b) => {
-          // Primero mostrar los que son featured
-          if (a.featured && !b.featured) return -1
-          if (!a.featured && b.featured) return 1
-          
-          // Si ambos son featured, ordenar por featuredOrder
-          if (a.featured && b.featured) return a.featuredOrder - b.featuredOrder
-          
-          // Si ninguno es featured, ordenar por order
-          return a.order - b.order
-        })
-        
-        setCaseStudies(sortedData)
-      } catch (err) {
-        console.error('Error fetching case studies:', err)
-        setError('Error al cargar los estudios de caso')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchCaseStudies()
-  }, [])
 
   // Mover un case study hacia arriba en el orden de destacados
   const moveUp = (caseStudy: CaseStudy) => {
@@ -67,8 +41,8 @@ export default function FeaturedCasesManager() {
     updatedCaseStudies[featuredIndex].featuredOrder = updatedCaseStudies[prevFeaturedIndex].featuredOrder
     updatedCaseStudies[prevFeaturedIndex].featuredOrder = temp
     
-    // Ordenar para reflejar el nuevo orden
-    setCaseStudies(sortCaseStudies(updatedCaseStudies))
+    // Actualizar el orden a través del hook
+    updateOrder(updatedCaseStudies)
   }
 
   // Mover un case study hacia abajo en el orden de destacados  
@@ -90,8 +64,8 @@ export default function FeaturedCasesManager() {
     updatedCaseStudies[featuredIndex].featuredOrder = updatedCaseStudies[nextFeaturedIndex].featuredOrder
     updatedCaseStudies[nextFeaturedIndex].featuredOrder = temp
     
-    // Ordenar para reflejar el nuevo orden
-    setCaseStudies(sortCaseStudies(updatedCaseStudies))
+    // Actualizar el orden a través del hook
+    updateOrder(updatedCaseStudies)
   }
 
   // Añadir un case study a destacados
@@ -115,7 +89,8 @@ export default function FeaturedCasesManager() {
       featuredOrder: featuredCases.length + 1
     }
     
-    setCaseStudies(sortCaseStudies(updatedCaseStudies))
+    // Actualizar el orden a través del hook
+    updateOrder(updatedCaseStudies)
     setError(null)
   }
 
@@ -145,19 +120,12 @@ export default function FeaturedCasesManager() {
       }
     })
     
-    setCaseStudies(sortCaseStudies(updatedCaseStudies))
+    // Actualizar el orden a través del hook
+    updateOrder(updatedCaseStudies)
     setError(null)
   }
 
-  // Ordenar case studies (helper function)
-  const sortCaseStudies = (studies: CaseStudy[]) => {
-    return [...studies].sort((a, b) => {
-      if (a.featured && !b.featured) return -1
-      if (!a.featured && b.featured) return 1
-      if (a.featured && b.featured) return a.featuredOrder - b.featuredOrder
-      return a.order - b.order
-    })
-  }
+  // Ordenar case studies (helper function no longer needed as it's handled by the service)
 
   // Guardar los cambios de destacados
   const saveFeaturedChanges = async () => {
@@ -166,33 +134,19 @@ export default function FeaturedCasesManager() {
       setError(null)
       setSuccessMessage(null)
       
-      // Preparar los datos para la actualización
-      const featuredUpdates: FeaturedCaseUpdate[] = caseStudies.map(cs => ({
-        id: cs.id,
-        featured: cs.featured,
-        featuredOrder: cs.featuredOrder
-      }))
+      // Actualizar el orden a través del hook
+      const success = await updateOrder(caseStudies)
       
-      const response = await fetch('/api/cms/case-studies/featured', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(featuredUpdates),
-      })
-      
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Error al guardar los cambios')
+      if (success) {
+        setSuccessMessage('Cambios guardados correctamente')
+        
+        // Ocultar el mensaje de éxito después de 3 segundos
+        setTimeout(() => {
+          setSuccessMessage(null)
+        }, 3000)
+      } else {
+        throw new Error('No se pudieron guardar los cambios')
       }
-      
-      setSuccessMessage('Cambios guardados correctamente')
-      
-      // Ocultar el mensaje de éxito después de 3 segundos
-      setTimeout(() => {
-        setSuccessMessage(null)
-      }, 3000)
-      
     } catch (err) {
       console.error('Error saving featured changes:', err)
       setError(err instanceof Error ? err.message : 'Error desconocido')
@@ -219,9 +173,9 @@ export default function FeaturedCasesManager() {
       </div>
       
       {/* Mensajes de error o éxito */}
-      {error && (
+      {(error || apiError) && (
         <div className="bg-red-900/50 border border-red-500 text-white p-4 rounded-md mb-6">
-          {error}
+          {error || apiError}
         </div>
       )}
       

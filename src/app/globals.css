@@ -1,6 +1,72 @@
+/* Asegurando la propiedad appearance para compatibilidad */
+* {
+  appearance: none;
+}
+
+/* Asegurar que Tailwind CSS esté correctamente configurado */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Estilos para el efecto de gradient border */
+.gradient-card-hover {
+  position: relative;
+  border-radius: 12px;
+  padding: 2px;
+  background-color: #111;
+  transition: transform 0.3s ease;
+}
+
+.gradient-card-hover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 2px;
+  background: linear-gradient(45deg, #ff0080, #ff8c00, #ffed00, #00ff7f, #00bfff, #7f00ff, #ff00bf);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  background-size: 300% 300%;
+  animation: gradient-animation 3s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.gradient-card-hover:hover {
+  transform: translateY(-5px);
+}
+
+.gradient-card-hover:hover::before {
+  opacity: 1;
+}
+
+.gradient-card-content {
+  position: relative;
+  border-radius: 10px;
+  background-color: #111;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+/* Estilos para scrollbar personalizada */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 0, 0.3);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 255, 0, 0.5);
+}
 
 @keyframes slide {
   0% {
@@ -8,6 +74,18 @@
   }
   100% {
     transform: translateX(calc(-50% - 4rem));
+  }
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 0%, 0% 50%;
+  }
+  50% {
+    background-position: 0% 0%, 100% 50%;
+  }
+  100% {
+    background-position: 0% 0%, 0% 50%;
   }
 }
 
@@ -42,16 +120,23 @@ input[type='range']:focus {
   outline: none;
 }
 
-
 body {
   background: black;
   color: rgba(255, 255, 255, 0.9);
 }
 
 @font-face {
-  font-family: 'Druk';
+  font-family: 'Druk Text Wide';
   src: url('/fonts/DrukWide-Heavy.otf') format('opentype');
   font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono Regular';
+  src: url('/fonts/GeistMono-Regular.woff2') format('woff2');
+  font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
@@ -111,9 +196,14 @@ body {
     @apply bg-background text-foreground;
   }
 
+  /* Todo el texto normal usa Geist Mono Regular */
+  body, p, div, span, a, button, input, select, textarea {
+    font-family: 'Geist Mono Regular', monospace;
+  }
+
   /* Headings - Druk Text Wide */
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-druk-text-wide);
+    font-family: 'Druk Text Wide', sans-serif;
     @apply font-black uppercase tracking-normal leading-[1.1];
     letter-spacing: 0.02em;
   }
@@ -141,28 +231,21 @@ body {
   h6 {
     @apply text-2xl mb-2;
   }
-
-  /* Body Text - General */
-  body {
-    font-family: var(--font-inter);
+  
+  /* Clases de utilidad para forzar una tipografía específica */
+  .font-druk {
+    font-family: 'Druk Text Wide', sans-serif !important;
   }
   
-  /* Monospace text for code, technical terms */
-  code, pre, .mono, .technical {
-    font-family: var(--font-roboto-mono);
-  }
-  
-  /* Styled text with Geist Mono */
-  .geist-mono, .brand-text {
-    font-family: var(--font-geist-mono);
-    @apply uppercase;
+  .font-geist {
+    font-family: 'Geist Mono Regular', monospace !important;
   }
   
   /* Admin headings - Druk Text Wide con tamaños moderados */
   .admin-page h1,
   .admin-page h2,
   .admin-page h3 {
-    font-family: var(--font-druk-text-wide) !important;
+    font-family: 'Druk Text Wide', sans-serif !important;
     @apply font-black uppercase tracking-tight;
     letter-spacing: 0.02em;
   }
@@ -258,6 +341,12 @@ body {
 
   input[type='range']::-moz-range-thumb:hover {
     transform: scale(1.1);
+  }
+
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
   }
 }
 

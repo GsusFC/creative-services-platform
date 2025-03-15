@@ -24,23 +24,19 @@ export function generateBudgetPDF(budget) {
 
 // Guardar PDF
 export function savePDF(budget) {
-  const doc = generateBudgetPDF(budget);
   const filename = `Presupuesto_${budget.code}_${budget.client.name.replace(/\s+/g, '_')}.pdf`;
   
   // En un entorno de navegador, esto descargaría el archivo
   console.log(`Simulando descarga de PDF: ${filename}`);
   
   // En una implementación real
-  doc.save(filename);
+  generateBudgetPDF(budget).save(filename);
   
   return filename;
 }
 
 // Enviar PDF por email (simulado)
 export function emailPDF(budget, recipientEmail) {
-  const doc = generateBudgetPDF(budget);
-  const pdfBase64 = doc.output('datauristring');
-  
   console.log(`Simulando envío de PDF a ${recipientEmail}`);
   
   // En una implementación real, esto se conectaría a un servicio de email

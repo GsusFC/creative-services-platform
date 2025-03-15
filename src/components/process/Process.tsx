@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useRef } from 'react'
-import Image from 'next/image'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import React, { useRef, useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 
 const phases = [
   {
@@ -48,11 +47,35 @@ const phases = [
 ]
 
 export function Process() {
-  const containerRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start end', 'end start']
-  })
+  const containerRef = useRef<HTMLDivElement>(null)
+  const timelineRef = useRef<HTMLDivElement>(null)
+  const [lineHeight, setLineHeight] = useState("100%")
+  const [lineTop, setLineTop] = useState("0")
+  
+  // Usar un efecto para calcular la altura y posición de la línea
+  useEffect(() => {
+    if (containerRef.current) {
+      const timelineContainer = containerRef.current
+      const firstNode = timelineContainer.querySelector('.timeline-nodes:first-child') as HTMLElement | null
+      const lastNode = timelineContainer.querySelector('.timeline-nodes:last-child') as HTMLElement | null
+      
+      if (firstNode && lastNode) {
+        const containerTop = timelineContainer.getBoundingClientRect().top
+        const firstNodeCenter = firstNode.getBoundingClientRect().top + (firstNode.getBoundingClientRect().height / 2)
+        const lastNodeCenter = lastNode.getBoundingClientRect().top + (lastNode.getBoundingClientRect().height / 2)
+        
+        // Calcular la posición top para la línea (relativa al contenedor)
+        const lineTop = firstNodeCenter - containerTop
+        
+        // Calcular la altura de la línea desde el primer al último nodo
+        const lineHeight = lastNodeCenter - firstNodeCenter
+        
+        // Establecer los valores
+        setLineTop(`${lineTop}px`)
+        setLineHeight(`${lineHeight}px`)
+      }
+    }
+  }, [])
 
   return (
     <div className="min-h-screen">
@@ -82,28 +105,33 @@ export function Process() {
       <div ref={containerRef} className="relative container mx-auto px-4 py-24">
         {/* Central Line */}
         <motion.div 
-          className="absolute left-1/2 top-0 w-px bg-gradient-to-b from-red-500 via-green-500 to-blue-500 origin-top"
+          ref={timelineRef}
+          className="absolute left-1/2 w-px bg-gradient-to-b from-red-500 via-green-500 to-blue-500 origin-top"
           style={{ 
-            height: '100%',
-            scaleY: scrollYProgress
+            top: lineTop,
+            height: lineHeight
           }}
+          initial={{ scaleY: 0 }}
+          whileInView={{ scaleY: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
         />
 
         {/* Process Phases */}
-        <div className="relative space-y-48">
+        <div className="relative space-y-48 md:space-y-48">
           {phases.map((phase, index) => {
             const isEven = index % 2 === 0
             return (
               <motion.div
                 key={phase.title}
-                className={`flex items-center gap-8 ${isEven ? 'flex-row' : 'flex-row-reverse'}`}
+                className={`timeline-nodes flex flex-col md:flex-row items-center gap-8 md:gap-8 ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'}`}
                 initial={{ opacity: 0, x: isEven ? -50 : 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
                 {/* Content */}
-                <div className={`w-1/2 ${isEven ? 'text-right' : 'text-left'}`}>
+                <div className={`w-full md:w-1/2 ${isEven ? 'md:text-right' : 'md:text-left'} text-center md:text-left`}>
                   <motion.div
                     className="bg-white/5 rounded-lg p-8 hover:bg-white/10 transition-all duration-300"
                     whileHover={{ scale: 1.02 }}
@@ -122,14 +150,14 @@ export function Process() {
                     </p>
                     
                     {/* Milestones */}
-                    <div className={`space-y-3 ${isEven ? 'items-end' : 'items-start'}`}>
+                    <div className={`space-y-3 ${isEven ? 'md:items-end' : 'md:items-start'} flex flex-col items-center md:items-start ${isEven ? 'md:items-end' : ''}`}>
                       {phase.milestones.map((milestone) => (
                         <motion.div 
                           key={milestone.name}
-                          className={`flex items-center gap-3 text-white/80 ${isEven ? 'flex-row-reverse' : 'flex-row'}`}
+                          className={`flex items-center gap-3 text-white/80 ${isEven ? 'md:flex-row-reverse' : 'md:flex-row'} flex-row`}
                           whileHover={{ x: isEven ? -5 : 5 }}
                         >
-                          <span className="text-xl">{milestone.icon}</span>
+                          <span className="text-xl" role="img" aria-label={milestone.name}>{milestone.icon}</span>
                           <span 
                             style={{ fontFamily: 'var(--font-geist-mono)' }}
                             className="text-sm"
@@ -143,7 +171,7 @@ export function Process() {
                 </div>
 
                 {/* Timeline Node */}
-                <motion.div 
+                <div 
                   className="w-6 h-6 rounded-full bg-white absolute left-1/2 -translate-x-1/2"
                   style={{
                     background: index === 0 ? '#ef4444' : 
@@ -151,7 +179,6 @@ export function Process() {
                              index === 2 ? '#3b82f6' :
                              '#ffffff'
                   }}
-                  whileHover={{ scale: 1.5 }}
                 />
               </motion.div>
             )

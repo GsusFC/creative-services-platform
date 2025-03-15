@@ -1,30 +1,28 @@
 'use client';
 
 import React from 'react';
-import DoItYourselfV2App from '@/components/do-it-yourself-v2/DoItYourselfV2App';
+import { DiyProvider } from '@/contexts/DiyContext';
+import BudgetContainer from '@/components/do-it-yourself/budget/BudgetContainer';
 
-export default function DoItYourselfV2Page() {
+/**
+ * Página de demostración para el módulo "Do It Yourself"
+ * Muestra los componentes del presupuesto
+ */
+export default function DoItYourselfPage() {
   return (
-    <main className="min-h-screen bg-black text-white">
-      <div className="container mx-auto px-4 py-12 mt-[80px]">
-        <div className="mb-8">
-          <h1 
-            className="text-4xl mb-2 text-white" 
-            style={{ fontFamily: 'var(--font-druk-text-wide)' }}
-          >
-            DO IT YOURSELF <span className="text-[#00ff00]">V2</span>
-          </h1>
-          <p 
-            className="max-w-3xl text-white/70"
-            style={{ fontFamily: 'var(--font-geist-mono)' }}
-          >
-            Nueva versión en desarrollo que incluye departamentos, productos, servicios y paquetes.
-            Esta versión permitirá crear presupuestos más completos y flexibles.
-          </p>
+    <div className="min-h-screen bg-black text-white p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center">Módulo Do-It-Yourself</h1>
+      
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-gradient-to-br from-black/50 to-black/80 border border-white/10 rounded-lg p-6 shadow-lg">
+          <h2 className="text-xl font-medium mb-6 border-b border-white/10 pb-3">Componentes del Presupuesto</h2>
+          
+          {/* Envolvemos todos los componentes en el proveedor de contexto */}
+          <DiyProvider>
+            <BudgetContainer />
+          </DiyProvider>
         </div>
-        
-        <DoItYourselfV2App />
       </div>
-    </main>
+    </div>
   );
 }

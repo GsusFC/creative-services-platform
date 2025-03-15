@@ -5,14 +5,14 @@ import localFont from 'next/font/local'
 export const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-inter',
+  variable: '--font-inter'
 })
 
 // Fuente monoespaciada para código y detalles técnicos
 export const robotoMono = Roboto_Mono({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-roboto-mono',
+  variable: '--font-roboto-mono'
 })
 
 // Fuente para títulos y encabezados
@@ -21,11 +21,11 @@ export const drukText = localFont({
     {
       path: '../../public/fonts/Druk Text Wide Heavy.woff2',
       weight: '900',
-      style: 'normal',
-    },
+      style: 'normal'
+    }
   ],
   display: 'swap',
-  variable: '--font-druk-text-wide',
+  variable: '--font-druk-text-wide'
 })
 
 // Fuente para texto monoespaciado personalizado
@@ -34,9 +34,9 @@ export const geistMono = localFont({
     {
       path: '../../public/fonts/GeistMono-Regular.woff2',
       weight: '400',
-      style: 'normal',
-    },
+      style: 'normal'
+    }
   ],
   display: 'swap',
-  variable: '--font-geist-mono',
+  variable: '--font-geist-mono'
 })

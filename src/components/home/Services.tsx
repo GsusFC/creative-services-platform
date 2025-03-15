@@ -3,67 +3,32 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
+import { AnimationSettings } from '@/hooks/useServices'
 
-const services = [
-  {
-    title: 'STRATEGY',
-    image: '/assets/services/STRATEGY.svg',
-    description: 'We define your brand positioning and direction',
-    items: [
-      'Research & Analysis',
-      'Brand Strategy',
-      'Positioning',
-      'Product Roadmap'
-    ]
-  },
-  {
-    title: 'BRANDING',
-    image: '/assets/services/BRANDING.svg',
-    description: 'We create memorable identities and design systems',
-    items: [
-      'Visual Identity',
-      'Design Systems',
-      'Brand Guidelines',
-      'Brand Applications'
-    ]
-  },
-  {
-    title: 'DIGITAL PRODUCT',
-    image: '/assets/services/DIGITAL PRODUCT.svg',
-    description: 'We design user-centered digital experiences',
-    items: [
-      'UI/UX Design',
-      'Web & Mobile Interfaces',
-      'Product Design',
-      'Interactive Prototypes'
-    ]
-  },
-  {
-    title: 'MOTION',
-    image: '/assets/services/MOTION DESGIN.svg',
-    description: 'We bring your brand to life through animation',
-    items: [
-      'Motion Design',
-      'Animation Systems',
-      'Video Production',
-      'Interactive Motion'
-    ]
-  }
-]
+interface ServiceItem {
+  title: string;
+  image: string;
+  description: string;
+  items: string[];
+}
 
-export function Services() {
+export interface ServicesProps {
+  services: ServiceItem[];
+  animationSettings: AnimationSettings;
+}
+
+export function Services({ services, animationSettings }: ServicesProps) {
+  // Extraer configuraciones de animación
+  const { titleAnimation, serviceCardAnimation, linkAnimation } = animationSettings;
   return (
     <section className="py-24 bg-black relative overflow-hidden">
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:6rem_6rem] opacity-70"></div>
 
       <div className="px-6">
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.8,
-            ease: [0.22, 1, 0.36, 1]
-          }}
+          initial={titleAnimation.initial}
+          animate={titleAnimation.animate}
+          transition={titleAnimation.transition}
           className="max-w-2xl mx-auto text-center mb-12 px-4"
         >
           <h2 
@@ -84,12 +49,11 @@ export function Services() {
           {services.map((service, index) => (
             <motion.div
               key={service.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={serviceCardAnimation.initial}
+              animate={serviceCardAnimation.animate}
               transition={{ 
-                duration: 0.8,
-                delay: index * 0.1,
-                ease: [0.22, 1, 0.36, 1]
+                ...serviceCardAnimation.transition,
+                delay: index * 0.1
               }}
               className="group relative bg-black p-8 border border-white/20 hover:border-white/40 transition-all duration-300 h-[380px] flex flex-col"
             >
@@ -144,9 +108,9 @@ export function Services() {
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          initial={linkAnimation.initial}
+          whileInView={linkAnimation.whileInView}
+          transition={linkAnimation.transition}
           className="text-center px-4"
         >
           <Link 

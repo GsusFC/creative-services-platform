@@ -1,12 +1,1 @@
-<svg width="1080" height="1080" viewBox="0 0 1080 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_199_19258)">
-<rect width="1080" height="1080" transform="translate(0 1080) rotate(-90)" fill="white"/>
-<rect y="1080" width="1080" height="540" transform="rotate(-90 0 1080)" fill="#00FF00"/>
-<rect x="540" y="1080" width="1080" height="540" transform="rotate(-90 540 1080)" fill="#0000FF"/>
-</g>
-<defs>
-<clipPath id="clip0_199_19258">
-<rect width="1080" height="1080" fill="white" transform="translate(0 1080) rotate(-90)"/>
-</clipPath>
-</defs>
-</svg>
+<svg fill="none" height="1080" viewBox="0 0 1080 1080" width="1080" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><clipPath id="a"><path d="m0 0h1080v1080h-1080z" transform="matrix(0 -1 1 0 0 1080)"/></clipPath><g clip-path="url(#a)"><path d="m0 0h1080v1080h-1080z" fill="#fff" transform="matrix(0 -1 1 0 0 1080)"/><path d="m0 1080h1080v540h-1080z" fill="#0f0" transform="matrix(0 -1 1 0 -1080 1080)"/><path d="m540 1080h1080v540h-1080z" fill="#00f" transform="matrix(0 -1 1 0 -540 1620)"/></g></svg>

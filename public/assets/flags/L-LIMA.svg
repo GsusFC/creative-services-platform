@@ -1,14 +1,1 @@
-<svg width="1080" height="1080" viewBox="0 0 1080 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_199_19606)">
-<rect width="1080" height="1080" transform="translate(0 1080) rotate(-90)" fill="white"/>
-<rect y="540" width="540" height="540" transform="rotate(-90 0 540)" fill="#00FF00"/>
-<rect x="1080" y="540" width="540" height="540" transform="rotate(90 1080 540)" fill="#00FF00"/>
-<rect x="540" y="540" width="540" height="540" transform="rotate(-90 540 540)" fill="black"/>
-<rect x="540" y="540" width="540" height="540" transform="rotate(90 540 540)" fill="black"/>
-</g>
-<defs>
-<clipPath id="clip0_199_19606">
-<rect width="1080" height="1080" fill="white" transform="translate(0 1080) rotate(-90)"/>
-</clipPath>
-</defs>
-</svg>
+<svg fill="none" height="1080" viewBox="0 0 1080 1080" width="1080" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><clipPath id="a"><path d="m0 0h1080v1080h-1080z" transform="matrix(0 -1 1 0 0 1080)"/></clipPath><g clip-path="url(#a)"><path d="m0 0h1080v1080h-1080z" fill="#fff" transform="matrix(0 -1 1 0 0 1080)"/><path d="m0 540h540v540h-540z" fill="#0f0" transform="matrix(0 -1 1 0 -540 540)"/><path d="m1080 540h540v540h-540z" fill="#0f0" transform="matrix(0 1 -1 0 1620 -540)"/><g fill="#000"><path d="m540 540h540v540h-540z" transform="matrix(0 -1 1 0 0 1080)"/><path d="m540 540h540v540h-540z" transform="matrix(0 1 -1 0 1080 0)"/></g></g></svg>

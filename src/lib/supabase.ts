@@ -23,7 +23,7 @@ export async function testSupabaseConnection(): Promise<{
 }> {
   try {
     // Intentar una operación simple para verificar la conexión
-    const { data, error } = await supabase.from('case_studies').select('count');
+    const { error } = await supabase.from('case_studies').select('count');
     
     if (error) throw error;
     
@@ -37,59 +37,4 @@ export async function testSupabaseConnection(): Promise<{
   }
 }
 
-/**
- * Verifica el estado del Foreign Data Wrapper de Notion
- */
-export async function checkNotionFdwStatus(): Promise<{
-  configured: boolean;
-  databaseCount?: number;
-  error?: string;
-}> {
-  try {
-    // Esta es una consulta de ejemplo. El esquema específico dependerá 
-    // de cómo esté configurado el FDW de Notion en Supabase
-    const { data, error } = await supabase.rpc('check_notion_fdw_status');
-    
-    if (error) throw error;
-    
-    return {
-      configured: Boolean(data?.configured),
-      databaseCount: data?.database_count || 0,
-    };
-  } catch (error) {
-    console.error('Error verificando el estado del FDW de Notion:', error);
-    return {
-      configured: false,
-      error: error instanceof Error ? error.message : String(error),
-    };
-  }
-}
-
-/**
- * Sincroniza los datos entre Notion y Supabase
- */
-export async function syncNotionData(): Promise<{
-  success: boolean;
-  added?: number;
-  updated?: number;
-  error?: string;
-}> {
-  try {
-    // Llamar a una función de RPC en Supabase que maneje la sincronización
-    const { data, error } = await supabase.rpc('sync_notion_data');
-    
-    if (error) throw error;
-    
-    return {
-      success: true,
-      added: data?.added || 0,
-      updated: data?.updated || 0,
-    };
-  } catch (error) {
-    console.error('Error sincronizando datos con Notion:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : String(error),
-    };
-  }
-}
+// Funciones adicionales para la gestión de datos Supabase

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { getCaseStudyBySlug, getAllCaseStudies } from '@/lib/case-studies/service';
-import { CaseStudyContent } from '@/components/case-study/CaseStudyContent';
+import CaseStudyContentContainer from '@/components/case-study/CaseStudyContentContainer';
 
 // Componente para mostrar durante la carga
 function LoadingCaseStudy() {
@@ -46,7 +46,7 @@ export default async function CaseStudyPage({ params }: { params: { slug: string
 
     return (
       <Suspense fallback={<LoadingCaseStudy />}>
-        <CaseStudyContent caseStudy={caseStudy} />
+        <CaseStudyContentContainer caseStudy={caseStudy} />
       </Suspense>
     );
   } catch (error) {

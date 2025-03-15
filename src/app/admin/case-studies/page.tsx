@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { PlusCircleIcon, EditIcon, ChevronRightIcon, StarIcon, TrashIcon, SettingsIcon, DatabaseIcon, FilterIcon, SearchIcon, ArrowUpDownIcon } from 'lucide-react'
+import { PlusCircleIcon, EditIcon, StarIcon, TrashIcon, SettingsIcon, DatabaseIcon, FilterIcon, SearchIcon, ArrowUpDownIcon } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 interface CaseStudy {
@@ -58,7 +58,21 @@ export default function CaseStudiesAdmin() {
         }
         
         const data = await response.json()
-        setCaseStudies(data)
+        
+        // Normalizar los datos recibidos para que sean compatibles con la interfaz
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const formattedData = data.map((item: any) => ({
+          ...item,
+          id: typeof item.id === 'number' ? item.id.toString() : item.id,
+          slug: item.slug || '',
+          client: item.client || '',
+          status: item.status || 'draft',
+          featured: item.featured === null ? false : item.featured,
+          updatedAt: item.updatedAt || item.updated_at || new Date().toISOString()
+        }) as CaseStudy)
+        
+        console.log('Case studies cargados:', formattedData.length)
+        setCaseStudies(formattedData)
       } catch (err) {
         console.error('Error fetching case studies:', err)
         setError('Error al cargar los estudios de caso. Por favor, intenta de nuevo.')
@@ -200,7 +214,7 @@ export default function CaseStudiesAdmin() {
             
             <Link href="/admin/case-studies/settings" className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 rounded-lg text-white font-medium text-sm transition-all shadow-sm shadow-purple-500/20">
               <SettingsIcon className="mr-2 h-4 w-4" />
-              Integración Notion
+              Configuración
             </Link>
             
             <Link href="/admin/case-studies/new" className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 rounded-lg text-white font-medium text-sm transition-all shadow-sm shadow-green-500/20">
@@ -279,17 +293,14 @@ export default function CaseStudiesAdmin() {
                 </div>
                 <h3 className="text-xl font-semibold text-white mb-2">No hay case studies</h3>
                 <p className="text-gray-400 mb-6 max-w-md">
-                  No hay estudios de caso creados todavía. Puedes crear uno nuevo o sincronizar con Notion.
+                  No hay estudios de caso creados todavía. Puedes crear uno nuevo desde el panel de administración.
                 </p>
                 <div className="flex flex-wrap gap-3 justify-center">
                   <Link href="/admin/case-studies/new" className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 rounded-lg text-white font-medium text-sm transition-all">
                     <PlusCircleIcon className="mr-2 h-4 w-4" />
                     Crear nuevo
                   </Link>
-                  <Link href="/admin/case-studies/settings" className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 rounded-lg text-white font-medium text-sm transition-all">
-                    <SettingsIcon className="mr-2 h-4 w-4" />
-                    Sincronizar desde Notion
-                  </Link>
+
                 </div>
               </div>
             )}
@@ -300,49 +311,59 @@ export default function CaseStudiesAdmin() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 gap-4"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             {filteredCaseStudies.map((study) => (
               <motion.div key={study.id} variants={itemVariants}>
                 <Link href={`/admin/case-studies/${study.slug}/edit`}>
-                  <div className="bg-gray-900/40 border border-gray-800/80 hover:border-green-500/50 hover:bg-gray-900/60 rounded-lg p-6 transition-all duration-300 group shadow-lg">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <div className="flex items-center">
-                          <h3 className="text-xl font-semibold text-white group-hover:text-green-400 transition-colors">
-                            {study.title}
-                          </h3>
+                  <div className="bg-black/30 border border-white/10 hover:border-[#00ff00]/40 hover:bg-black/50 rounded-md p-4 transition-all duration-300 group relative">
+                    {/* Layout de dos columnas: contenido principal y estado */}
+                    <div className="flex justify-between items-start gap-3">
+                      {/* Columna principal con títulos */}
+                      <div className="flex-1 min-w-0"> {/* min-w-0 permite que el truncate funcione correctamente */}
+                        {/* Cliente destacado */}
+                        <h3 className="text-base font-bold text-white mb-1 group-hover:text-[#00ff00] transition-colors truncate">
+                          {study.client}
                           {study.featured && (
-                            <span className="ml-2 text-yellow-400">
+                            <span className="ml-2 text-yellow-400 inline-flex items-center">
                               <StarIcon className="h-4 w-4" />
                             </span>
                           )}
-                        </div>
-                        <div className="flex items-center mt-1 space-x-4">
-                          <span className="text-gray-400">{study.client}</span>
-                          {study.status === 'published' ? (
-                            <span className="inline-flex items-center text-green-400 text-sm">
-                              <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
-                              Publicado
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center text-yellow-400 text-sm">
-                              <span className="h-2 w-2 rounded-full bg-yellow-500 mr-2"></span>
-                              Borrador
-                            </span>
-                          )}
-                        </div>
+                        </h3>
+                        
+                        {/* Título del case study */}
+                        <h4 className="text-sm text-gray-300 mb-3 font-medium line-clamp-2 overflow-hidden">
+                          {study.title}
+                        </h4>
                       </div>
-                      <ChevronRightIcon className="h-5 w-5 text-green-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      
+                      {/* Badge de estado */}
+                      <div className="flex-shrink-0">
+                        {study.status === 'published' ? (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-[#00ff00]/10 text-[#00ff00] border border-[#00ff00]/20 whitespace-nowrap">
+                            <span className="h-1.5 w-1.5 rounded-full bg-[#00ff00] mr-1.5"></span>
+                            Publicado
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-yellow-400/10 text-yellow-400 border border-yellow-400/20 whitespace-nowrap">
+                            <span className="h-1.5 w-1.5 rounded-full bg-yellow-400 mr-1.5"></span>
+                            Borrador
+                          </span>
+                        )}
+                      </div>
                     </div>
                     
-                    <div className="flex justify-between items-center mt-6">
-                      <span className="text-sm text-gray-500">
-                        Última actualización: {study.updatedAt ? new Date(study.updatedAt).toLocaleDateString('es-ES') : 'N/A'}
+                    {/* Línea separadora con gradiente en hover */}
+                    <div className="h-px w-full bg-white/10 group-hover:bg-gradient-to-r group-hover:from-[#00ff00]/50 group-hover:to-transparent mb-3 transition-all"></div>
+                    
+                    {/* Footer con fecha y acciones */}
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-white/40 font-mono">
+                        {study.updatedAt ? new Date(study.updatedAt).toLocaleDateString('es-ES') : 'N/A'}
                       </span>
-                      <div className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-2">
                         <button 
-                          className="p-2 text-gray-400 hover:text-blue-400 transition-colors"
+                          className="p-1.5 text-white/40 hover:text-[#00ff00] transition-colors rounded"
                           onClick={(e) => {
                             e.stopPropagation();
                             e.preventDefault();
@@ -354,7 +375,7 @@ export default function CaseStudiesAdmin() {
                         </button>
                         
                         <button 
-                          className="p-2 text-gray-400 hover:text-red-400 transition-colors"
+                          className="p-1.5 text-white/40 hover:text-red-400 transition-colors rounded"
                           onClick={(e) => handleDelete(study.id, e)}
                           disabled={isDeleting === study.id}
                           title="Eliminar"
@@ -367,6 +388,9 @@ export default function CaseStudiesAdmin() {
                         </button>
                       </div>
                     </div>
+                    
+                    {/* Overlay de gradiente en hover */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none bg-gradient-to-t from-[#00ff00]/5 to-transparent rounded-md transition-opacity duration-300"></div>
                   </div>
                 </Link>
               </motion.div>

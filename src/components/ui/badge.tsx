@@ -17,7 +17,7 @@ const badgeVariants = cva(
         success: "border-transparent bg-green-950/60 text-green-400 hover:bg-green-900/80 border-green-800/30",
         warning: "border-transparent bg-yellow-950/60 text-yellow-400 hover:bg-yellow-900/80 border-yellow-800/30",
         info: "border-transparent bg-blue-950/60 text-blue-400 hover:bg-blue-900/80 border-blue-800/30",
-        notion: "border-transparent bg-blue-900/30 text-blue-300 hover:bg-blue-900/40 border-blue-900/30",
+        supabase: "border-transparent bg-emerald-900/30 text-emerald-300 hover:bg-emerald-900/40 border-emerald-900/30",
         website: "border-transparent bg-purple-900/30 text-purple-300 hover:bg-purple-900/40 border-purple-900/30",
       },
     },

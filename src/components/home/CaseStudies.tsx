@@ -1,40 +1,30 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRef, useEffect, useState } from 'react'
+import { RefObject } from 'react'
 import { CaseStudy } from '@/types/case-study'
-import { getFeaturedCaseStudies } from '@/lib/case-studies/service'
+import { AnimationSettings, ScrollAnimations } from '@/hooks/useCaseStudies'
 
-export function CaseStudies() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start end', 'end start']
-  })
+export interface CaseStudiesProps {
+  containerRef: RefObject<HTMLDivElement | null>;
+  scrollAnimations: ScrollAnimations;
+  animationSettings: AnimationSettings;
+  featuredCases: CaseStudy[];
+  isLoading: boolean;
+}
 
-  const y = useTransform(scrollYProgress, [0, 1], [100, 0])
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [0, 1])
-  
-  const [featuredCases, setFeaturedCases] = useState<CaseStudy[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchCases = async () => {
-      try {
-        setIsLoading(true)
-        const cases = await getFeaturedCaseStudies()
-        setFeaturedCases(cases.filter(cs => cs.status === 'published').slice(0, 4))
-      } catch (error) {
-        console.error('Error al cargar los estudios de caso destacados:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchCases()
-  }, [])
+export function CaseStudies({
+  containerRef,
+  scrollAnimations,
+  animationSettings,
+  featuredCases,
+  isLoading
+}: CaseStudiesProps) {
+  // Extraer las configuraciones de animación
+  const { arrowAnimation, headerAnimation, caseAnimation } = animationSettings;
+  const { y, opacity } = scrollAnimations;
 
   return (
     <div className="relative bg-black">
@@ -47,14 +37,9 @@ export function CaseStudies() {
         <div className="absolute left-0 top-0 h-full w-[120px] hidden md:block bg-[#00ff00] overflow-hidden">
           <motion.div 
             className="absolute inset-0 flex flex-col items-center gap-0"
-            initial={{ y: '-100%' }}
-            animate={{ y: '0%' }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: 'linear',
-              repeatType: "loop"
-            }}
+            initial={arrowAnimation.initial}
+            animate={arrowAnimation.animate}
+            transition={arrowAnimation.transition}
           >
             {Array(60).fill(null).map((_, i) => (
               <div 
@@ -74,8 +59,9 @@ export function CaseStudies() {
         </div>
         <div className="px-6 md:pl-[140px]">
           <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={headerAnimation.initial}
+            whileInView={headerAnimation.whileInView}
+            transition={headerAnimation.transition}
             className="mb-6 flex items-center justify-between"
           >
             <p 
@@ -118,9 +104,12 @@ export function CaseStudies() {
                 {featuredCases.map((project, index) => (
                   <motion.div
                     key={project.slug}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
+                    initial={caseAnimation.initial}
+                    whileInView={caseAnimation.whileInView}
+                    transition={{
+                      ...caseAnimation.transition,
+                      delay: index * 0.1
+                    }}
                     className="last:mb-0"
                   >
                     <Link 

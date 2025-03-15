@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CaseStudy, MediaItem } from '@/types/case-study';
-import MediaItemsManager from '@/components/admin/MediaItemsManager';
+import MediaItemsManagerContainer from '@/components/admin/MediaItemsManagerContainer';
 
 interface CaseStudyFormProps {
   initialData?: Partial<CaseStudy>;
@@ -55,9 +55,8 @@ const CaseStudyForm: React.FC<CaseStudyFormProps> = ({
       newErrors.description2 = 'La descripción larga es obligatoria';
     }
     
-    if (!formData.mediaItems?.length) {
-      newErrors.mediaItems = 'Debe incluir al menos una imagen o video';
-    }
+    // Las imágenes o videos son opcionales, especialmente para borradores
+    // No se valida mediaItems para permitir guardar sin medios
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -409,8 +408,8 @@ const CaseStudyForm: React.FC<CaseStudyFormProps> = ({
           {/* Media Items */}
           <div className="bg-black/30 p-6 rounded-lg border border-white/10">
             <h2 className="text-xl font-bold mb-6 text-white">Contenido Multimedia</h2>
-            <MediaItemsManager 
-              mediaItems={formData.mediaItems || []} 
+            <MediaItemsManagerContainer 
+              initialItems={formData.mediaItems || []} 
               onChange={handleMediaItemsChange}
             />
             {errors.mediaItems && (

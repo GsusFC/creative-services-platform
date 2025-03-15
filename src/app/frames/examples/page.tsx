@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import dynamic from 'next/dynamic';
 
 // Crear nuestro componente directamente aquí para evitar problemas de importación
 const FlagFrame = () => {

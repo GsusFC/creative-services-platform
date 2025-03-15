@@ -59,6 +59,16 @@ export default {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(calc(-50% - 3rem))' }
         },
+        'gradient-animation': {
+          '0%': { backgroundPosition: '0% 0%' },
+          '50%': { backgroundPosition: '100% 0%' },
+          '100%': { backgroundPosition: '0% 0%' }
+        },
+        'gradient-move': {
+          '0%': { backgroundPosition: '0% 0%, 0% 50%' },
+          '50%': { backgroundPosition: '0% 0%, 100% 50%' },
+          '100%': { backgroundPosition: '0% 0%, 0% 50%' }
+        },
         'accordion-down': {
           from: { height: '0' },
           to: { height: 'var(--radix-accordion-content-height)' },
@@ -72,6 +82,17 @@ export default {
         scroll: 'scroll 40s linear infinite',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'gradient-animation': 'gradient-animation 2s linear infinite',
+        'gradient-border': 'gradient-move 3s linear infinite',
+      },
+      backgroundImage: {
+        'gradient-mask': 'linear-gradient(#111, #111), linear-gradient(45deg, #ff0000, #ff8000, #ffff00, #00ff00, #00ffff, #0080ff, #8000ff, #ff00ff, #ff0000)',
+      },
+      backgroundClip: {
+        'border': 'padding-box, border-box',
+      },
+      backgroundSize: {
+        'mask-size': '100% 100%, 300% 300%',
       },
     },
   },

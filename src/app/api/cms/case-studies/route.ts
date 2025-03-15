@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { 
   getAllCaseStudies, 
-  getCaseStudyBySlug, 
   createCaseStudy, 
   updateCaseStudy, 
   deleteCaseStudy 
 } from '@/lib/case-studies/service';
-import { CaseStudy } from '@/types/case-study';
 
 /**
  * GET /api/cms/case-studies
@@ -14,13 +12,34 @@ import { CaseStudy } from '@/types/case-study';
  */
 export async function GET() {
   try {
+    console.log('API: Intentando obtener todos los case studies...');
+    
+    // Test de conexión con Supabase
+    try {
+      const { supabase } = await import('@/lib/supabase');
+      const testQuery = await supabase.from('case_studies').select('count').limit(1);
+      console.log('API: Resultado de consulta de prueba a Supabase:', 
+        testQuery.error ? `Error: ${JSON.stringify(testQuery.error)}` : `Éxito: ${JSON.stringify(testQuery.data)}`);
+    } catch (supabaseError) {
+      console.error('API: Error al conectar con Supabase:', supabaseError);
+    }
+    
+    // Obtener los case studies usando el servicio
     const caseStudies = await getAllCaseStudies();
+    console.log(`API: Se obtuvieron ${caseStudies?.length ?? 0} case studies`);
+    
+    // Si no hay case studies pero tampoco un error, devolvemos un array vacío
+    if (!caseStudies || caseStudies.length === 0) {
+      console.log('API: No se encontraron case studies, pero no hubo error');
+      return NextResponse.json([]);
+    }
     
     return NextResponse.json(caseStudies);
   } catch (error) {
-    console.error('Error al obtener los case studies:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+    console.error('API: Error al obtener los case studies:', error);
     return NextResponse.json(
-      { error: 'Error interno al obtener los case studies' },
+      { error: `Error interno al obtener los case studies: ${errorMessage}` },
       { status: 500 }
     );
   }
@@ -62,32 +81,37 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const data = await request.json();
+    console.log('API PUT: Datos recibidos:', data);
     
     // Validación básica
     if (!data.id || !data.title || !data.client || !data.description) {
+      console.log('API PUT: Campos requeridos faltantes:', {
+        id: !!data.id,
+        title: !!data.title,
+        client: !!data.client,
+        description: !!data.description
+      });
       return NextResponse.json(
         { error: 'Faltan campos requeridos' },
         { status: 400 }
       );
     }
     
-    // Verificar que el case study existe
-    const existingCaseStudy = await getCaseStudyBySlug(data.slug);
-    if (!existingCaseStudy) {
-      return NextResponse.json(
-        { error: 'Case study no encontrado' },
-        { status: 404 }
-      );
+    // Intentar actualizar directamente por ID sin verificar por slug
+    try {
+      console.log('API PUT: Actualizando case study por ID:', data.id);
+      const updatedCaseStudy = await updateCaseStudy(data.id, data);
+      console.log('API PUT: Case study actualizado correctamente');
+      return NextResponse.json(updatedCaseStudy);
+    } catch (updateError) {
+      console.error('API PUT: Error al actualizar el case study por ID:', updateError);
+      throw updateError; // Propagar el error para el manejador principal
     }
-    
-    // Actualizar el case study
-    const updatedCaseStudy = await updateCaseStudy(data.id, data);
-    
-    return NextResponse.json(updatedCaseStudy);
   } catch (error) {
-    console.error('Error al actualizar el case study:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+    console.error('API PUT: Error general:', errorMessage);
     return NextResponse.json(
-      { error: 'Error interno al actualizar el case study' },
+      { error: `Error al actualizar: ${errorMessage}` },
       { status: 500 }
     );
   }

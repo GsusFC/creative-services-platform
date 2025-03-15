@@ -1,4 +1,3 @@
-import { CaseStudy } from '@/types/case-study'
 import { getAllCaseStudies } from '@/lib/case-studies/service'
 import { Suspense } from 'react'
 import ProjectsList from './projects-list'

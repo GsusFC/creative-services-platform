@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/admin/components/ui/card"
 import Link from "next/link"
-import { DatabaseIcon, ArrowRightIcon, Settings2Icon, LayoutDashboardIcon, ImageIcon, BookOpenIcon, UsersIcon, BarChart3Icon } from "lucide-react"
+import { DatabaseIcon, ArrowRightIcon, Settings2Icon, LayoutDashboardIcon, ImageIcon, BookOpenIcon, BarChart3Icon, Gamepad2Icon, FileTextIcon } from "lucide-react"
 import { motion } from "framer-motion"
 
 export default function AdminPage() {
@@ -100,24 +100,24 @@ export default function AdminPage() {
                 </div>
               </div>
               <div className="mt-4 flex items-center text-sm text-green-400">
-                <span>+12 este mes</span>
+                <span>+8 esta semana</span>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="bg-gradient-to-br from-green-900/40 to-green-950/40 border border-green-800/30 shadow-xl">
+          <Card className="bg-gradient-to-br from-emerald-900/40 to-emerald-950/40 border border-emerald-800/30 shadow-xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-400 text-sm mb-1">Publicados</p>
-                  <p className="text-3xl font-bold text-white">8</p>
+                  <p className="text-gray-400 text-sm mb-1">Documentos</p>
+                  <p className="text-3xl font-bold text-white">36</p>
                 </div>
-                <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
-                  <BookOpenIcon className="h-6 w-6 text-green-400" />
+                <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                  <FileTextIcon className="h-6 w-6 text-emerald-400" />
                 </div>
               </div>
               <div className="mt-4 flex items-center text-sm text-green-400">
-                <span>+2 este mes</span>
+                <span>+2 hoy</span>
               </div>
             </CardContent>
           </Card>
@@ -127,103 +127,60 @@ export default function AdminPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-400 text-sm mb-1">Visitas</p>
-                  <p className="text-3xl font-bold text-white">2.4k</p>
+                  <p className="text-3xl font-bold text-white">4.2k</p>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center">
                   <BarChart3Icon className="h-6 w-6 text-amber-400" />
                 </div>
               </div>
               <div className="mt-4 flex items-center text-sm text-green-400">
-                <span>+18% este mes</span>
+                <span>+16% este mes</span>
               </div>
             </CardContent>
           </Card>
         </motion.div>
         
         {/* Secciones principales */}
+        <h2 className="text-2xl font-bold mb-8 text-white">Herramientas y secciones</h2>
+        
         <motion.div 
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {/* CMS Case Studies */}
+          {/* Case Studies */}
           <motion.div variants={itemVariants}>
             <Link href="/admin/case-studies" className="block group">
-              <Card className="bg-gradient-to-br from-gray-900/90 to-gray-950/95 border border-white/10 hover:border-green-500/50 hover:bg-gray-900/80 transition-all duration-300 shadow-xl h-full">
-                <CardHeader className="pb-4 border-b border-white/5 bg-black/20">
-                  <CardTitle className="flex items-center gap-3 text-xl text-white group-hover:text-green-400 transition-colors">
-                    <div className="p-2 bg-green-500/20 rounded-lg">
-                      <DatabaseIcon className="h-5 w-5 text-green-400" />
-                    </div>
-                    CMS Case Studies
-                  </CardTitle>
-                  <CardDescription className="text-gray-400">
-                    Gestión completa de estudios de caso
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <ul className="text-gray-300 space-y-3 mb-8">
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                      Crear y editar proyectos
-                    </li>
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                      Gestionar elementos multimedia
-                    </li>
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                      Sincronización con Notion
-                    </li>
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                      Configurar casos destacados
-                    </li>
-                  </ul>
-                  <div className="flex justify-end">
-                    <div className="flex items-center gap-2 text-green-400 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-0 group-hover:translate-x-1">
-                      <span className="text-sm font-medium">Acceder</span>
-                      <ArrowRightIcon className="h-4 w-4" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          </motion.div>
-          
-          {/* Flag System */}
-          <motion.div variants={itemVariants}>
-            <Link href="/flag-system-v3" className="block group">
               <Card className="bg-gradient-to-br from-gray-900/90 to-gray-950/95 border border-white/10 hover:border-blue-500/50 hover:bg-gray-900/80 transition-all duration-300 shadow-xl h-full">
                 <CardHeader className="pb-4 border-b border-white/5 bg-black/20">
                   <CardTitle className="flex items-center gap-3 text-xl text-white group-hover:text-blue-400 transition-colors">
                     <div className="p-2 bg-blue-500/20 rounded-lg">
-                      <DatabaseIcon className="h-5 w-5 text-blue-400" />
+                      <BookOpenIcon className="h-5 w-5 text-blue-400" />
                     </div>
-                    Flag System V3
+                    Casos de Estudio
                   </CardTitle>
                   <CardDescription className="text-gray-400">
-                    Sistema avanzado de generación de banderas
+                    Gestiona la biblioteca completa de casos
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-6">
                   <ul className="text-gray-300 space-y-3 mb-8">
                     <li className="flex items-center gap-2 text-sm">
                       <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                      Historial avanzado de combinaciones
+                      Añadir y editar casos de estudio
                     </li>
                     <li className="flex items-center gap-2 text-sm">
                       <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                      Cacheo automático de imágenes
+                      Categorización y etiquetado
                     </li>
                     <li className="flex items-center gap-2 text-sm">
                       <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                      Exportación a formatos vectoriales
+                      Gestión de imágenes y recursos
                     </li>
                     <li className="flex items-center gap-2 text-sm">
                       <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                      Personalización avanzada
+                      Estadísticas de visualización
                     </li>
                   </ul>
                   <div className="flex justify-end">
@@ -249,26 +206,26 @@ export default function AdminPage() {
                     Configuración
                   </CardTitle>
                   <CardDescription className="text-gray-400">
-                    Configuración y opciones del sistema
+                    Personaliza la plataforma y sus opciones
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-6">
                   <ul className="text-gray-300 space-y-3 mb-8">
                     <li className="flex items-center gap-2 text-sm">
                       <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
-                      Gestionar shortcuts
+                      Ajustes generales del sitio
                     </li>
                     <li className="flex items-center gap-2 text-sm">
                       <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
-                      Configurar accesos rápidos
+                      Gestión de usuarios y permisos
                     </li>
                     <li className="flex items-center gap-2 text-sm">
                       <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
-                      Enlaces personalizados
+                      Personalizaciones de UI/UX
                     </li>
                     <li className="flex items-center gap-2 text-sm">
                       <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
-                      Opciones del sistema
+                      Opciones avanzadas
                     </li>
                   </ul>
                   <div className="flex justify-end">
@@ -281,6 +238,53 @@ export default function AdminPage() {
               </Card>
             </Link>
           </motion.div>
+          
+          {/* SVG Master */}
+          <motion.div variants={itemVariants}>
+            <Link href="/svg-master" className="block group">
+              <Card className="bg-gradient-to-br from-gray-900/90 to-gray-950/95 border border-white/10 hover:border-amber-500/50 hover:bg-gray-900/80 transition-all duration-300 shadow-xl h-full">
+                <CardHeader className="pb-4 border-b border-white/5 bg-black/20">
+                  <CardTitle className="flex items-center gap-3 text-xl text-white group-hover:text-amber-400 transition-colors">
+                    <div className="p-2 bg-amber-500/20 rounded-lg">
+                      <Gamepad2Icon className="h-5 w-5 text-amber-400" />
+                    </div>
+                    SVG Master
+                  </CardTitle>
+                  <CardDescription className="text-gray-400">
+                    Editor avanzado de gráficos vectoriales
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <ul className="text-gray-300 space-y-3 mb-8">
+                    <li className="flex items-center gap-2 text-sm">
+                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                      Edición avanzada de SVG
+                    </li>
+                    <li className="flex items-center gap-2 text-sm">
+                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                      Optimización de vectores
+                    </li>
+                    <li className="flex items-center gap-2 text-sm">
+                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                      Exportación en múltiples formatos
+                    </li>
+                    <li className="flex items-center gap-2 text-sm">
+                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                      Biblioteca de elementos
+                    </li>
+                  </ul>
+                  <div className="flex justify-end">
+                    <div className="flex items-center gap-2 text-amber-400 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-0 group-hover:translate-x-1">
+                      <span className="text-sm font-medium">Acceder</span>
+                      <ArrowRightIcon className="h-4 w-4" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          </motion.div>
+          
+
         </motion.div>
       </div>
     </div>

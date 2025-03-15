@@ -1,8 +1,38 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, TargetAndTransition, Transition } from 'framer-motion';
 
-export function Hero() {
+interface HeroProps {
+  isMobile: boolean;
+  showScrollIndicator: boolean;
+  backgroundAnimation: {
+    initial: TargetAndTransition;
+    animate: TargetAndTransition;
+    transition: Transition;
+  };
+  contentAnimation: {
+    initial: TargetAndTransition;
+    animate: TargetAndTransition;
+    transition: Transition;
+  };
+  scrollIndicatorAnimation: {
+    initial: TargetAndTransition;
+    animate: TargetAndTransition;
+    transition: Transition;
+    lineAnimation: {
+      animate: TargetAndTransition;
+      transition: Transition;
+    };
+  };
+}
+
+export function Hero({
+  isMobile,
+  showScrollIndicator,
+  backgroundAnimation,
+  contentAnimation,
+  scrollIndicatorAnimation
+}: HeroProps) {
   return (
     <div className="flex flex-col min-h-[100svh] bg-black overflow-hidden w-full">
       {/* Background Grid */}
@@ -12,11 +42,11 @@ export function Hero() {
       <div className="flex-1 w-full bg-black px-6 md:px-24 flex items-center" style={{ marginTop: '120px' }}>
         <div className="text-left max-w-[90%] md:max-w-[80%]">
           {/* Mobile Layout */}
-          <div className="md:hidden">
+          <div className={isMobile ? "block" : "hidden"}>
             <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              initial={contentAnimation.initial}
+              animate={contentAnimation.animate}
+              transition={contentAnimation.transition}
             >
               <p 
                 className="text-[#00ff00] text-sm sm:text-base mb-8"
@@ -31,17 +61,17 @@ export function Hero() {
                   fontFamily: 'var(--font-druk-text-wide)'
                 }}
               >
-                DESIGNING THE NEXT<br />BRANDS TOGETHER
+                CRAFTING TOMORROW&apos;S<br />ICONIC BRANDS
               </h1>
             </motion.div>
           </div>
 
           {/* Desktop Layout */}
-          <div className="hidden md:block">
+          <div className={!isMobile ? "block" : "hidden"}>
             <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              initial={contentAnimation.initial}
+              animate={contentAnimation.animate}
+              transition={contentAnimation.transition}
             >
               <p 
                 className="text-[#00ff00] text-lg mb-8"
@@ -66,9 +96,9 @@ export function Hero() {
       {/* Video Section */}
       <motion.div
         className="w-full"
-        initial={{ scale: 1.1, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 1.5, ease: 'easeOut' }}
+        initial={backgroundAnimation.initial}
+        animate={backgroundAnimation.animate}
+        transition={backgroundAnimation.transition}
       >
         <div className="relative w-full aspect-video overflow-hidden">
           <video className="w-full h-full object-contain" autoPlay loop muted playsInline>
@@ -79,11 +109,12 @@ export function Hero() {
       </motion.div>
 
       {/* Desktop Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1, duration: 0.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2"
+      {showScrollIndicator && !isMobile && (
+        <motion.div
+          initial={scrollIndicatorAnimation.initial}
+          animate={scrollIndicatorAnimation.animate}
+          transition={scrollIndicatorAnimation.transition}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
         <div 
           className="text-white/60 text-sm"
@@ -92,11 +123,12 @@ export function Hero() {
           SCROLL
         </div>
         <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+          animate={scrollIndicatorAnimation.lineAnimation.animate}
+          transition={scrollIndicatorAnimation.lineAnimation.transition}
           className="w-0.5 h-12 bg-gradient-to-b from-white/60 to-transparent"
         />
       </motion.div>
+      )}
     </div>
   );
 }
