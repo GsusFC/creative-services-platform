@@ -74,7 +74,7 @@ const generateSpiralCoordinates = (
 };
 */
 
-// Función para generar coordenadas centradas con palabras agrupadas
+// Función para generar coordenadas centradas con palabras agrupadas sin efectos
 const generateWaveCoordinates = (
   totalFlags: number,
   canvasSize: number = 1000,
@@ -82,9 +82,6 @@ const generateWaveCoordinates = (
   haiku: string
 ) => {
   const coordinates: { x: number; y: number }[] = [];
-  const margin = flagSize;
-  // Usamos el área utilizable para los cálculos de posicionamiento
-  const usableHeight = canvasSize - margin * 2;
   
   // Dividir el haiku en palabras
   const words = haiku.toUpperCase().replace(/[^A-Z0-9\s]/g, '').split(/\s+/);
@@ -103,6 +100,15 @@ const generateWaveCoordinates = (
     console.warn('El número de caracteres no coincide con el total de banderas');
   }
   
+  // Calcular el ancho total que ocuparán las palabras
+  const totalWidth = wordsPerLine * (flagSize * 1.5);
+  // Calcular el alto total que ocuparán las palabras
+  const totalHeight = Math.ceil(totalWords / wordsPerLine) * (flagSize * 1.2);
+  
+  // Calcular las coordenadas de inicio para centrar el conjunto
+  const startX = (canvasSize - totalWidth) / 2;
+  const startY = (canvasSize - totalHeight) / 2;
+  
   // Índice del carácter actual
   let charIndex = 0;
   
@@ -112,15 +118,9 @@ const generateWaveCoordinates = (
     const row = Math.floor(wordIndex / wordsPerLine);
     const col = wordIndex % wordsPerLine;
     
-    // Posición base para la palabra (centrada)
-    const wordX = margin + col * (flagSize * 1.5);
-    
-    // Añadir efecto de onda
-    const waveAmplitude = usableHeight * 0.1;
-    const waveFrequency = 2 * Math.PI / wordsPerLine;
-    const baseY = canvasSize / 2 - (flagSize * Math.ceil(totalWords / wordsPerLine)) / 2 + 
-                Math.sin(col * waveFrequency + row * 0.5) * waveAmplitude +
-                row * (flagSize * 1.2);
+    // Posición base para la palabra (centrada, sin efectos)
+    const wordX = startX + col * (flagSize * 1.5);
+    const baseY = startY + row * (flagSize * 1.2);
     
     // Posicionar cada carácter de la palabra (sin espacios entre ellos)
     for (let charPos = 0; charPos < word.length; charPos++) {
@@ -219,23 +219,19 @@ export const HaikuFlags = ({ haiku, svgRef, backgroundColor }: HaikuFlagsProps) 
     return result;
   };
   
-  // Renderizar el texto del haiku de forma sinuosa
+  // Renderizar el texto del haiku de forma simple
   const renderHaikuText = () => {
-    // El texto completo del haiku se muestra en una sola línea curva
+    // El texto completo del haiku se muestra en una línea recta en la parte inferior
     
     return (
-      <path
-        id="haikuPath"
-        d="M200,900 Q500,850 800,900"
-        fill="none"
-        stroke="none"
+      <text
+        x="500"
+        y="950"
+        textAnchor="middle"
+        className="text-xs fill-white opacity-40"
       >
-        <text>
-          <textPath href="#haikuPath" startOffset="10%" className="text-xs fill-white opacity-40">
-            {haiku.replace(/\n/g, ' / ')}
-          </textPath>
-        </text>
-      </path>
+        {haiku.replace(/\n/g, ' / ')}
+      </text>
     );
   };
   
