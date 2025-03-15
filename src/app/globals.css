@@ -193,7 +193,7 @@ body {
     @apply border-gray-200;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-black text-foreground;
   }
 
   /* Todo el texto normal usa Geist Mono Regular */
