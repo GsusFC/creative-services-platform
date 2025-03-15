@@ -102,8 +102,7 @@ const generateWaveCoordinates = (
 ) => {
   const coordinates: { x: number; y: number }[] = [];
   
-  // Definir el margen de seguridad (20% del canvas)
-  const safetyMargin = 200; // 20% de 1000px
+  // El canvas tiene un tamaño de 1000x1000 píxeles
   
   // Dividir el haiku en líneas (versos)
   const lines = haiku.split('\n');
@@ -139,8 +138,12 @@ const generateWaveCoordinates = (
     // Calcular la posición inicial X para centrar la línea
     const lineStartX = (canvasSize - lineWidth) / 2;
     
+    // Calcular la altura total que ocupará el haiku
+    const totalHeight = wordsByLine.length * (flagSize * 1.5);
+    // Calcular la posición Y inicial para centrar verticalmente
+    const startY = (canvasSize - totalHeight) / 2;
     // Calcular la posición Y para esta línea
-    const lineY = safetyMargin + lineIndex * (flagSize * 1.5);
+    const lineY = startY + lineIndex * (flagSize * 1.5);
     
     // Posición X actual para esta línea
     let currentX = lineStartX;
