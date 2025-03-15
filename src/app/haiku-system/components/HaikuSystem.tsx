@@ -21,10 +21,10 @@ const generateRandomHaiku = (): string => {
   return haikus[Math.floor(Math.random() * haikus.length)];
 };
 
-// Función para formatear el haiku para visualización
-const formatHaikuForDisplay = (haiku: string): string => {
-  // Reemplazar saltos de línea con espacios para la visualización en banderas
-  return haiku.replace(/\n/g, ' ');
+// Función para validar el formato del haiku (usada en la verificación antes de renderizar)
+const validateHaiku = (haiku: string): boolean => {
+  // Verificar que el haiku tenga contenido
+  return haiku.trim().length > 0;
 };
 
 export const HaikuSystem = () => {
@@ -75,7 +75,7 @@ export const HaikuSystem = () => {
           >
             {haiku && !error && (
               <HaikuFlags 
-                haiku={formatHaikuForDisplay(haiku)} 
+                haiku={haiku} 
                 svgRef={svgRef}
                 backgroundColor={backgroundColor}
               />
