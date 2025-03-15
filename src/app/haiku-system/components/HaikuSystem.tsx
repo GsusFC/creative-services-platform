@@ -41,11 +41,20 @@ export const HaikuSystem = () => {
     setError('');
   };
 
-  // Función para cambiar el color de fondo aleatoriamente
+  // Función para cambiar el color de fondo aleatoriamente (RGB, blanco o negro)
   const handleRandomBackground = () => {
-    // Generar un color oscuro para mantener el contraste con las banderas
-    const color = `#${Math.floor(Math.random() * 0x777777).toString(16).padStart(6, '0')}`;
-    setBackgroundColor(color);
+    // Colores disponibles: RGB, blanco y negro
+    const colors = [
+      '#FF0000', // Rojo
+      '#00FF00', // Verde
+      '#0000FF', // Azul
+      '#FFFFFF', // Blanco
+      '#000000'  // Negro
+    ];
+    
+    // Seleccionar un color aleatorio de la lista
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    setBackgroundColor(colors[randomIndex]);
   };
 
   // Añadir haiku al historial cuando cambia
