@@ -130,8 +130,8 @@ const generateWaveCoordinates = (
     
     // Calcular el ancho total que ocupará esta línea
     const lineWidth = wordsInLine.reduce((width, word, wordIndex) => {
-      // Ancho de la palabra actual con más espacio entre caracteres
-      const wordWidth = word.length * (flagSize * 1.1);
+      // Ancho de la palabra actual con caracteres juntos
+      const wordWidth = word.length * (flagSize * 0.85);
       // Añadir espacio entre palabras (excepto para la primera palabra)
       return width + wordWidth + (wordIndex > 0 ? flagSize * 0.7 : 0);
     }, 0);
@@ -154,17 +154,17 @@ const generateWaveCoordinates = (
         currentX += flagSize * 0.7; // Espacio entre palabras
       }
       
-      // Posicionar cada carácter de la palabra con espacio adecuado entre ellos
+      // Posicionar cada carácter de la palabra sin espacio entre ellos
       for (let charPos = 0; charPos < word.length; charPos++) {
         coordinates[charIndex] = {
-          x: currentX + charPos * (flagSize * 1.1), // Aumentar el espacio entre caracteres
+          x: currentX + charPos * (flagSize * 0.85), // Reducir el espacio entre caracteres de la misma palabra
           y: lineY
         };
         charIndex++;
       }
       
       // Actualizar la posición X para la siguiente palabra
-      currentX += word.length * (flagSize * 1.1);
+      currentX += word.length * (flagSize * 0.85);
     }
   }
   
