@@ -13,32 +13,51 @@ const calculateLayout = (haiku: string) => {
   // Eliminar caracteres no válidos y convertir a mayúsculas
   const validChars = haiku.toUpperCase().replace(/[^A-Z0-9\s]/g, '');
   
-  // Dividir el haiku en líneas (si contiene saltos de línea)
-  // const haikuLines = validChars.split('\n'); // No usado por ahora
+  // Dividir el haiku en líneas (versos)
+  const lines = haiku.split('\n');
+  
+  // Encontrar el verso más largo (en número de caracteres sin espacios)
+  const longestLineLength = Math.max(...lines.map(line => 
+    line.toUpperCase().replace(/[^A-Z0-9]/g, '').length
+  ));
+  
+  // Calcular el número de palabras en el verso más largo
+  const wordsInLongestLine = Math.max(...lines.map(line => 
+    line.split(/\s+/).length
+  ));
   
   // Determinar el número total de caracteres válidos (excluyendo espacios)
   const totalChars = validChars.replace(/\s/g, '').length;
   
-  // Tamaño base para las banderas
-  const baseFlagSize = 100;
+  // Definir el margen de seguridad (20% del canvas)
+  const safetyMargin = 200; // 20% de 1000px
   
-  // Ajustar el tamaño de las banderas según la cantidad de caracteres
-  let adjustedFlagSize = baseFlagSize;
-  if (totalChars > 30) {
-    adjustedFlagSize = Math.max(50, baseFlagSize - (totalChars - 30) * 1.5);
-  }
+  // Calcular el espacio disponible para las banderas
+  const availableWidth = 1000 - (safetyMargin * 2);
+  
+  // Calcular el tamaño máximo de bandera que permitiría que el verso más largo quepa
+  // Consideramos que cada carácter ocupa 0.8 veces el tamaño de la bandera
+  // y que necesitamos espacio entre palabras (0.7 veces el tamaño de la bandera)
+  const maxFlagSizeByWidth = availableWidth / (
+    (longestLineLength * 0.8) + ((wordsInLongestLine - 1) * 0.7)
+  );
+  
+  // Limitar el tamaño de la bandera entre 40px y 100px
+  let adjustedFlagSize = Math.min(100, Math.max(40, maxFlagSizeByWidth));
+  
+  // Redondear a un número entero para evitar problemas de renderizado
+  adjustedFlagSize = Math.floor(adjustedFlagSize);
   
   // Calcular el espacio entre banderas
   const flagSpacing = adjustedFlagSize * 0.05;
-  
-  // Determinar la disposición de las banderas (espiral, flujo orgánico, etc.)
-  // Para este ejemplo, usaremos una disposición en espiral
   
   return {
     validChars,
     adjustedFlagSize,
     flagSpacing,
-    totalChars
+    totalChars,
+    longestLineLength,
+    wordsInLongestLine
   };
 };
 
@@ -83,52 +102,69 @@ const generateWaveCoordinates = (
 ) => {
   const coordinates: { x: number; y: number }[] = [];
   
-  // Dividir el haiku en palabras
-  const words = haiku.toUpperCase().replace(/[^A-Z0-9\s]/g, '').split(/\s+/);
+  // Definir el margen de seguridad (20% del canvas)
+  const safetyMargin = 200; // 20% de 1000px
+  
+  // Dividir el haiku en líneas (versos)
+  const lines = haiku.split('\n');
+  
+  // Dividir cada línea en palabras y aplanar el array
+  const wordsByLine = lines.map(line => 
+    line.toUpperCase().replace(/[^A-Z0-9\s]/g, '').split(/\s+/)
+  );
   
   // Calcular el número total de caracteres (para verificación)
-  const totalChars = words.reduce((sum, word) => sum + word.length, 0);
-  
-  // Calcular el número total de palabras
-  const totalWords = words.length;
-  
-  // Calcular el número aproximado de palabras por línea
-  const wordsPerLine = Math.ceil(Math.sqrt(totalWords));
+  const totalChars = wordsByLine.flat().reduce((sum, word) => sum + word.length, 0);
   
   // Verificar que el número total de caracteres coincide con totalFlags
   if (totalChars !== totalFlags) {
     console.warn('El número de caracteres no coincide con el total de banderas');
   }
   
-  // Calcular el ancho total que ocuparán las palabras
-  const totalWidth = wordsPerLine * (flagSize * 1.5);
-  // Calcular el alto total que ocuparán las palabras
-  const totalHeight = Math.ceil(totalWords / wordsPerLine) * (flagSize * 1.2);
-  
-  // Calcular las coordenadas de inicio para centrar el conjunto
-  const startX = (canvasSize - totalWidth) / 2;
-  const startY = (canvasSize - totalHeight) / 2;
-  
   // Índice del carácter actual
   let charIndex = 0;
   
-  // Recorrer cada palabra
-  for (let wordIndex = 0; wordIndex < words.length; wordIndex++) {
-    const word = words[wordIndex];
-    const row = Math.floor(wordIndex / wordsPerLine);
-    const col = wordIndex % wordsPerLine;
+  // Recorrer cada línea (verso)
+  for (let lineIndex = 0; lineIndex < wordsByLine.length; lineIndex++) {
+    const wordsInLine = wordsByLine[lineIndex];
     
-    // Posición base para la palabra (centrada, sin efectos)
-    const wordX = startX + col * (flagSize * 1.5);
-    const baseY = startY + row * (flagSize * 1.2);
+    // Calcular el ancho total que ocupará esta línea
+    const lineWidth = wordsInLine.reduce((width, word, wordIndex) => {
+      // Ancho de la palabra actual
+      const wordWidth = word.length * (flagSize * 0.8);
+      // Añadir espacio entre palabras (excepto para la primera palabra)
+      return width + wordWidth + (wordIndex > 0 ? flagSize * 0.7 : 0);
+    }, 0);
     
-    // Posicionar cada carácter de la palabra (sin espacios entre ellos)
-    for (let charPos = 0; charPos < word.length; charPos++) {
-      coordinates[charIndex] = {
-        x: wordX + charPos * (flagSize * 0.8), // Caracteres juntos dentro de la palabra
-        y: baseY
-      };
-      charIndex++;
+    // Calcular la posición inicial X para centrar la línea
+    const lineStartX = (canvasSize - lineWidth) / 2;
+    
+    // Calcular la posición Y para esta línea
+    const lineY = safetyMargin + lineIndex * (flagSize * 1.5);
+    
+    // Posición X actual para esta línea
+    let currentX = lineStartX;
+    
+    // Recorrer cada palabra en la línea
+    for (let wordIndex = 0; wordIndex < wordsInLine.length; wordIndex++) {
+      const word = wordsInLine[wordIndex];
+      
+      // Añadir espacio entre palabras (excepto para la primera palabra)
+      if (wordIndex > 0) {
+        currentX += flagSize * 0.7; // Espacio entre palabras
+      }
+      
+      // Posicionar cada carácter de la palabra (sin espacios entre ellos)
+      for (let charPos = 0; charPos < word.length; charPos++) {
+        coordinates[charIndex] = {
+          x: currentX + charPos * (flagSize * 0.8), // Caracteres juntos dentro de la palabra
+          y: lineY
+        };
+        charIndex++;
+      }
+      
+      // Actualizar la posición X para la siguiente palabra
+      currentX += word.length * (flagSize * 0.8);
     }
   }
   
@@ -142,6 +178,7 @@ export const HaikuFlags = ({ haiku, svgRef, backgroundColor }: HaikuFlagsProps) 
   // Generar las coordenadas para las banderas
   const flagCoordinates = useMemo(() => {
     const chars = layoutInfo.validChars.replace(/\s/g, '');
+    // Usar el tamaño ajustado de banderas basado en el verso más largo
     return generateWaveCoordinates(chars.length, 1000, layoutInfo.adjustedFlagSize, haiku);
   }, [layoutInfo, haiku]);
   
