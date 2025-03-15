@@ -42,8 +42,8 @@ const calculateLayout = (haiku: string) => {
     (longestLineLength * 0.8) + ((wordsInLongestLine - 1) * 0.7)
   );
   
-  // Limitar el tamaño de la bandera entre 40px y 100px
-  let adjustedFlagSize = Math.min(100, Math.max(40, maxFlagSizeByWidth));
+  // Limitar el tamaño de la bandera entre 30px y 80px para evitar que se monten
+  let adjustedFlagSize = Math.min(80, Math.max(30, maxFlagSizeByWidth));
   
   // Redondear a un número entero para evitar problemas de renderizado
   adjustedFlagSize = Math.floor(adjustedFlagSize);
@@ -130,8 +130,8 @@ const generateWaveCoordinates = (
     
     // Calcular el ancho total que ocupará esta línea
     const lineWidth = wordsInLine.reduce((width, word, wordIndex) => {
-      // Ancho de la palabra actual
-      const wordWidth = word.length * (flagSize * 0.8);
+      // Ancho de la palabra actual con más espacio entre caracteres
+      const wordWidth = word.length * (flagSize * 1.1);
       // Añadir espacio entre palabras (excepto para la primera palabra)
       return width + wordWidth + (wordIndex > 0 ? flagSize * 0.7 : 0);
     }, 0);
@@ -154,17 +154,17 @@ const generateWaveCoordinates = (
         currentX += flagSize * 0.7; // Espacio entre palabras
       }
       
-      // Posicionar cada carácter de la palabra (sin espacios entre ellos)
+      // Posicionar cada carácter de la palabra con espacio adecuado entre ellos
       for (let charPos = 0; charPos < word.length; charPos++) {
         coordinates[charIndex] = {
-          x: currentX + charPos * (flagSize * 0.8), // Caracteres juntos dentro de la palabra
+          x: currentX + charPos * (flagSize * 1.1), // Aumentar el espacio entre caracteres
           y: lineY
         };
         charIndex++;
       }
       
       // Actualizar la posición X para la siguiente palabra
-      currentX += word.length * (flagSize * 0.8);
+      currentX += word.length * (flagSize * 1.1);
     }
   }
   
@@ -243,7 +243,7 @@ export const HaikuFlags = ({ haiku, svgRef, backgroundColor }: HaikuFlagsProps) 
           href={`/assets/flags/${flagKey}-${flagName}.svg`}
           x={x}
           y={y}
-          width={layoutInfo.adjustedFlagSize}
+          width={layoutInfo.adjustedFlagSize * 0.85}
           height={layoutInfo.adjustedFlagSize}
           preserveAspectRatio="xMidYMid meet"
           aria-label={`Bandera ${flagName}`}
