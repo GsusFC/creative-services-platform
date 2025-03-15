@@ -8,7 +8,9 @@ export const mainNavLinks: NavLink[] = [
   { href: '/process', label: 'PROCESS' },
   { href: '/pricing', label: 'PRICING' },
   { href: '/packs', label: 'PACKS' },
-  { href: '/do-it-yourself', label: 'DO IT YOURSELF' }
+  { href: '/do-it-yourself', label: 'DO IT YOURSELF' },
+  { href: '/flag-system', label: 'FLAG SYSTEM' },
+  { href: '/haiku-system', label: 'HAIKU SYSTEM' }
 ];
 
 // Constante del gradiente RGB para la barra de navegación
@@ -20,7 +22,9 @@ export const keyboardShortcuts = [
   { key: 'S', description: 'Ir a servicios' },
   { key: 'C', description: 'Ir a casos' },
   { key: 'P', description: 'Ir a procesos' },
-  { key: 'A', description: 'Ir a admin' }
+  { key: 'A', description: 'Ir a admin' },
+  { key: 'F', description: 'Ir a sistema de banderas' },
+  { key: 'H', description: 'Ir a sistema de haikus' }
 ];
 
 // Configuración de accesibilidad para la navegación
