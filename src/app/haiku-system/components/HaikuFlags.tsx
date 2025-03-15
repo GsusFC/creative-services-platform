@@ -74,36 +74,62 @@ const generateSpiralCoordinates = (
 };
 */
 
-// Función para generar coordenadas en patrón de onda
+// Función para generar coordenadas centradas con palabras agrupadas
 const generateWaveCoordinates = (
   totalFlags: number,
   canvasSize: number = 1000,
-  flagSize: number = 100
+  flagSize: number = 100,
+  haiku: string
 ) => {
   const coordinates: { x: number; y: number }[] = [];
   const margin = flagSize;
-  const usableWidth = canvasSize - margin * 2;
+  // Usamos el área utilizable para los cálculos de posicionamiento
   const usableHeight = canvasSize - margin * 2;
   
-  // Número aproximado de banderas por línea
-  const flagsPerLine = Math.ceil(Math.sqrt(totalFlags));
-  const horizontalSpacing = usableWidth / flagsPerLine;
+  // Dividir el haiku en palabras
+  const words = haiku.toUpperCase().replace(/[^A-Z0-9\s]/g, '').split(/\s+/);
   
-  for (let i = 0; i < totalFlags; i++) {
-    const row = Math.floor(i / flagsPerLine);
-    const col = i % flagsPerLine;
+  // Calcular el número total de caracteres (para verificación)
+  const totalChars = words.reduce((sum, word) => sum + word.length, 0);
+  
+  // Calcular el número total de palabras
+  const totalWords = words.length;
+  
+  // Calcular el número aproximado de palabras por línea
+  const wordsPerLine = Math.ceil(Math.sqrt(totalWords));
+  
+  // Verificar que el número total de caracteres coincide con totalFlags
+  if (totalChars !== totalFlags) {
+    console.warn('El número de caracteres no coincide con el total de banderas');
+  }
+  
+  // Índice del carácter actual
+  let charIndex = 0;
+  
+  // Recorrer cada palabra
+  for (let wordIndex = 0; wordIndex < words.length; wordIndex++) {
+    const word = words[wordIndex];
+    const row = Math.floor(wordIndex / wordsPerLine);
+    const col = wordIndex % wordsPerLine;
     
-    // Posición base
-    const x = margin + col * horizontalSpacing;
+    // Posición base para la palabra (centrada)
+    const wordX = margin + col * (flagSize * 1.5);
     
     // Añadir efecto de onda
-    const waveAmplitude = usableHeight * 0.15;
-    const waveFrequency = 2 * Math.PI / flagsPerLine;
-    const y = margin + usableHeight * 0.5 + 
-              Math.sin(col * waveFrequency + row * 0.5) * waveAmplitude +
-              row * (flagSize * 1.2);
+    const waveAmplitude = usableHeight * 0.1;
+    const waveFrequency = 2 * Math.PI / wordsPerLine;
+    const baseY = canvasSize / 2 - (flagSize * Math.ceil(totalWords / wordsPerLine)) / 2 + 
+                Math.sin(col * waveFrequency + row * 0.5) * waveAmplitude +
+                row * (flagSize * 1.2);
     
-    coordinates.push({ x, y });
+    // Posicionar cada carácter de la palabra (sin espacios entre ellos)
+    for (let charPos = 0; charPos < word.length; charPos++) {
+      coordinates[charIndex] = {
+        x: wordX + charPos * (flagSize * 0.8), // Caracteres juntos dentro de la palabra
+        y: baseY
+      };
+      charIndex++;
+    }
   }
   
   return coordinates;
@@ -116,8 +142,8 @@ export const HaikuFlags = ({ haiku, svgRef, backgroundColor }: HaikuFlagsProps) 
   // Generar las coordenadas para las banderas
   const flagCoordinates = useMemo(() => {
     const chars = layoutInfo.validChars.replace(/\s/g, '');
-    return generateWaveCoordinates(chars.length, 1000, layoutInfo.adjustedFlagSize);
-  }, [layoutInfo]);
+    return generateWaveCoordinates(chars.length, 1000, layoutInfo.adjustedFlagSize, haiku);
+  }, [layoutInfo, haiku]);
   
   // Renderizar las banderas
   const renderFlags = () => {
