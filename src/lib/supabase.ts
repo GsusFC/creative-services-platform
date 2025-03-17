@@ -2,10 +2,10 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/supabase';
 
 // Crear un cliente de Supabase usando las variables de entorno
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseUrl = process.env['NEXT_PUBLIC_SUPABASE_URL'] ?? '';
+const supabaseKey = process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'] ?? '';
 
-if (!supabaseUrl || !supabaseKey) {
+if (supabaseUrl === '' || supabaseKey === '') {
   console.warn(
     'Faltan variables de entorno para Supabase. Asegúrate de configurar NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY.'
   );
@@ -25,7 +25,7 @@ export async function testSupabaseConnection(): Promise<{
     // Intentar una operación simple para verificar la conexión
     const { error } = await supabase.from('case_studies').select('count');
     
-    if (error) throw error;
+    if (error !== null && error !== undefined) throw error;
     
     return { connected: true };
   } catch (error) {

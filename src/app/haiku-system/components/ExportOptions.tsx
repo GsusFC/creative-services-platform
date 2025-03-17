@@ -189,7 +189,7 @@ export const ExportOptions = ({ svgRef, haiku: _haiku }: ExportOptionsProps) => 
 
   return (
     <div className="bg-black border-t border-gray-800">
-      <h2 className="text-white text-lg font-semibold mb-4 flex items-center">
+      <h2 className="text-white text-lg font-semibold mb-4 flex items-center font-mono">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="#00FF00">
           <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V8a2 2 0 00-2-2h-5L9 4H4zm7 5a1 1 0 10-2 0v1.586l-.293-.293a1 1 0 10-1.414 1.414l2 2 .707.707.707-.707 2-2a1 1 0 10-1.414-1.414l-.293.293V9z" clipRule="evenodd" />
         </svg>
@@ -201,32 +201,32 @@ export const ExportOptions = ({ svgRef, haiku: _haiku }: ExportOptionsProps) => 
         <button
           onClick={handleExportPNG}
           disabled={isExporting}
-          className="px-4 py-2 bg-black hover:bg-gray-900 text-white border transition-colors flex items-center justify-center"
+          className="px-4 py-2 bg-black hover:bg-gray-900 text-white border transition-colors flex items-center justify-center font-mono"
           style={{ borderColor: '#00FF00' }}
           aria-label="Download as PNG"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
           </svg>
-          <span className="text-sm font-medium">DOWNLOAD PNG</span>
+          <span className="text-sm font-medium font-mono">DOWNLOAD PNG</span>
         </button>
         
         <button
           onClick={handleExportSVG}
           disabled={isExporting}
-          className="px-4 py-2 bg-black hover:bg-gray-900 text-white border transition-colors flex items-center justify-center"
+          className="px-4 py-2 bg-black hover:bg-gray-900 text-white border transition-colors flex items-center justify-center font-mono"
           style={{ borderColor: '#00FF00' }}
           aria-label="Download as SVG"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
           </svg>
-          <span className="text-sm font-medium">DOWNLOAD SVG</span>
+          <span className="text-sm font-medium font-mono">DOWNLOAD SVG</span>
         </button>
       </div>
       
       {isExporting && (
-        <div className="mt-4 p-2 bg-green-900/20 border border-green-900 rounded text-sm text-white">
+        <div className="mt-4 p-2 bg-green-900/20 border border-green-900 rounded text-sm text-white font-mono">
           Procesando la exportación, por favor espere...
         </div>
       )}

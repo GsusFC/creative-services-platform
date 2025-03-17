@@ -56,19 +56,8 @@
 - 🔄 Sincronización mejorada con SharePoint
 - 🔄 Gestión de permisos departamentales
 
-## Planificado (Próximas Semanas)
-
-### Funcionalidades Solicitadas
-- 📅 Plantillas adicionales para marketing digital
-- 📅 Panel simple de estadísticas de uso
-- 📅 Herramienta básica de diagnóstico para usuarios
-- 📅 Reportes periódicos automatizados
-- 📅 Biblioteca de ejemplos de casos de éxito
-
 ### Mejoras Técnicas Básicas
 - 📅 Mejor sistema de respaldo de datos
-- 📅 Notificaciones por correo para actualizaciones importantes
-- 📅 Registro básico de actividad para supervisores
 - 📅 Optimización para volumen actual de datos
 - 📅 Ajustes para compatibilidad con navegadores del departamento
 

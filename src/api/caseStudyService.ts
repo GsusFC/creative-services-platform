@@ -19,8 +19,8 @@ export const getAllCaseStudies = async (): Promise<CaseStudy[]> => {
   try {
     const response = await api.get('/case-studies');
     return response.data;
-  } catch (error: any) {
-    console.error('Error al obtener todos los estudios de caso:', error.message);
+  } catch (error: unknown) {
+    console.error('Error al obtener todos los estudios de caso:', error instanceof Error ? error.message : 'Error desconocido');
     // Usar el servicio de mockup como fallback temporal hasta tener backend
     return import('@/lib/case-studies/service').then(service => service.getAllCaseStudies());
   }
@@ -33,8 +33,8 @@ export const getCaseStudyBySlug = async (slug: string): Promise<CaseStudy | null
   try {
     const response = await api.get(`/case-studies/slug/${slug}`);
     return response.data;
-  } catch (error: any) {
-    console.error(`Error al obtener estudio por slug ${slug}:`, error.message);
+  } catch (error: unknown) {
+    console.error(`Error al obtener estudio por slug ${slug}:`, error instanceof Error ? error.message : 'Error desconocido');
     // Usar el servicio de mockup como fallback temporal hasta tener backend
     return import('@/lib/case-studies/service').then(service => service.getCaseStudyBySlug(slug));
   }
@@ -47,8 +47,8 @@ export const createCaseStudy = async (caseStudyData: Omit<CaseStudy, 'id'>): Pro
   try {
     const response = await api.post('/case-studies', caseStudyData);
     return response.data;
-  } catch (error: any) {
-    console.error('Error al crear estudio de caso:', error.message);
+  } catch (error: unknown) {
+    console.error('Error al crear estudio de caso:', error instanceof Error ? error.message : 'Error desconocido');
     // Usar el servicio de mockup como fallback temporal hasta tener backend
     return import('@/lib/case-studies/service').then(service => service.createCaseStudy(caseStudyData));
   }
@@ -61,8 +61,8 @@ export const updateCaseStudy = async (id: string, caseStudyData: Partial<CaseStu
   try {
     const response = await api.put(`/case-studies/${id}`, caseStudyData);
     return response.data;
-  } catch (error: any) {
-    console.error(`Error al actualizar estudio con id ${id}:`, error.message);
+  } catch (error: unknown) {
+    console.error(`Error al actualizar estudio con id ${id}:`, error instanceof Error ? error.message : 'Error desconocido');
     // Usar el servicio de mockup como fallback temporal hasta tener backend
     return import('@/lib/case-studies/service').then(service => service.updateCaseStudy(id, caseStudyData));
   }
@@ -74,8 +74,8 @@ export const updateCaseStudy = async (id: string, caseStudyData: Partial<CaseStu
 export const deleteCaseStudy = async (id: string): Promise<void> => {
   try {
     await api.delete(`/case-studies/${id}`);
-  } catch (error: any) {
-    console.error(`Error al eliminar estudio con id ${id}:`, error.message);
+  } catch (error: unknown) {
+    console.error(`Error al eliminar estudio con id ${id}:`, error instanceof Error ? error.message : 'Error desconocido');
     // Usar el servicio de mockup como fallback temporal hasta tener backend
     return import('@/lib/case-studies/service').then(service => service.deleteCaseStudy(id));
   }
@@ -88,8 +88,8 @@ export const getFeaturedCaseStudies = async (): Promise<CaseStudy[]> => {
   try {
     const response = await api.get('/case-studies/featured');
     return response.data;
-  } catch (error: any) {
-    console.error('Error al obtener estudios destacados:', error.message);
+  } catch (error: unknown) {
+    console.error('Error al obtener estudios destacados:', error instanceof Error ? error.message : 'Error desconocido');
     // Usar el servicio de mockup como fallback temporal hasta tener backend
     return import('@/lib/case-studies/service').then(service => service.getFeaturedCaseStudies());
   }
@@ -101,8 +101,8 @@ export const getFeaturedCaseStudies = async (): Promise<CaseStudy[]> => {
 export const updateFeaturedCaseStudies = async (updates: FeaturedCaseUpdate[]): Promise<void> => {
   try {
     await api.put('/case-studies/featured', { updates });
-  } catch (error: any) {
-    console.error('Error al actualizar estudios destacados:', error.message);
+  } catch (error: unknown) {
+    console.error('Error al actualizar estudios destacados:', error instanceof Error ? error.message : 'Error desconocido');
     // Usar el servicio de mockup como fallback temporal hasta tener backend
     return import('@/lib/case-studies/service').then(service => service.updateFeaturedCaseStudies(updates));
   }

@@ -46,8 +46,10 @@ export default {
         },
       },
       fontFamily: {
-        'druk': ['var(--font-druk-text-wide)', 'sans-serif'],
-        sans: ['var(--font-geist-mono)', 'monospace'],
+        'druk': ['var(--font-druk-text-wide)', 'Druk Text Wide', 'sans-serif'],
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-geist-mono)', 'Geist Mono', 'monospace'], // Usa Geist Mono como fuente monoespaciada principal
+        display: ['var(--font-druk-text-wide)', 'Druk Text Wide', 'sans-serif'],
       },
       borderRadius: {
         lg: 'var(--radius)',

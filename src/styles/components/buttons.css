@@ -1,0 +1,8 @@
+/* buttons.css - Estilos para botones y elementos interactivos */
+
+@layer base {
+  /* Buttons */
+  button, .button {
+    @apply text-sm tracking-wide transition-all duration-200;
+  }
+}

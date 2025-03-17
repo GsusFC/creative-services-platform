@@ -1,0 +1,115 @@
+/* animations.css - Animaciones y transiciones */
+
+/* Estilos para el efecto de gradient border */
+.gradient-card-hover {
+  position: relative;
+  border-radius: 12px;
+  padding: 2px;
+  background-color: #111;
+  transition: transform 0.3s ease;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.gradient-card-hover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 2px;
+  background: linear-gradient(45deg, #ff0080, #ff8c00, #ffed00, #00ff7f, #00bfff, #7f00ff, #ff00bf);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  background-size: 300% 300%;
+  animation: gradient-animation 3s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.gradient-card-hover:hover {
+  transform: translateY(-5px);
+}
+
+.gradient-card-hover:hover::before {
+  opacity: 1;
+}
+
+.gradient-card-hover-content {
+  position: relative;
+  z-index: 1;
+  background-color: #111;
+  border-radius: 10px;
+  padding: 1.5rem;
+  height: 100%;
+}
+
+.gradient-card-content {
+  position: relative;
+  border-radius: 10px;
+  background-color: #111;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+/* Animación de gradiente estándar */
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Animación de gradiente más compleja para tarjetas */
+@keyframes gradient-move {
+  0% { background-position: 0% 0%; }
+  15% { background-position: 50% 10%; }
+  30% { background-position: 100% 0%; }
+  45% { background-position: 90% 50%; }
+  60% { background-position: 100% 100%; }
+  75% { background-position: 50% 90%; }
+  90% { background-position: 0% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+.animate-slide {
+  animation: slide 20s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Estilos adicionales para efectos de hover en tarjetas */
+.group:hover .pseudo-border { 
+  opacity: 1 !important; 
+}
+
+/* Estilos de hover para navegadores que soporten hover */
+@media (hover: hover) {
+  .group:hover {
+    transform: translateY(-5px);
+  }
+}
+
+/* Mejora de accesibilidad para usuarios que prefieren reducir el movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide,
+  .gradient-card-hover::before,
+  .group:hover {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .gradient-card-hover:hover,
+  .group:hover {
+    transform: none !important;
+  }
+}

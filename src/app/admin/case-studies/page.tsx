@@ -4,13 +4,16 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { PlusCircleIcon, EditIcon, StarIcon, TrashIcon, SettingsIcon, DatabaseIcon, FilterIcon, SearchIcon, ArrowUpDownIcon } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { ApiCaseStudy, normalizeCaseStudy } from '@/types/core/case-studies'
+import { EntityStatus } from '@/types/core/common'
 
+// Interfaz simplificada para la vista de administración
 interface CaseStudy {
   id: string
   slug: string
   title: string
   client: string
-  status: 'draft' | 'published'
+  status: EntityStatus
   featured: boolean
   updatedAt: string
 }
@@ -59,17 +62,20 @@ export default function CaseStudiesAdmin() {
         
         const data = await response.json()
         
-        // Normalizar los datos recibidos para que sean compatibles con la interfaz
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const formattedData = data.map((item: any) => ({
-          ...item,
-          id: typeof item.id === 'number' ? item.id.toString() : item.id,
-          slug: item.slug || '',
-          client: item.client || '',
-          status: item.status || 'draft',
-          featured: item.featured === null ? false : item.featured,
-          updatedAt: item.updatedAt || item.updated_at || new Date().toISOString()
-        }) as CaseStudy)
+        // Normalizar los datos recibidos utilizando la función centralizada
+        const formattedData = data.map((item: ApiCaseStudy) => {
+          const normalizedItem = normalizeCaseStudy(item);
+          // Solo extraemos los campos que necesitamos para esta vista
+          return {
+            id: normalizedItem.id,
+            slug: normalizedItem.slug,
+            title: normalizedItem.title,
+            client: normalizedItem.client,
+            status: normalizedItem.status,
+            featured: normalizedItem.featured,
+            updatedAt: normalizedItem.updatedAt || new Date().toISOString()
+          } as CaseStudy;
+        })
         
         console.log('Case studies cargados:', formattedData.length)
         setCaseStudies(formattedData)

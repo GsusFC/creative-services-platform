@@ -1,0 +1,20 @@
+/* reset.css - Normalización y estilos base */
+
+@layer base {
+  * {
+    @apply border-gray-200;
+  }
+  
+  body {
+    @apply bg-black text-foreground;
+  }
+  
+  /* Base styles for form elements */
+  @layer components {
+    input, select, textarea, button {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+  }
+}

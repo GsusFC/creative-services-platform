@@ -1,0 +1,27 @@
+/* main.css - Archivo principal que importa todos los estilos */
+
+/* Importaciones de estilos base */
+@import "./base/variables.css";
+@import "./base/reset.css";
+@import "./base/typography.css";
+
+/* Importaciones de componentes */
+@import "./components/buttons.css";
+@import "./components/forms.css";
+@import "./components/range-slider.css";
+@import "./components/gradient-card.css";
+
+/* Importaciones de layout */
+@import "./layout/containers.css";
+@import "./layout/grid.css";
+@import "./layout/admin.css";
+
+/* Importaciones de utilidades */
+@import "./utilities/animations.css";
+@import "./utilities/helpers.css";
+@import "./utilities/scrollbar.css";
+
+/* Configuración de Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

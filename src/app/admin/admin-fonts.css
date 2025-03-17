@@ -1,0 +1,44 @@
+/* Definición de fuentes específicas para la sección de administración */
+
+@font-face {
+  font-family: 'Druk Text Wide';
+  src: url('/fonts/Druk Text Wide Heavy.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/GeistMono-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Aplicación directa de fuentes */
+.admin-page h1,
+.admin-page h2,
+.admin-page h3 {
+  font-family: 'Druk Text Wide', sans-serif !important;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.admin-page,
+.admin-page p, 
+.admin-page span, 
+.admin-page a, 
+.admin-page button, 
+.admin-page input, 
+.admin-page select, 
+.admin-page textarea,
+.admin-page label,
+.admin-page h4,
+.admin-page h5,
+.admin-page h6,
+.admin-page div {
+  font-family: 'Geist Mono', monospace !important;
+  letter-spacing: -0.02em;
+}

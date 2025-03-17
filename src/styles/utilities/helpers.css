@@ -1,0 +1,19 @@
+/* helpers.css - Clases utilitarias específicas */
+
+/* Estilos para navegación */
+@layer base {
+  /* Navigation */
+  nav a {
+    @apply text-sm tracking-wide transition-colors duration-200;
+  }
+}
+
+/* Otras clases utilitarias específicas pueden ir aquí */
+
+/* Clases de utilidad para fuentes */
+/* Nota: font-geist es un alias de font-mono, ambos usan la misma fuente */
+/* La definición principal está en typography.css */
+
+.font-druk {
+  font-family: var(--font-druk-text-wide), 'Druk Text Wide', sans-serif;
+}

@@ -4,8 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app
 import Link from "next/link"
 import { DatabaseIcon, ArrowRightIcon, Settings2Icon, LayoutDashboardIcon, ImageIcon, BookOpenIcon, BarChart3Icon, Gamepad2Icon, FileTextIcon } from "lucide-react"
 import { motion } from "framer-motion"
+import FontTest from "./font-test"
 
-export default function AdminPage() {
+export default function AdminPage(): React.ReactNode {
   // Animación para los elementos que aparecen en la página
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -48,6 +49,12 @@ export default function AdminPage() {
       </div>
 
       <div className="max-w-7xl mx-auto p-8">
+        {/* Componente de prueba de fuentes */}
+        <div className="mb-8 p-6 bg-gray-800/50 rounded-lg border border-gray-700/50">
+          <h2 className="mb-4">Prueba de Tipografías</h2>
+          <FontTest />
+        </div>
+        
         {/* Dashboard header */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}

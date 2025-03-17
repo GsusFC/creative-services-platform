@@ -66,7 +66,7 @@ export const HaikuSystem = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <h1 className="text-3xl font-bold text-white text-center mb-8">HAIKU FLAG SYSTEM</h1>
+      <h1 className="text-3xl font-druk haiku-title text-white text-center mb-8">HAIKU FLAG SYSTEM</h1>
       
       {/* Layout principal de dos columnas usando CSS Grid */}
       <div 
@@ -107,7 +107,7 @@ export const HaikuSystem = () => {
               value={haiku}
               onChange={handleInputChange}
               placeholder="Enter your haiku here..."
-              className="w-full h-32 px-4 py-2 bg-black text-white border focus:outline-none focus:ring-2 focus:ring-opacity-50 resize-none"
+              className="w-full h-32 px-4 py-2 bg-black text-white border focus:outline-none focus:ring-2 focus:ring-opacity-50 resize-none font-mono"
               style={{ borderColor: '#00FF00' }}
               aria-label="Enter your haiku to convert into nautical flags"
             />
@@ -120,7 +120,7 @@ export const HaikuSystem = () => {
                 const randomHaiku = generateRandomHaiku();
                 setHaiku(randomHaiku);
               }}
-              className="flex-1 whitespace-nowrap px-3 py-2 text-black transition-colors hover:text-white"
+              className="flex-1 whitespace-nowrap px-3 py-2 text-black transition-colors hover:text-white font-mono"
               style={{ backgroundColor: '#00FF00', borderColor: '#00FF00' }}
               title="Generate random haiku"
             >
@@ -129,7 +129,7 @@ export const HaikuSystem = () => {
             
             <button
               onClick={handleRandomBackground}
-              className="flex-1 whitespace-nowrap px-3 py-2 text-white transition-colors bg-black hover:bg-gray-900 border"
+              className="flex-1 whitespace-nowrap px-3 py-2 text-white transition-colors bg-black hover:bg-gray-900 border font-mono"
               style={{ borderColor: '#00FF00' }}
               title="Change background color randomly"
             >
@@ -152,13 +152,13 @@ export const HaikuSystem = () => {
           {/* Historial de haikus */}
           {haikuHistory.length > 0 && (
             <div className="mt-4">
-              <h3 className="text-white text-sm font-semibold mb-2">Haiku History:</h3>
+              <h3 className="text-white text-sm font-semibold mb-2 font-mono">Haiku History:</h3>
               <div className="flex flex-col gap-2">
                 {haikuHistory.map((historyHaiku, index) => (
                   <button
                     key={`${index}`}
                     onClick={() => setHaiku(historyHaiku)}
-                    className="px-2 py-1 text-xs text-white bg-black rounded hover:bg-gray-900 transition-colors border border-gray-800 text-left"
+                    className="px-2 py-1 text-xs text-white bg-black rounded hover:bg-gray-900 transition-colors border border-gray-800 text-left font-mono"
                     title={`Use this haiku`}
                   >
                     {historyHaiku.length > 40 ? historyHaiku.substring(0, 40) + '...' : historyHaiku}

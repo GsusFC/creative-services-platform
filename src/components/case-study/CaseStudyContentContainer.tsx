@@ -2,13 +2,13 @@
 
 import { CaseStudy } from '@/types/case-study';
 import { useCaseStudyContent } from '@/hooks/useCaseStudyContent';
-import { CaseStudyContent } from './CaseStudyContent';
+import CaseStudyContent from './CaseStudyContent';
 
 interface CaseStudyContentContainerProps {
   caseStudy: CaseStudy;
 }
 
-const CaseStudyContentContainer = ({ caseStudy }: CaseStudyContentContainerProps) => {
+const CaseStudyContentContainer = ({ caseStudy }: CaseStudyContentContainerProps): React.ReactNode => {
   // Utilizamos el hook para obtener la lógica de filtrado y animaciones
   const { mediaFilters, animationSettings } = useCaseStudyContent(caseStudy);
   

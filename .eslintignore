@@ -1,0 +1,11 @@
+# Ignorar archivos JavaScript que no están incluidos en tsconfig.json
+src/mocks/mockData.js
+src/services/localStorageService.js
+src/services/pdfService.js
+
+# Ignorar archivos generados
+node_modules
+.next
+out
+build
+dist

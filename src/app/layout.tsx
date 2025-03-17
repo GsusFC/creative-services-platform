@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import './globals.css'
+import '../styles/main.css'
 import NavbarContainer from '@/components/layout/NavbarContainer'
 import { Footer } from '@/components/layout/Footer'
 import { Toaster } from 'sonner'

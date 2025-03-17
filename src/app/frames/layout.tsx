@@ -1,4 +1,5 @@
 import { generateFrameMetadata } from '@/lib/frame-utils';
+import { inter, drukText, geistMono, robotoMono } from '../fonts';
 
 export const metadata = generateFrameMetadata({
   title: 'Sistema de Banderas Náuticas',
@@ -19,8 +20,8 @@ export default function FramesLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <div className={`${inter.variable} ${geistMono.variable} ${drukText.variable} ${robotoMono.variable}`}>
       {children}
-    </>
+    </div>
   );
 }

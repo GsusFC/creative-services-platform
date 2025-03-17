@@ -5,7 +5,8 @@ import { motion, Variants } from 'framer-motion';
 import { Producto } from '@/types/do-it-yourself';
 import { diyA11y, diyStyles } from '@/config/do-it-yourself';
 import { useDiy } from '@/contexts/DiyContext';
-import '@/styles/card-animations.css';
+// Los estilos de animaciones de tarjetas ahora están en main.css
+// que se importa globalmente en los layouts
 
 // Estilos para el efecto de borde gradiente
 const gradientBorderStyle = {
@@ -133,7 +134,7 @@ const ProductCard = memo<ProductCardProps>(({
   );
 });
 
-// Los estilos de animación se han movido a un archivo CSS centralizado: src/styles/card-animations.css
+// Los estilos de animación se han movido a src/styles/utilities/animations.css y se importan a través de main.css
 
 ProductCard.displayName = 'ProductCard';
 

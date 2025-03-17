@@ -5,8 +5,8 @@ import { ApiResponse, handleValidationError } from './validation';
  * Opciones para la respuesta de la API
  */
 interface ApiOptions {
-  status?: number;
-  headers?: Record<string, string>;
+  status?: number | undefined;
+  headers?: Record<string, string> | undefined;
 }
 
 /**
@@ -23,10 +23,20 @@ export const apiSuccess = <T>(
     data,
   };
 
-  return NextResponse.json(response, {
-    status: options.status || 200,
-    headers: options.headers,
-  });
+  // Creamos un objeto de opciones de respuesta que cumpla con HeadersInit
+  const responseOptions: ResponseInit = {};
+  
+  if (typeof options.status === 'number') {
+    responseOptions.status = options.status;
+  } else {
+    responseOptions.status = 200;
+  }
+  
+  if (options.headers !== undefined && options.headers !== null) {
+    responseOptions.headers = options.headers;
+  }
+  
+  return NextResponse.json(response, responseOptions);
 };
 
 /**
@@ -39,10 +49,20 @@ export const apiError = (
 ): NextResponse => {
   const response = handleValidationError(error);
   
-  return NextResponse.json(
-    { ...response, message },
-    { status: options.status || 400, headers: options.headers }
-  );
+  // Creamos un objeto de opciones de respuesta que cumpla con HeadersInit
+  const responseOptions: ResponseInit = {};
+  
+  if (typeof options.status === 'number') {
+    responseOptions.status = options.status;
+  } else {
+    responseOptions.status = 400;
+  }
+  
+  if (options.headers !== undefined && options.headers !== null) {
+    responseOptions.headers = options.headers;
+  }
+  
+  return NextResponse.json({ ...response, message }, responseOptions);
 };
 
 /**
