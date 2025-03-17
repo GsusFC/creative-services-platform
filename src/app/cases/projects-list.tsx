@@ -16,7 +16,7 @@ function ProjectCard({ project }: { project: CaseStudy }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="group max-w-[420px] w-full mx-auto"
+      className="group max-w-[420px] w-full mx-auto project-card"
     >
       <Link href={`/cases/${project.slug}`} className="block">
         {/* Project Image - Exactamente 420x420px */}
@@ -34,7 +34,7 @@ function ProjectCard({ project }: { project: CaseStudy }) {
 
         {/* Project Info - Solo nombre de empresa en Druk y descripción corta */}
         <div className="space-y-2">
-          <h3 className="text-2xl md:text-3xl font-druk text-white uppercase leading-tight tracking-tight">
+          <h3 className="text-2xl md:text-3xl font-druk text-white uppercase leading-tight tracking-tight force-druk">
             {project.client}
           </h3>
           <p className="text-white/70 md:text-lg font-light">

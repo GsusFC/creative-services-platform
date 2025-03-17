@@ -3,6 +3,9 @@ import { Suspense } from 'react';
 import { getCaseStudyBySlug, getAllCaseStudies } from '@/lib/case-studies/service';
 import CaseStudyContentContainer from '@/components/case-study/CaseStudyContentContainer';
 
+import './styles/typography.css';
+import './styles/reset.css';
+
 // Componente para mostrar durante la carga
 function LoadingCaseStudy() {
   return (

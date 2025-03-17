@@ -1,4 +1,6 @@
 import { HaikuSystem } from './components/HaikuSystem';
+import './styles/typography.css';
+import './styles/components.css';
 
 export default function HaikuSystemPage() {
   return (

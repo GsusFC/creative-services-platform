@@ -1,0 +1,24 @@
+/* Estilos de componentes específicos para el sistema Haiku */
+
+/* Estilos para los botones */
+button {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace !important;
+}
+
+/* Estilos para los inputs */
+textarea, input {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace !important;
+}
+
+/* Estilos para textos específicos */
+.haiku-text {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace !important;
+}
+
+/* Estilos para títulos */
+.haiku-title {
+  font-family: var(--font-druk-text-wide), 'Druk Text Wide', sans-serif !important;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}

@@ -116,7 +116,7 @@ export const FlagSystem = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <h1 className="text-3xl font-bold text-white text-center mb-8">NAUTICAL FLAG SYSTEM</h1>
+      <h1 className="text-3xl font-druk flag-title text-white text-center mb-8">NAUTICAL FLAG SYSTEM</h1>
       
       {/* Layout principal de dos columnas usando CSS Grid */}
       <div 
@@ -185,7 +185,7 @@ export const FlagSystem = () => {
               value={word}
               onChange={handleInputChange}
               placeholder="Enter a word"
-              className="w-full px-4 py-2 bg-black text-white border border-gray-800 focus:outline-none focus:ring-2 focus:ring-opacity-50" style={{ borderColor: '#00FF00' }}
+              className="w-full px-4 py-2 bg-black text-white border border-gray-800 focus:outline-none focus:ring-2 focus:ring-opacity-50 font-mono" style={{ borderColor: '#00FF00' }}
               aria-label="Enter a word to convert into nautical flags"
             />
           </div>
@@ -197,7 +197,7 @@ export const FlagSystem = () => {
                 const randomWord = generateRandomWord();
                 setWord(randomWord);
               }}
-              className="flex-1 whitespace-nowrap px-3 py-2 text-black transition-colors hover:text-white" style={{ backgroundColor: '#00FF00', borderColor: '#00FF00' }}
+              className="flex-1 whitespace-nowrap px-3 py-2 text-black transition-colors hover:text-white font-mono" style={{ backgroundColor: '#00FF00', borderColor: '#00FF00' }}
               title="Generate random word"
             >
               RANDOM
@@ -205,7 +205,7 @@ export const FlagSystem = () => {
             
             <button
               onClick={handleRandomBackground}
-              className="flex-1 whitespace-nowrap px-3 py-2 text-white transition-colors bg-black hover:bg-gray-900 border" style={{ borderColor: '#00FF00' }}
+              className="flex-1 whitespace-nowrap px-3 py-2 text-white transition-colors bg-black hover:bg-gray-900 border font-mono" style={{ borderColor: '#00FF00' }}
               title="Change background color randomly"
             >
               RANDOM BG
@@ -227,13 +227,13 @@ export const FlagSystem = () => {
           {/* Historial de palabras */}
           {wordHistory.length > 0 && (
             <div className="mt-4">
-              <h3 className="text-white text-sm font-semibold mb-2">Word History:</h3>
+              <h3 className="text-white text-sm font-semibold mb-2 font-mono">Word History:</h3>
               <div className="flex flex-wrap gap-2">
                 {wordHistory.map((historyWord, index) => (
                   <button
                     key={`${historyWord}-${index}`}
                     onClick={() => setWord(historyWord)}
-                    className="px-2 py-1 text-xs text-white bg-gray-800 rounded hover:bg-gray-700 transition-colors"
+                    className="px-2 py-1 text-xs text-white bg-gray-800 rounded hover:bg-gray-700 transition-colors font-mono"
                     title={`Use ${historyWord}`}
                   >
                     {historyWord}

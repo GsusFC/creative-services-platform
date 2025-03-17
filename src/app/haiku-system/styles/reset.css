@@ -1,0 +1,23 @@
+/* Reset de estilos específicos para el sistema Haiku */
+
+/* Asegurar que todas las fuentes se apliquen correctamente */
+* {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+}
+
+/* Clases específicas para forzar fuentes */
+.force-mono {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace !important;
+}
+
+.force-druk {
+  font-family: var(--font-druk-text-wide), 'Druk Text Wide', sans-serif !important;
+}
+
+/* Asegurar que los botones y elementos de formulario usen la fuente mono */
+button, 
+input, 
+textarea, 
+select {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace !important;
+}

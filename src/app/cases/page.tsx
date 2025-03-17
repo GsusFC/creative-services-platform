@@ -2,6 +2,10 @@ import { getAllCaseStudies } from '@/lib/case-studies/service'
 import { Suspense } from 'react'
 import ProjectsList from './projects-list'
 
+import './styles/typography.css'
+import './styles/components.css'
+import './styles/reset.css'
+
 // Componente para mostrar durante la carga
 function ProjectsLoading() {
   return (
@@ -53,7 +57,7 @@ export default function CasesPage() {
       <div className="pt-32 pb-12 md:pt-40">
         {/* Cabecera con solo WORK en Druk Wide a ancho completo */}
         <div className="px-4 mb-16 md:mb-24 overflow-hidden">
-          <h1 className="font-druk text-white uppercase leading-none tracking-tight w-full" style={{ fontSize: '15vw' }}>
+          <h1 className="font-druk force-druk text-white uppercase leading-none tracking-tight w-full" style={{ fontSize: '15vw' }}>
             WORK
           </h1>
         </div>

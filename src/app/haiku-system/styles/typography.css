@@ -1,0 +1,23 @@
+/* Estilos de tipografía específicos para el sistema Haiku */
+
+/* Asegurar que font-mono use Geist Mono */
+.font-mono {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace !important;
+}
+
+/* Asegurar que font-druk use Druk Text Wide */
+.font-druk {
+  font-family: var(--font-druk-text-wide), 'Druk Text Wide', sans-serif !important;
+}
+
+/* Estilos específicos para el título del sistema */
+h1.font-druk {
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* Estilos para textos monoespaciados en el sistema */
+.text-mono {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace !important;
+}

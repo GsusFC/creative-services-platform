@@ -1,0 +1,21 @@
+/* Estilos de tipografía específicos para la página de casos */
+
+/* Asegurar que font-mono use Geist Mono */
+.font-mono {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace !important;
+}
+
+/* Asegurar que font-druk use Druk Text Wide */
+.font-druk {
+  font-family: var(--font-druk-text-wide), 'Druk Text Wide', sans-serif !important;
+}
+
+/* Estilos para textos normales */
+p, span, div {
+  font-family: var(--font-inter), 'Inter', sans-serif !important;
+}
+
+/* Estilos para textos monoespaciados */
+.text-mono {
+  font-family: var(--font-geist-mono), 'Geist Mono', monospace !important;
+}
