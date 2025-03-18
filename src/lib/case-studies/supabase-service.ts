@@ -10,10 +10,7 @@ export async function getAllCaseStudies(): Promise<CaseStudy[]> {
     // Intenta hacer la consulta sin ordenar por 'order'
     const { data, error } = await supabase
       .from('case_studies')
-      .select(`
-        *,
-        mediaItems: media_items(*)
-      `);
+      .select('*');
 
     if (error) {
       console.error('Error al obtener los case studies:', error);
@@ -30,7 +27,7 @@ export async function getAllCaseStudies(): Promise<CaseStudy[]> {
       client: item.client,
       description: item.description,
       description2: item.description2 || '',
-      mediaItems: convertMediaItems(item.mediaItems || []),
+      mediaItems: [], // No tenemos mediaItems en esta consulta
       tags: item.tags ? item.tags.split(',') : [],
       order: item.order || 0, // Valor predeterminado si no existe
       status: item.status as 'draft' | 'published',
@@ -51,10 +48,7 @@ export async function getAllCaseStudies(): Promise<CaseStudy[]> {
 export async function getCaseStudyBySlug(slug: string): Promise<CaseStudy | null> {
   const { data, error } = await supabase
     .from('case_studies')
-    .select(`
-      *,
-      mediaItems: media_items(*)
-    `)
+    .select('*')
     .eq('slug', slug)
     .single();
 
@@ -76,7 +70,7 @@ export async function getCaseStudyBySlug(slug: string): Promise<CaseStudy | null
     client: data.client,
     description: data.description,
     description2: data.description2 || '',
-    mediaItems: convertMediaItems(data.mediaItems || []),
+    mediaItems: [], // No tenemos mediaItems en esta consulta
     tags: data.tags ? data.tags.split(',') : [],
     order: data.order,
     status: data.status as 'draft' | 'published',
