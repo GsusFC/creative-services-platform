@@ -377,11 +377,11 @@ export default function SystemToolsPage() {
                           </h4>
                           <pre className="bg-black/70 p-5 rounded-lg text-green-400 overflow-x-auto text-sm border border-indigo-500/20 shadow-inner">
                             <code className="font-mono">
-                              <span className="text-indigo-300">fontFamily:</span> {'{'}'
+                              <span className="text-indigo-300">fontFamily:</span> {'{'}
                                 <span className="text-amber-300 pl-4">&apos;druk&apos;:</span> [&apos;var(--font-druk-text-wide)&apos;, &apos;sans-serif&apos;],
-                                <span className="text-amber-300 pl-4">sans:</span> ['var(--font-geist-mono)', 'monospace'],
-                                <span className="text-amber-300 pl-4">mono:</span> ['var(--font-geist-mono)', 'monospace'],
-                                <span className="text-amber-300 pl-4">display:</span> ['var(--font-druk-text-wide)', 'sans-serif'],
+                                <span className="text-amber-300 pl-4">sans:</span> [&apos;var(--font-geist-mono)&apos;, &apos;monospace&apos;],
+                                <span className="text-amber-300 pl-4">mono:</span> [&apos;var(--font-geist-mono)&apos;, &apos;monospace&apos;],
+                                <span className="text-amber-300 pl-4">display:</span> [&apos;var(--font-druk-text-wide)&apos;, &apos;sans-serif&apos;],
                               {'}'}
                             </code>
                           </pre>
@@ -394,7 +394,7 @@ export default function SystemToolsPage() {
                           </h4>
                           <pre className="bg-black/70 p-5 rounded-lg text-green-400 overflow-x-auto text-sm border border-indigo-500/20 shadow-inner">
                             <code className="font-mono">
-                              <span className="text-blue-300">&lt;body</span> <span className="text-amber-300">class=</span><span className="text-green-300">"antialiased"</span><span className="text-blue-300">&gt;</span>...<span className="text-blue-300">&lt;/body&gt;</span>
+                              <span className="text-blue-300">&lt;body</span> <span className="text-amber-300">class=</span><span className="text-green-300">&quot;antialiased&quot;</span><span className="text-blue-300">&gt;</span>...<span className="text-blue-300">&lt;/body&gt;</span>
                             </code>
                           </pre>
                         </div>
@@ -515,7 +515,7 @@ export default function SystemToolsPage() {
                             <span className="text-white">├── </span><span className="text-indigo-300">components/</span>            <span className="text-gray-500"># Estilos específicos de componentes</span>
                             <span className="text-white">│   ├── </span><span className="text-green-300">buttons.css</span>        <span className="text-gray-500"># Estilos para botones</span>
                             <span className="text-white">│   ├── </span><span className="text-green-300">forms.css</span>          <span className="text-gray-500"># Estilos para elementos de formulario</span>
-                            <span className="text-white">│   └── </span><span className="text-green-300">range-slider.css</span>   <span className="text-gray-500"># Estilos para input[type='range']</span>
+                            <span className="text-white">│   └── </span><span className="text-green-300">range-slider.css</span>   <span className="text-gray-500"># Estilos para input[type=&apos;range&apos;]</span>
                             <span className="text-white">│</span>
                             <span className="text-white">├── </span><span className="text-indigo-300">layout/</span>                <span className="text-gray-500"># Estilos de layout y estructura</span>
                             <span className="text-white">│   ├── </span><span className="text-green-300">admin.css</span>          <span className="text-gray-500"># Estilos para administración</span>
