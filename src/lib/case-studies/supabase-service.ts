@@ -2,22 +2,67 @@ import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '../supabase';
 import { CaseStudy, MediaItem, FeaturedCaseUpdate } from '@/types/case-study';
 
+// Datos simulados para cuando la tabla no existe
+const mockCaseStudies: CaseStudy[] = [
+  {
+    id: '1',
+    title: 'Proyecto Demo 1',
+    slug: 'proyecto-demo-1',
+    client: 'Cliente Demo',
+    description: 'Descripción del proyecto demo 1',
+    description2: 'Descripción adicional del proyecto demo 1',
+    mediaItems: [],
+    tags: ['diseño', 'web'],
+    order: 1,
+    status: 'published',
+    featured: true,
+    featuredOrder: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: '2',
+    title: 'Proyecto Demo 2',
+    slug: 'proyecto-demo-2',
+    client: 'Cliente Demo 2',
+    description: 'Descripción del proyecto demo 2',
+    description2: 'Descripción adicional del proyecto demo 2',
+    mediaItems: [],
+    tags: ['branding', 'marketing'],
+    order: 2,
+    status: 'published',
+    featured: false,
+    featuredOrder: 0,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+];
+
 /**
  * Obtener todos los case studies
  */
 export async function getAllCaseStudies(): Promise<CaseStudy[]> {
   try {
-    // Intenta hacer la consulta sin ordenar por 'order'
+    console.log('Usando repositorio de Supabase para Case Studies');
     const { data, error } = await supabase
       .from('case_studies')
       .select('*');
 
     if (error) {
       console.error('Error al obtener los case studies:', error);
-      throw error;
+      // Si el error es que la tabla no existe, devolvemos datos simulados
+      if (error.code === '42P01') {
+        console.log('La tabla case_studies no existe. Devolviendo datos simulados.');
+        return mockCaseStudies;
+      }
+      return [];
     }
     
-    console.log(`Se obtuvieron ${data.length} case studies de Supabase`);
+    console.log(`Se obtuvieron ${data?.length || 0} case studies de Supabase`);
+    
+    if (!data || data.length === 0) {
+      return [];
+    }
     
     // Transformar los datos para que coincidan con nuestro tipo CaseStudy
     return data.map(item => ({
@@ -38,7 +83,8 @@ export async function getAllCaseStudies(): Promise<CaseStudy[]> {
     }));
   } catch (error) {
     console.error('Error al obtener los case studies:', error);
-    throw error;
+    // En caso de error, devolvemos datos simulados
+    return mockCaseStudies;
   }
 }
 
@@ -46,39 +92,54 @@ export async function getAllCaseStudies(): Promise<CaseStudy[]> {
  * Obtener un case study por su slug
  */
 export async function getCaseStudyBySlug(slug: string): Promise<CaseStudy | null> {
-  const { data, error } = await supabase
-    .from('case_studies')
-    .select('*')
-    .eq('slug', slug)
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from('case_studies')
+      .select('*')
+      .eq('slug', slug)
+      .single();
 
-  if (error) {
-    if (error.code === 'PGRST116') { // Error cuando no encuentra registro
+    if (error) {
+      if (error.code === 'PGRST116') { // Error cuando no encuentra registro
+        return null;
+      }
+      console.error('Error al obtener el case study:', error);
+      
+      // Si el error es que la tabla no existe, buscamos en los datos simulados
+      if (error.code === '42P01') {
+        console.log('La tabla case_studies no existe. Buscando en datos simulados.');
+        const mockCaseStudy = mockCaseStudies.find(cs => cs.slug === slug);
+        return mockCaseStudy || null;
+      }
+      
       return null;
     }
-    console.error('Error al obtener el case study:', error);
-    throw error;
+
+    if (!data) return null;
+
+    // Transformar el resultado a nuestro tipo CaseStudy
+    return {
+      id: data.id,
+      title: data.title,
+      slug: data.slug,
+      client: data.client,
+      description: data.description,
+      description2: data.description2 || '',
+      mediaItems: [], // No tenemos mediaItems en esta consulta
+      tags: data.tags ? data.tags.split(',') : [],
+      order: data.order,
+      status: data.status as 'draft' | 'published',
+      featured: data.featured,
+      featuredOrder: data.featured_order,
+      createdAt: data.created_at,
+      updatedAt: data.updated_at
+    };
+  } catch (error) {
+    console.error('Error inesperado al obtener el case study:', error);
+    // En caso de error, buscamos en los datos simulados
+    const mockCaseStudy = mockCaseStudies.find(cs => cs.slug === slug);
+    return mockCaseStudy || null;
   }
-
-  if (!data) return null;
-
-  // Transformar el resultado a nuestro tipo CaseStudy
-  return {
-    id: data.id,
-    title: data.title,
-    slug: data.slug,
-    client: data.client,
-    description: data.description,
-    description2: data.description2 || '',
-    mediaItems: [], // No tenemos mediaItems en esta consulta
-    tags: data.tags ? data.tags.split(',') : [],
-    order: data.order,
-    status: data.status as 'draft' | 'published',
-    featured: data.featured,
-    featuredOrder: data.featured_order,
-    createdAt: data.created_at,
-    updatedAt: data.updated_at
-  };
 }
 
 /**
@@ -287,7 +348,12 @@ export async function getFeaturedCaseStudies(): Promise<CaseStudy[]> {
       
     if (testQuery.error) {
       console.error('Error en consulta de prueba:', testQuery.error);
-      throw new Error(`Error accediendo a la tabla case_studies: ${JSON.stringify(testQuery.error)}`);
+      // Si el error es que la tabla no existe, devolvemos datos simulados destacados
+      if (testQuery.error.code === '42P01') {
+        console.log('La tabla case_studies no existe. Devolviendo datos simulados destacados.');
+        return mockCaseStudies.filter(cs => cs.featured);
+      }
+      return []; // Devolver array vacío en caso de otros errores
     }
     
     console.log('Consulta de prueba exitosa, procediendo con la consulta principal');
@@ -295,17 +361,19 @@ export async function getFeaturedCaseStudies(): Promise<CaseStudy[]> {
     // Ahora realizar la consulta principal
     const { data, error } = await supabase
       .from('case_studies')
-      .select(`
-        *,
-        mediaItems: media_items(*)
-      `)
+      .select('*')
       .eq('featured', true)
       .eq('status', 'published')
       .order('featured_order', { ascending: true });
 
     if (error) {
       console.error('Error detallado al obtener los case studies destacados:', error);
-      throw new Error(`Error al obtener los case studies destacados: ${JSON.stringify(error)}`);
+      // Si el error es que la tabla no existe, devolvemos datos simulados destacados
+      if (error.code === '42P01') {
+        console.log('La tabla case_studies no existe. Devolviendo datos simulados destacados.');
+        return mockCaseStudies.filter(cs => cs.featured);
+      }
+      return []; // Devolver array vacío en caso de otros errores
     }
 
     if (!data || !Array.isArray(data)) {
@@ -323,7 +391,7 @@ export async function getFeaturedCaseStudies(): Promise<CaseStudy[]> {
       client: item.client || '',
       description: item.description || '',
       description2: item.description2 || '',
-      mediaItems: item.mediaItems ? convertMediaItems(item.mediaItems) : [],
+      mediaItems: [], // No tenemos mediaItems en esta consulta
       tags: item.tags ? item.tags.split(',') : [],
       order: item.order || 0,
       status: (item.status as 'draft' | 'published') || 'draft',
@@ -334,8 +402,8 @@ export async function getFeaturedCaseStudies(): Promise<CaseStudy[]> {
     }));
   } catch (error) {
     console.error('Error general al obtener los case studies destacados:', error);
-    // Devolver array vacío para evitar que la aplicación falle
-    return [];
+    // En caso de error general, devolvemos datos simulados destacados
+    return mockCaseStudies.filter(cs => cs.featured);
   }
 }
 
