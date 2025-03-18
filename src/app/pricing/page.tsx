@@ -1,6 +1,7 @@
 import PricingContainer from '@/components/pricing/PricingContainer'
 import { PriceAdmin } from '@/components/pricing/PriceAdmin'
 import { PricingPlans } from '@/components/pricing/PricingPlans'
+import { PricingPacks } from '@/components/pricing/PricingPacks'
 import { faqs } from '@/lib/plans'
 import {
   Accordion,
@@ -22,11 +23,15 @@ export default function PricingPage() {
             <h2 
               className="text-4xl sm:text-5xl md:text-6xl text-white text-center mb-16"
               style={{ fontFamily: 'var(--font-druk-text-wide)' }}
+              data-component-name="druk-heading"
             >
               Choose Your Plan
             </h2>
             <PricingPlans />
           </div>
+          
+          {/* Packs de Branding */}
+          <PricingPacks />
 
           {/* FAQs */}
           <div>

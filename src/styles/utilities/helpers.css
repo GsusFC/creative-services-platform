@@ -4,7 +4,7 @@
 @layer base {
   /* Navigation */
   nav a {
-    @apply text-sm tracking-wide transition-colors duration-200;
+    @apply text-sm tracking-wide;
   }
 }
 

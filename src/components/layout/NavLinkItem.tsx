@@ -41,12 +41,12 @@ const NavLinkItem = memo<NavLinkItemProps>(({
           aria-expanded={dropdownOpen}
           aria-haspopup="true"
           aria-controls={itemId}
-          className={`flex items-center gap-1 ${styles.transitions.standard} focus:outline-none focus:ring-2 focus:ring-white/20 rounded-sm p-1`}
+          className="flex items-center gap-1 focus:outline-none"
           tabIndex={0}
           aria-label={`${label} ${dropdownOpen ? a11y.dropdown.expanded : a11y.dropdown.collapsed}`}
         >
           <span
-            className={`${styles.text.navLink} ${styles.transitions.color} ${isActive ? styles.colors.active : `${styles.colors.inactive} group-hover:${styles.colors.hover}`}`}
+            className={`${styles.text.navLink} ${isActive ? styles.colors.active : styles.colors.inactive}`}
           >
             {label}
           </span>
@@ -56,7 +56,7 @@ const NavLinkItem = memo<NavLinkItemProps>(({
             height="6" 
             viewBox="0 0 10 6" 
             fill="none" 
-            className={`${styles.transitions.transform} ${dropdownOpen ? 'rotate-180' : ''}`}
+            style={{ transform: dropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
             aria-hidden="true"
           >
             <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -75,13 +75,13 @@ const NavLinkItem = memo<NavLinkItemProps>(({
                 <Link 
                   key={child.href} 
                   href={child.href}
-                  className="block px-4 py-2 hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/20"
+                  className="block px-4 py-2 hover:bg-white/5 focus:outline-none"
                   tabIndex={0}
                   aria-current={isChildActive ? 'page' : undefined}
                   role="menuitem"
                 >
                   <span 
-                    className={`${styles.text.navLink} ${styles.transitions.color} ${isChildActive ? styles.colors.active : `${styles.colors.inactive} hover:${styles.colors.hover}`}`}
+                    className={`${styles.text.navLink} ${isChildActive ? styles.colors.active : styles.colors.inactive}`}
                   >
                     {child.label}
                   </span>
@@ -97,12 +97,12 @@ const NavLinkItem = memo<NavLinkItemProps>(({
   return (
     <Link 
       href={href!} 
-      className={`relative group ${styles.transitions.standard} focus:outline-none focus:ring-2 focus:ring-white/20 rounded-sm p-1`}
+      className="relative group focus:outline-none"
       tabIndex={0} 
       aria-current={isActive ? 'page' : undefined}
     >
       <span
-        className={`${styles.text.navLink} ${styles.transitions.color} ${isActive ? styles.colors.active : `${styles.colors.inactive} group-hover:${styles.colors.hover}`}`}
+        className={`${styles.text.navLink} ${isActive ? styles.colors.active : styles.colors.inactive}`}
       >
         {label}
       </span>

@@ -1,0 +1,29 @@
+/* font-druk.css - Estilos específicos para la fuente Druk */
+
+/* Asegurarse de que la clase font-druk aplique correctamente la fuente */
+.font-druk {
+  font-family: var(--font-druk-text-wide), 'Druk Text Wide', sans-serif !important;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+/* Asegurarse de que los elementos con font-druk tengan el estilo correcto */
+h1.font-druk, 
+h2.font-druk, 
+h3.font-druk, 
+h4.font-druk, 
+h5.font-druk, 
+h6.font-druk,
+p.font-druk,
+span.font-druk,
+div.font-druk {
+  font-family: var(--font-druk-text-wide), 'Druk Text Wide', sans-serif !important;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+/* Estilo específico para el componente SystemToolsPage */
+[data-component-name="SystemToolsPage"] {
+  font-family: var(--font-druk-text-wide), 'Druk Text Wide', sans-serif !important;
+  font-weight: 900;
+}

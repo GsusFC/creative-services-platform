@@ -10,6 +10,7 @@
 @import "./components/forms.css";
 @import "./components/range-slider.css";
 @import "./components/gradient-card.css";
+@import "./components/font-druk.css"; /* Estilos específicos para la fuente Druk */
 
 /* Importaciones de layout */
 @import "./layout/containers.css";

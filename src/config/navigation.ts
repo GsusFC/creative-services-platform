@@ -3,14 +3,24 @@ import type { NavLink } from '@/hooks/useNavigation';
 
 // Enlaces de navegación principales
 export const mainNavLinks: NavLink[] = [
+  // Lado izquierdo
   { href: '/services', label: 'SERVICES' },
-  { href: '/cases', label: 'CASES' },
   { href: '/process', label: 'PROCESS' },
+  { href: '/cases', label: 'CASES' },
   { href: '/pricing', label: 'PRICING' },
-  { href: '/packs', label: 'PACKS' },
+  
+  // Lado derecho (se posicionará con CSS)
   { href: '/do-it-yourself', label: 'DO IT YOURSELF' },
-  { href: '/flag-system', label: 'FLAG SYSTEM' },
-  { href: '/haiku-system', label: 'HAIKU SYSTEM' }
+  { 
+    label: 'SYSTEMS',
+    isDropdown: true,
+    id: 'systems-dropdown',
+    children: [
+      { href: '/flag-system', label: 'FLAG SYSTEM' },
+      { href: '/haiku-system', label: 'HAIKU SYSTEM' }
+    ]
+  },
+  { href: '/admin', label: 'ADMIN' }
 ];
 
 // Constante del gradiente RGB para la barra de navegación
@@ -64,12 +74,7 @@ export const navbarStyles = {
   text: {
     navLink: 'text-[13px] font-medium font-mono uppercase'
   },
-  // Transiciones
-  transitions: {
-    standard: 'transition-all duration-300',
-    color: 'transition-colors duration-300',
-    transform: 'transition-transform duration-300'
-  },
+
   // Espaciado
   spacing: {
     navLinks: 'gap-6',

@@ -3,6 +3,6 @@
 @layer base {
   /* Buttons */
   button, .button {
-    @apply text-sm tracking-wide transition-all duration-200;
+    @apply text-sm tracking-wide;
   }
 }

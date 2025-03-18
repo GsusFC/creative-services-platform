@@ -93,10 +93,28 @@
 }
 
 /* Estilos de hover para navegadores que soporten hover */
+/* Eliminado el efecto de levantamiento en hover para la clase .group */
 @media (hover: hover) {
-  .group:hover {
-    transform: translateY(-5px);
-  }
+  /* Comportamiento de hover sin animación */
+}
+
+/* Clase para deshabilitar todas las transiciones */
+.no-transitions,
+.no-transitions * {
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* Aplicar a elementos de navegación */
+nav a,
+nav button,
+.logo-button,
+.mobile-menu-button {
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+  padding: inherit !important; /* Mantener el padding estático */
 }
 
 /* Mejora de accesibilidad para usuarios que prefieren reducir el movimiento */
