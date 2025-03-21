@@ -37,9 +37,9 @@ export type AnimationSettings = {
 export const useCaseStudyContent = (caseStudy: CaseStudy) => {
   // Filtrar los elementos multimedia para las diferentes secciones
   const mediaFilters = useMemo<MediaFilters>(() => {
-    // Determinar la primera imagen para usar como hero
+    // Usar específicamente la imagen marcada como Hero Image
     const heroImage = caseStudy.mediaItems && caseStudy.mediaItems.length > 0
-      ? caseStudy.mediaItems.find(item => item.type === 'image')?.url || '/projects/quantum.svg'
+      ? caseStudy.mediaItems.find(item => item.alt === 'Hero Image')?.url || '/projects/quantum.svg'
       : '/projects/quantum.svg';
 
     // Encontrar el primer video para usar como hero si existe
@@ -47,7 +47,7 @@ export const useCaseStudyContent = (caseStudy: CaseStudy) => {
     
     // Filtrar las imágenes restantes para la galería principal (excluyendo la primera)
     const galleryImages = caseStudy.mediaItems?.filter(item => 
-      item.type === 'image' && item.url !== heroImage
+      item.type === 'image' && item.alt !== 'Hero Image'
     ) || [];
 
     // Filtrar videos (excluyendo el hero video si existe)

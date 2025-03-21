@@ -1,9 +1,9 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
+import { useCaseStudyManager } from './useCaseStudyManager';
 import { useScroll, useTransform, TargetAndTransition, Transition } from 'framer-motion';
 import { CaseStudy } from '@/types/case-study';
-import { getFeaturedCaseStudies } from '@/lib/case-studies/service';
 
 export interface ScrollAnimations {
   y: ReturnType<typeof useTransform<number, number>>;
@@ -66,22 +66,19 @@ export const useCaseStudies = () => {
     }
   };
 
-  // Cargar datos de casos destacados
-  useEffect(() => {
-    const fetchCases = async () => {
-      try {
-        setIsLoading(true);
-        const cases = await getFeaturedCaseStudies();
-        setFeaturedCases(cases.filter(cs => cs.status === 'published').slice(0, 4));
-      } catch (error) {
-        console.error('Error al cargar los estudios de caso destacados:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // Usar el hook de gestión de estudios
+  const { studies } = useCaseStudyManager();
 
-    fetchCases();
-  }, []);
+  // Actualizar los casos destacados cuando cambien los estudios
+  useEffect(() => {
+    setIsLoading(true);
+    const featured = studies
+      .filter(cs => cs.status === 'published' && cs.featured)
+      .sort((a, b) => (a.featuredOrder || 0) - (b.featuredOrder || 0))
+      .slice(0, 4);
+    setFeaturedCases(featured);
+    setIsLoading(false);
+  }, [studies]);
 
   return {
     containerRef,

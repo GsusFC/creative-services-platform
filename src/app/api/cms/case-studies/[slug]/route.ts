@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getCaseStudyBySlug } from '@/lib/case-studies/service';
+import { NotionService } from '@/lib/notion/service';
 
 /**
  * GET /api/cms/case-studies/[slug]
@@ -24,7 +24,8 @@ export async function GET(
       );
     }
     
-    const caseStudy = await getCaseStudyBySlug(slugStr);
+    const notionService = new NotionService();
+    const caseStudy = await notionService.getCaseStudyBySlug(slugStr);
     
     if (!caseStudy) {
       return NextResponse.json(

@@ -29,15 +29,21 @@ describe('Notion Client', () => {
       width: 800,
       height: 600,
       order: 1
-    }]
+    }],
+    slug: 'test-case-study'
   };
 
-  it('should create a case study', async () => {
+  // Crear un case study antes de las pruebas
+  beforeAll(async () => {
     const caseStudy = await createCaseStudy(testCaseStudy);
-    expect(caseStudy).toBeDefined();
-    expect(caseStudy.title).toBe(testCaseStudy.title);
-    expect(caseStudy.client).toBe(testCaseStudy.client);
     createdCaseStudyId = caseStudy.id;
+  });
+
+  // Eliminar el case study después de las pruebas
+  afterAll(async () => {
+    if (createdCaseStudyId) {
+      await deleteCaseStudy(createdCaseStudyId);
+    }
   });
 
   it('should get all case studies', async () => {
@@ -50,6 +56,7 @@ describe('Notion Client', () => {
     const caseStudy = await getCaseStudy(createdCaseStudyId);
     expect(caseStudy).toBeDefined();
     expect(caseStudy.id).toBe(createdCaseStudyId);
+    expect(caseStudy.title).toBe(testCaseStudy.title);
   });
 
   it('should update a case study', async () => {
@@ -63,7 +70,27 @@ describe('Notion Client', () => {
     expect(updatedCaseStudy.title).toBe(updatedTitle);
   });
 
+  it('should create a new case study', async () => {
+    const newCaseStudy = await createCaseStudy({
+      ...testCaseStudy,
+      title: 'Another Test Case Study'
+    });
+
+    expect(newCaseStudy).toBeDefined();
+    expect(newCaseStudy.title).toBe('Another Test Case Study');
+    expect(newCaseStudy.client).toBe(testCaseStudy.client);
+
+    // Limpiar
+    await deleteCaseStudy(newCaseStudy.id);
+  });
+
   it('should delete a case study', async () => {
-    await expect(deleteCaseStudy(createdCaseStudyId)).resolves.not.toThrow();
+    // Crear un nuevo case study para eliminar
+    const caseStudyToDelete = await createCaseStudy({
+      ...testCaseStudy,
+      title: 'Case Study To Delete'
+    });
+
+    await expect(deleteCaseStudy(caseStudyToDelete.id)).resolves.not.toThrow();
   });
 });

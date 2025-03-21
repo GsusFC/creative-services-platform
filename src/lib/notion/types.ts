@@ -6,35 +6,29 @@ export type CaseStudy = ProjectCaseStudy;
 
 export interface NotionCaseStudy {
   id: string;
-  title: string;
-  client: string;
-  description: string;
-  description2?: string;
-  status: 'draft' | 'published';
-  mediaItems?: {
-    type: 'image' | 'video';
+  client: string;           // title
+  description: string;      // rich_text
+  status: 'Sin empezar' | 'En progreso' | 'Listo';  // status
+  language: string[];      // multi_select ['🇪🇸 ES', '🇬🇧 EN']
+  services: string[];      // multi_select
+  slug: string;            // rich_text
+  highlighted: boolean;    // checkbox
+  cover: {
     url: string;
-    videoType?: 'vimeo' | 'local';
-    thumbnailUrl?: string;
-    alt: string;
-    width: number;
-    height: number;
-    order: number;
-    displayMode?: 'single' | 'dual' | 'dual_left' | 'dual_right';
-  }[];
-  tags: string[];
-  order: number;
-  featured: boolean;
-  featuredOrder: number;
+    name: string;
+  }[];                    // files
+  avatar: {
+    url: string;
+    name: string;
+  }[];                    // files
+  website?: string;       // url
+  video1?: string;        // url
+  video2?: string;        // url
   createdAt: string;
   updatedAt: string;
-  nextProject?: {
-    slug: string;
-    title?: string;
-  };
 }
 
-export type CreateCaseStudyInput = Omit<CaseStudy, 'id' | 'createdAt' | 'updatedAt' | 'slug'>;
+export type CreateCaseStudyInput = Omit<CaseStudy, 'id' | 'createdAt' | 'updatedAt'>;
 
 export type UpdateCaseStudyInput = Partial<CreateCaseStudyInput> & { id: string; };
 

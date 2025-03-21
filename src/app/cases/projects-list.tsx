@@ -7,9 +7,9 @@ import { CaseStudy } from '@/types/case-study'
 
 // Componente de tarjeta de proyecto (client component)
 function ProjectCard({ project }: { project: CaseStudy }) {
-  // Obtenemos la primera imagen de mediaItems, o una imagen por defecto si no hay
-  const mainImage = project.mediaItems && project.mediaItems.length > 0 
-    ? project.mediaItems.find(item => item.type === 'image')?.url || '/projects/quantum.svg'
+  // Obtenemos la imagen de cover de mediaItems, o una imagen por defecto si no hay
+  const coverImage = project.mediaItems && project.mediaItems.length > 0 
+    ? project.mediaItems.find(item => item.type === 'image' && item.alt?.toLowerCase().includes('cover'))?.url || '/projects/quantum.svg'
     : '/projects/quantum.svg';
   
   return (
@@ -23,7 +23,7 @@ function ProjectCard({ project }: { project: CaseStudy }) {
         <div className="aspect-square relative overflow-hidden mb-5 bg-gray-900/50">
           <div className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 bg-black/20 transition-opacity duration-500"></div>
           <Image
-            src={mainImage}
+            src={coverImage}
             alt={project.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 420px"
@@ -38,7 +38,7 @@ function ProjectCard({ project }: { project: CaseStudy }) {
             {project.client}
           </h3>
           <p className="text-white/70 md:text-lg font-light">
-            {project.description}
+            {project.tagline || project.description}
           </p>
         </div>
       </Link>

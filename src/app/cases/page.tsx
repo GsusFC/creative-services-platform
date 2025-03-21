@@ -1,5 +1,6 @@
-import { getAllCaseStudies } from '@/lib/case-studies/service'
+import { NotionService } from '@/lib/notion/service'
 import { Suspense } from 'react'
+import Link from 'next/link'
 import ProjectsList from './projects-list'
 
 import './styles/typography.css'
@@ -28,21 +29,26 @@ function ProjectsLoading() {
 
 // Componente servidor para obtener los datos
 async function ProjectsDataFetcher() {
-  const projects = await getAllCaseStudies();
+  const notionService = new NotionService();
+  const projects = await notionService.getAllCaseStudies();
+  
+  console.log('All projects:', projects.map(p => ({ title: p.title, status: p.status })));
   
   // Filtrar solo los proyectos publicados
-  const publishedProjects = projects.filter(p => p.status === 'published');
+  const publishedProjects = projects.filter(project => project.status === 'published');
+  
+  console.log('Published projects:', publishedProjects.map(p => ({ title: p.title, status: p.status })));
   
   if (publishedProjects.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-white/60">
         <p className="text-xl mb-4">No hay proyectos publicados todavía</p>
-        <a 
+        <Link 
           href="/admin/case-studies/new" 
           className="px-4 py-2 bg-[#00ff00] text-black font-medium rounded hover:bg-[#00cc00] transition-colors"
         >
           Crear Proyecto
-        </a>
+        </Link>
       </div>
     );
   }

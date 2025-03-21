@@ -4,7 +4,7 @@
 
 // Tipos de media
 export interface MediaItem {
-  type: 'image' | 'video';
+  type: 'image' | 'video' | 'avatar';
   url: string;
   videoType?: 'vimeo' | 'local';
   thumbnailUrl?: string;
@@ -18,23 +18,26 @@ export interface MediaItem {
 // Estructura principal de Case Study
 export interface CaseStudy {
   id: string;
-  title: string;
-  client: string;
-  description: string; // Descripción corta para listados
-  description2: string; // Descripción larga para página detalle
+  title: string; // Brand Name en Notion
+  client: string; // Igual que title
+  description: string;
+  tagline: string;
+  closingClaim: string;
   mediaItems: MediaItem[];
-  tags: string[];
+  tags: string[]; // Services en Notion
   order: number;
   slug: string;
-  status: 'draft' | 'published';
-  featured: boolean; // Para mostrar en home
-  featuredOrder: number; // Posición en el listado de la home (1-4)
-  createdAt?: string; // Fecha de creación
-  updatedAt?: string; // Fecha de última actualización
+  website?: string | undefined;
+  status: 'draft' | 'published'; // Gestionado en la aplicación
+  featured: boolean; // Gestionado en la aplicación
+  featuredOrder: number; // Gestionado en la aplicación
+  createdAt: string;
+  updatedAt: string;
   nextProject?: {
     slug: string;
     title?: string;
-  }; // Referencia al siguiente proyecto para navegación
+  };
+  synced?: boolean;
 }
 
 // Tipo para actualizar el estado de destacado

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFeaturedCaseStudies, updateFeaturedCaseStudies } from '@/lib/case-studies/service';
+import { NotionService } from '@/lib/notion/service';
 import { FeaturedCaseUpdate } from '@/types/case-study';
 
 /**
@@ -8,7 +8,8 @@ import { FeaturedCaseUpdate } from '@/types/case-study';
  */
 export async function GET() {
   try {
-    const featuredCaseStudies = await getFeaturedCaseStudies();
+    const notionService = new NotionService();
+    const featuredCaseStudies = await notionService.getFeaturedCaseStudies();
     
     return NextResponse.json(featuredCaseStudies);
   } catch (error) {
@@ -47,10 +48,11 @@ export async function PUT(request: NextRequest) {
     }
     
     // Actualizar los case studies destacados
-    await updateFeaturedCaseStudies(data as FeaturedCaseUpdate[]);
+    const notionService = new NotionService();
+    await notionService.updateFeaturedCaseStudies(data as FeaturedCaseUpdate[]);
     
     // Devolver los case studies destacados actualizados
-    const updatedFeaturedCases = await getFeaturedCaseStudies();
+    const updatedFeaturedCases = await notionService.getFeaturedCaseStudies();
     
     return NextResponse.json(updatedFeaturedCases);
   } catch (error) {

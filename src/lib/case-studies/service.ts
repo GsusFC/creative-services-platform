@@ -1,58 +1,20 @@
-import { CaseStudy, FeaturedCaseUpdate } from '@/types/case-study';
-import { getCaseStudyRepository } from './repository';
+import { NotionService } from '../notion/service';
+import { CaseStudy } from '@/types/case-study';
 
-/**
- * Obtener todos los case studies
- */
+const notionService = new NotionService();
+
 export async function getAllCaseStudies(): Promise<CaseStudy[]> {
-  const repository = getCaseStudyRepository();
-  return repository.getAll();
+  return notionService.getAllCaseStudies();
 }
 
-/**
- * Obtener un case study por su slug
- */
-export async function getCaseStudyBySlug(slug: string): Promise<CaseStudy | null> {
-  const repository = getCaseStudyRepository();
-  return repository.getBySlug(slug);
+export async function createCaseStudy(caseStudy: Partial<CaseStudy>): Promise<CaseStudy> {
+  return notionService.createCaseStudy(caseStudy);
 }
 
-/**
- * Crear un nuevo case study
- */
-export async function createCaseStudy(caseStudyData: Omit<CaseStudy, 'id'>): Promise<CaseStudy> {
-  const repository = getCaseStudyRepository();
-  return repository.create(caseStudyData);
+export async function updateCaseStudy(id: string, caseStudy: Partial<CaseStudy>): Promise<CaseStudy> {
+  return notionService.updateCaseStudy(id, caseStudy);
 }
 
-/**
- * Actualizar un case study existente
- */
-export async function updateCaseStudy(id: string, caseStudyData: Partial<CaseStudy>): Promise<CaseStudy> {
-  const repository = getCaseStudyRepository();
-  return repository.update(id, caseStudyData);
-}
-
-/**
- * Eliminar un case study
- */
 export async function deleteCaseStudy(id: string): Promise<void> {
-  const repository = getCaseStudyRepository();
-  return repository.delete(id);
-}
-
-/**
- * Actualizar el estado de destacado de los case studies
- */
-export async function updateFeaturedCaseStudies(updates: FeaturedCaseUpdate[]): Promise<void> {
-  const repository = getCaseStudyRepository();
-  return repository.updateFeatured(updates);
-}
-
-/**
- * Obtener los case studies destacados
- */
-export async function getFeaturedCaseStudies(): Promise<CaseStudy[]> {
-  const repository = getCaseStudyRepository();
-  return repository.getFeatured();
+  return notionService.deleteCaseStudy(id);
 }

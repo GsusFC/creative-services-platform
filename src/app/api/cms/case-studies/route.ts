@@ -14,23 +14,13 @@ export async function GET() {
   try {
     console.log('API: Intentando obtener todos los case studies...');
     
-    // Test de conexión con Supabase
-    try {
-      const { supabase } = await import('@/lib/supabase');
-      const testQuery = await supabase.from('case_studies').select('count').limit(1);
-      console.log('API: Resultado de consulta de prueba a Supabase:', 
-        testQuery.error ? `Error: ${JSON.stringify(testQuery.error)}` : `Éxito: ${JSON.stringify(testQuery.data)}`);
-    } catch (supabaseError) {
-      console.error('API: Error al conectar con Supabase:', supabaseError);
-    }
-    
     // Obtener los case studies usando el servicio
     const caseStudies = await getAllCaseStudies();
     console.log(`API: Se obtuvieron ${caseStudies?.length ?? 0} case studies`);
     
     // Si no hay case studies pero tampoco un error, devolvemos un array vacío
     if (!caseStudies || caseStudies.length === 0) {
-      console.log('API: No se encontraron case studies, pero no hubo error');
+      console.log('API: No se encontraron case studies');
       return NextResponse.json([]);
     }
     
@@ -83,16 +73,11 @@ export async function PUT(request: NextRequest) {
     const data = await request.json();
     console.log('API PUT: Datos recibidos:', data);
     
-    // Validación básica
-    if (!data.id || !data.title || !data.client || !data.description) {
-      console.log('API PUT: Campos requeridos faltantes:', {
-        id: !!data.id,
-        title: !!data.title,
-        client: !!data.client,
-        description: !!data.description
-      });
+    // Validación básica - solo requerimos el ID
+    if (!data.id) {
+      console.log('API PUT: Falta el ID del case study');
       return NextResponse.json(
-        { error: 'Faltan campos requeridos' },
+        { error: 'Se requiere el ID del case study' },
         { status: 400 }
       );
     }

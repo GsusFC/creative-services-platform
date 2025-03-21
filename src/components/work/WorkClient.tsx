@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getAllCaseStudies } from '@/lib/case-studies/service';
+import { NotionService } from '@/lib/notion/service';
 import { CaseStudy } from '@/types/case-study';
 import { motion } from 'framer-motion';
 
@@ -19,17 +19,18 @@ export default function WorkClient() {
     async function loadCaseStudies() {
       try {
         setIsLoading(true);
-        const data = await getAllCaseStudies();
+        const notionService = new NotionService();
+        const data = await notionService.getAllCaseStudies();
         
         // Ordenar por campo order
-        const sortedCaseStudies = data.sort((a, b) => a.order - b.order);
+        const sortedCaseStudies = data.sort((a, b) => (a.order || 0) - (b.order || 0));
         
         setCaseStudies(sortedCaseStudies);
         setFilteredCaseStudies(sortedCaseStudies);
         
         // Extraer todos los tags únicos
         const uniqueTags = Array.from(
-          new Set(sortedCaseStudies.flatMap(cs => cs.tags))
+          new Set(sortedCaseStudies.flatMap(cs => cs.tags || []))
         ).sort();
         
         setAllTags(uniqueTags);

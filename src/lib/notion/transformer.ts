@@ -3,6 +3,8 @@ import type {
   PageObjectResponse,
   SelectPropertyItemObjectResponse,
   MultiSelectPropertyItemObjectResponse,
+  CreatePageParameters,
+  UpdatePageParameters,
   DatePropertyItemObjectResponse,
   FilesPropertyItemObjectResponse,
   FormulaPropertyItemObjectResponse,
@@ -121,9 +123,9 @@ function isFormulaProperty(property: NotionProperty): property is FormulaPropert
 }
 
 /**
- * Extrae el texto plano de una propiedad rich_text o title de Notion
+ * Extrae el texto plano de una propiedad de Notion que devuelve un único valor
  */
-function extractText(property: PropertyItemObjectResponse | undefined): string | string[] {
+export function extractText(property: PropertyItemObjectResponse | undefined): string {
   if (!property) return '';
 
   switch (property.type) {
@@ -147,11 +149,6 @@ function extractText(property: PropertyItemObjectResponse | undefined): string |
         return property.select?.name || '';
       }
       return '';
-    case 'multi_select':
-      if (isMultiSelectProperty(property)) {
-        return property.multi_select.map((item: { name: string }) => item.name);
-      }
-      return [];
     case 'url':
       if (isUrlProperty(property)) {
         return property.url || '';
@@ -177,29 +174,6 @@ function extractText(property: PropertyItemObjectResponse | undefined): string |
         return property.number?.toString() || '0';
       }
       return '0';
-    case 'files':
-      if (isFilesProperty(property)) {
-        if (Array.isArray(property.files)) {
-          return property.files.map((file: NotionFile) => {
-            if (file.type === 'external' && file.external) {
-              return file.external.url;
-            } else if (file.type === 'file' && file.file) {
-              return file.file.url;
-            }
-            return '';
-          }).filter(Boolean).join(', ');
-        }
-        return '';
-      }
-      return '';
-    case 'relation':
-      if (isRelationProperty(property)) {
-        if (Array.isArray(property.relation)) {
-          return property.relation.map(rel => rel.id);
-        }
-        return [];
-      }
-      return [];
     case 'status':
       if (isStatusProperty(property)) {
         return property.status?.name || '';
@@ -255,6 +229,46 @@ function extractText(property: PropertyItemObjectResponse | undefined): string |
 }
 
 /**
+ * Extrae un array de textos de una propiedad de Notion que devuelve múltiples valores
+ */
+function extractMultipleValues(property: PropertyItemObjectResponse | undefined): string[] {
+  if (!property) return [];
+
+  switch (property.type) {
+    case 'multi_select':
+      if (isMultiSelectProperty(property)) {
+        return property.multi_select.map(item => item.name);
+      }
+      return [];
+    case 'files':
+      if (isFilesProperty(property)) {
+        if (Array.isArray(property.files)) {
+          return property.files.map((file: NotionFile) => {
+            if (file.type === 'external' && file.external) {
+              return file.external.url;
+            } else if (file.type === 'file' && file.file) {
+              return file.file.url;
+            }
+            return '';
+          }).filter(Boolean);
+        }
+        return [];
+      }
+      return [];
+    case 'relation':
+      if (isRelationProperty(property)) {
+        if (Array.isArray(property.relation)) {
+          return property.relation.map(rel => rel.id);
+        }
+        return [];
+      }
+      return [];
+    default:
+      return [];
+  }
+}
+
+/**
  * Convierte los archivos de Notion a nuestro formato MediaItem
  */
 function transformMediaItems(files: NotionFile[] = []): MediaItem[] {
@@ -287,8 +301,14 @@ function transformMediaItems(files: NotionFile[] = []): MediaItem[] {
       };
 
       if (type === 'video') {
-        item.videoType = determineVideoType(url) || 'vimeo';
+        const videoType = determineVideoType(url);
+        item.videoType = videoType;
         item.thumbnailUrl = '';
+        
+        // Procesar URL de Vimeo si es necesario
+        if (videoType === 'vimeo') {
+          item.url = processVimeoUrl(url);
+        }
       }
 
       return item;
@@ -313,11 +333,26 @@ function determineMediaType(url: string): 'image' | 'video' {
 /**
  * Determina el tipo de video
  */
-function determineVideoType(url: string): 'vimeo' | 'local' | undefined {
+function determineVideoType(url: string): 'vimeo' | 'local' {
   if (url.includes('vimeo.com')) {
     return 'vimeo';
   }
-  return undefined;
+  return 'local';
+}
+
+function processVimeoUrl(url: string): string {
+  // Si ya es un embed, devolverlo tal cual
+  if (url.includes('player.vimeo.com')) {
+    return url;
+  }
+  
+  // Convertir URL normal de Vimeo a URL de embed
+  const vimeoId = url.match(/vimeo\.com\/([0-9]+)/);
+  if (vimeoId && vimeoId[1]) {
+    return `https://player.vimeo.com/video/${vimeoId[1]}`;
+  }
+  
+  return url;
 }
 
 /**
@@ -344,54 +379,123 @@ export function transformNotionToCaseStudy(page: NotionPage): CaseStudy {
   };
   
   // Obtener las propiedades principales
-  const nameProperty = getPropertyItem('Name');
-  const clientProperty = getPropertyItem('Client');
-  const title = extractText(nameProperty);
-  const client = extractText(clientProperty);
+  const brandNameProperty = getPropertyItem('Brand Name');
+  const client = extractText(brandNameProperty) || '';
   
-  if (!title || !client) {
-    throw new Error('Título y cliente son requeridos');
+  if (!client) {
+    throw new Error('El nombre de la marca es requerido');
   }
   
-  // Validar y convertir tipos para las propiedades necesarias
+  // Obtener las propiedades de archivos
   let mediaItems: MediaItem[] = [];
-  const mediaItemsProperty = getPropertyItem('Media Items');
-  if (mediaItemsProperty && isFilesProperty(mediaItemsProperty)) {
-    mediaItems = transformMediaItems(mediaItemsProperty.files as NotionFile[]);
+  const imageProperties = [
+    'Cover',
+    'Avatar',
+    'Hero Image',
+    'Image [1]',
+    'Image [2]',
+    'Image [3]',
+    'Image [4]',
+    'Image [5]',
+    'Image [6] ',
+    'Image [7.1] square image',
+    'Image [7.2] square image',
+    'Image [8]',
+    'Image [9]',
+    'Image [10]',
+    'Image [11]',
+    'Image [12]'
+  ];
+
+  // Procesar todas las imágenes
+  for (const propertyName of imageProperties) {
+    const property = getPropertyItem(propertyName);
+    if (property && isFilesProperty(property)) {
+      const items = transformMediaItems(property.files as NotionFile[]);
+      // Añadir el nombre de la propiedad como alt para identificar el tipo de imagen
+      items.forEach(item => {
+        item.alt = propertyName;
+        // Marcar las imágenes de avatar
+        if (propertyName === 'Avatar') {
+          item.type = 'avatar';
+        }
+      });
+      mediaItems.push(...items);
+    }
   }
   
-  const descriptionProperty = getPropertyItem('Description');
-  const fullDescriptionProperty = getPropertyItem('Full Description');
-  const tagsProperty = getPropertyItem('Tags');
-  const orderProperty = getPropertyItem('Order');
-  const slugProperty = getPropertyItem('Slug');
-  const statusProperty = getPropertyItem('Status');
-  const featuredProperty = getPropertyItem('Featured');
-  const featuredOrderProperty = getPropertyItem('Featured Order');
-  const nextProjectProperty = getPropertyItem('Next Project');
+  // Obtener las URLs de videos
+  const video1Property = getPropertyItem('Video 1');
+  const video2Property = getPropertyItem('Video 2');
   
+  if (video1Property && isUrlProperty(video1Property) && video1Property.url) {
+    mediaItems.push({
+      type: 'video',
+      url: video1Property.url,
+      videoType: determineVideoType(video1Property.url),
+      alt: 'Video principal',
+      width: 0,
+      height: 0,
+      order: mediaItems.length
+    });
+  }
+  
+  if (video2Property && isUrlProperty(video2Property) && video2Property.url) {
+    mediaItems.push({
+      type: 'video',
+      url: video2Property.url,
+      videoType: determineVideoType(video2Property.url),
+      alt: 'Video secundario',
+      width: 0,
+      height: 0,
+      order: mediaItems.length
+    });
+  }
+  
+  // Obtener propiedades de texto
+  const descriptionProperty = getPropertyItem('Description');
+  const taglineProperty = getPropertyItem('Tagline');
+  const closingClaimProperty = getPropertyItem('Closing Claim');
+  const servicesProperty = getPropertyItem('Services');
+  const slugProperty = getPropertyItem('Slug');
+  const websiteProperty = getPropertyItem('Website');
+  
+  // Obtener el estado desde Notion
+  const statusProperty = getPropertyItem('Status');
+  const notionStatus = statusProperty && isSelectProperty(statusProperty) && statusProperty.select
+    ? statusProperty.select.name
+    : 'Sin empezar';
+  
+  // Solo publicar los que no estén "Sin empezar"
+  const status = notionStatus === 'Sin empezar' ? 'draft' : 'published';
+  // Solo marcar como sincronizado si está publicado
+  const synced = status === 'published';
+
+  // Obtener si está destacado
+  const highlightedProperty = getPropertyItem('Highlighted');
+  const featured = highlightedProperty && isCheckboxProperty(highlightedProperty)
+    ? highlightedProperty.checkbox
+    : false;
+
   const caseStudy: CaseStudy = {
     id: page.id,
-    title: title as string,
-    client: client as string,
-    description: descriptionProperty ? (extractText(descriptionProperty) as string) || '' : '',
-    description2: fullDescriptionProperty ? (extractText(fullDescriptionProperty) as string) || '' : '',
+    title: client,
+    client,
+    description: extractText(descriptionProperty) || '',
+    tagline: extractText(taglineProperty) || '',
+    closingClaim: extractText(closingClaimProperty) || '',
     mediaItems,
-    tags: tagsProperty && Array.isArray(extractText(tagsProperty)) 
-      ? extractText(tagsProperty) as string[]
-      : [],
-    order: orderProperty ? Number(extractText(orderProperty)) || 0 : 0,
-    slug: slugProperty ? (extractText(slugProperty) as string) || generateSlug(title as string) : generateSlug(title as string),
-    status: statusProperty ? ((extractText(statusProperty) as string) || 'draft') as 'draft' | 'published' : 'draft',
-    featured: featuredProperty && isCheckboxProperty(featuredProperty) ? featuredProperty.checkbox : false,
-    featuredOrder: featuredOrderProperty && isNumberProperty(featuredOrderProperty) ? featuredOrderProperty.number || 0 : 0,
-    createdAt: page.created_time || new Date().toISOString(),
-    updatedAt: page.last_edited_time || new Date().toISOString(),
+    tags: extractMultipleValues(servicesProperty),
+    order: 0,
+    slug: extractText(slugProperty) || generateSlug(client),
+    website: websiteProperty && isUrlProperty(websiteProperty) ? websiteProperty.url || undefined : undefined,
+    status,
+    featured,
+    featuredOrder: 0,
+    createdAt: page.created_time,
+    updatedAt: page.last_edited_time,
+    synced
   };
-  
-  if (nextProjectProperty && isRelationProperty(nextProjectProperty) && Array.isArray(nextProjectProperty.relation) && nextProjectProperty.relation.length > 0) {
-    caseStudy.nextProject = { slug: nextProjectProperty.relation[0].id };
-  }
   
   return caseStudy;
 }
@@ -410,29 +514,64 @@ const createRichText = (content: string = '') => ({
   rich_text: [{ text: { content } }]
 });
 
-export function transformCaseStudyToNotion(caseStudy: Partial<CaseStudy>) {
-  return {
-    Name: {
+export function transformCaseStudyToNotion(caseStudy: Partial<CaseStudy>): NonNullable<UpdatePageParameters['properties']> {
+  const properties: UpdatePageParameters['properties'] = {
+    'Brand Name': {
+      type: 'title',
       title: [{ text: { content: caseStudy.title || '' } }]
-    },
-    Client: createRichText(caseStudy.client),
-    Description: createRichText(caseStudy.description),
-    'Full Description': createRichText(caseStudy.description2),
-    Slug: createRichText(caseStudy.slug),
-    Status: {
-      select: { name: caseStudy.status || 'draft' }
-    },
-    Tags: {
-      multi_select: (caseStudy.tags || []).map(tag => ({ name: tag }))
-    },
-    Order: {
-      number: caseStudy.order || 0
-    },
-    Featured: {
-      checkbox: caseStudy.featured || false
-    },
-    'Featured Order': {
-      number: caseStudy.featuredOrder || 0
     }
   };
+
+  if (caseStudy.description) {
+    properties['Description'] = {
+      type: 'rich_text',
+      rich_text: [{ text: { content: caseStudy.description } }]
+    };
+  }
+
+  if (caseStudy.tagline) {
+    properties['Tagline'] = {
+      type: 'rich_text',
+      rich_text: [{ text: { content: caseStudy.tagline } }]
+    };
+  }
+
+  if (caseStudy.closingClaim) {
+    properties['Closing Claim'] = {
+      type: 'rich_text',
+      rich_text: [{ text: { content: caseStudy.closingClaim } }]
+    };
+  }
+
+  if (caseStudy.tags) {
+    properties['Services'] = {
+      type: 'multi_select',
+      multi_select: caseStudy.tags.map(service => ({ name: service }))
+    };
+  }
+
+  if (caseStudy.slug) {
+    properties['Slug'] = {
+      type: 'rich_text',
+      rich_text: [{ text: { content: caseStudy.slug } }]
+    };
+  }
+
+  if (caseStudy.website) {
+    properties['Website'] = {
+      type: 'url',
+      url: caseStudy.website
+    };
+  }
+
+  // Convertir el estado de la aplicación al estado de Notion
+  const notionStatus = caseStudy.status === 'published' ? 'En progreso' : 'Sin empezar';
+  properties['Status'] = {
+    type: 'select',
+    select: {
+      name: notionStatus
+    }
+  };
+
+  return properties;
 }

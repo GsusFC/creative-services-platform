@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import { getCaseStudyBySlug, getAllCaseStudies } from '@/lib/case-studies/service';
+import { NotionService } from '@/lib/notion/service';
 import CaseStudyContentContainer from '@/components/case-study/CaseStudyContentContainer';
 
 import './styles/typography.css';
@@ -23,10 +23,11 @@ function LoadingCaseStudy() {
 
 // Esto permite generar las páginas estáticas en build time
 export async function generateStaticParams() {
-  const caseStudies = await getAllCaseStudies();
+  const notionService = new NotionService();
+  const caseStudies = await notionService.getAllCaseStudies();
   return caseStudies
-    .filter(study => study.status === 'published')
-    .map(study => ({
+    .filter((study) => study.status === 'published')
+    .map((study) => ({
       slug: study.slug,
     }));
 }
@@ -41,7 +42,8 @@ export default async function CaseStudyPage({ params }: { params: { slug: string
   }
   
   try {
-    const caseStudy = await getCaseStudyBySlug(slugValue);
+    const notionService = new NotionService();
+    const caseStudy = await notionService.getCaseStudyBySlug(slugValue);
 
     if (!caseStudy || caseStudy.status !== 'published') {
       return notFound();

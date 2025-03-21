@@ -1,59 +1,68 @@
 import { CaseStudy } from '@/types/case-study';
-import { notion, getDatabase, getPage, updatePage } from './client';
+import { getAllCaseStudies as getDatabase, getCaseStudy as getPage, updateCaseStudy as updatePage } from './client';
 import { transformNotionToCaseStudy, transformCaseStudyToNotion } from './transformer';
+import { notion } from './notion-client';
+import { isFullPage } from '@notionhq/client';
 
 export class NotionService {
+  /**
+   * Crea un nuevo case study
+   */
+  async createCaseStudy(data: Partial<CaseStudy>): Promise<CaseStudy> {
+    const properties = transformCaseStudyToNotion(data);
+    const response = await notion.pages.create({
+      parent: { database_id: process.env['NOTION_DATABASE_ID']! },
+      properties: properties || {}
+    });
+    
+    if (!isFullPage(response)) {
+      throw new Error('Invalid response from Notion');
+    }
+    
+    return transformNotionToCaseStudy(response);
+  }
+
+  /**
+   * Elimina un case study
+   */
+  async deleteCaseStudy(id: string): Promise<void> {
+    await notion.pages.update({
+      page_id: id,
+      archived: true
+    });
+  }
+
+
   /**
    * Obtiene todos los case studies
    */
   async getAllCaseStudies(): Promise<CaseStudy[]> {
-    const response = await getDatabase();
-    if (!response) return [];
-    
-    return response.results.map(page => transformNotionToCaseStudy(page));
+    return await getDatabase();
   }
 
   /**
    * Obtiene un case study por su slug
    */
   async getCaseStudyBySlug(slug: string): Promise<CaseStudy | null> {
-    const response = await getDatabase();
-    if (!response) return null;
-
-    const page = response.results.find(
-      page => transformNotionToCaseStudy(page).slug === slug
-    );
-
-    return page ? transformNotionToCaseStudy(page) : null;
+    const studies = await getDatabase();
+    return studies.find(study => study.slug === slug) || null;
   }
 
   /**
    * Obtiene los case studies destacados
    */
   async getFeaturedCaseStudies(): Promise<CaseStudy[]> {
-    const response = await getDatabase();
-    if (!response) return [];
-
-    const featured = response.results
-      .map(page => transformNotionToCaseStudy(page))
+    const studies = await getDatabase();
+    return studies
       .filter(study => study.featured)
       .sort((a, b) => (a.featuredOrder || 0) - (b.featuredOrder || 0));
-
-    return featured;
   }
 
   /**
    * Actualiza un case study
    */
   async updateCaseStudy(id: string, data: Partial<CaseStudy>): Promise<CaseStudy> {
-    const notionProperties = transformCaseStudyToNotion(data);
-    const response = await updatePage(id, notionProperties);
-    
-    if (!response) {
-      throw new Error('Failed to update case study in Notion');
-    }
-
-    return transformNotionToCaseStudy(response);
+    return await updatePage({ id, ...data });
   }
 
   /**

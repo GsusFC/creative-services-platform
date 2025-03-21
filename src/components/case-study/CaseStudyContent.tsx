@@ -57,7 +57,7 @@ const CaseStudyContent = memo<CaseStudyContentProps>(({
         whileInView={galleryAnimation.whileInView}
         viewport={{ once: true }}
         transition={{ ...galleryAnimation.transition, delay: index * 0.1 }}
-        className={`relative ${isFirstAndMany ? 'md:col-span-2' : ''}`}
+        className="relative w-full"
       >
         <div className="aspect-video relative">
           <Image 
@@ -83,7 +83,7 @@ const CaseStudyContent = memo<CaseStudyContentProps>(({
         className="relative w-full"
       >
         {video.videoType === 'vimeo' ? (
-          <div className="aspect-video">
+          <div className="aspect-video bg-zinc-900 rounded-lg overflow-hidden">
             <iframe
               src={video.url}
               title={`${caseStudy.title} - Video ${index + 1}`}
@@ -91,16 +91,35 @@ const CaseStudyContent = memo<CaseStudyContentProps>(({
               frameBorder="0"
               allow="autoplay; fullscreen; picture-in-picture"
               allowFullScreen
+              loading="lazy"
+              onError={(e) => {
+                const target = e.target as HTMLIFrameElement;
+                target.style.display = 'none';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'w-full h-full flex items-center justify-center text-white/50';
+                errorDiv.textContent = 'Error al cargar el video';
+                target.parentElement?.appendChild(errorDiv);
+              }}
             />
           </div>
         ) : (
-          <div className="aspect-video">
+          <div className="aspect-video bg-zinc-900 rounded-lg overflow-hidden">
             <video
               src={video.url}
               poster={video.thumbnailUrl}
               controls
+              playsInline
+              preload="metadata"
               aria-label={`${caseStudy.title} - Video ${index + 1}`}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                const target = e.target as HTMLVideoElement;
+                target.style.display = 'none';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'w-full h-full flex items-center justify-center text-white/50';
+                errorDiv.textContent = 'Error al cargar el video';
+                target.parentElement?.appendChild(errorDiv);
+              }}
             />
           </div>
         )}
@@ -115,6 +134,16 @@ const CaseStudyContent = memo<CaseStudyContentProps>(({
         className="relative w-full h-screen"
         aria-label={caseStudyConfig.a11y.heroSection}
       >
+        {/* Hero Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+          <motion.div
+            {...scrollIndicatorAnimation}
+            className="flex flex-col items-center text-white/60"
+          >
+            <div className="w-px h-16 bg-white/20 mb-4"></div>
+            <span className="text-sm tracking-widest uppercase">Scroll</span>
+          </motion.div>
+        </div>
         {/* Hero media (imagen o video) */}
         <div className="absolute inset-0 z-0">
           {heroVideo ? (
@@ -136,7 +165,7 @@ const CaseStudyContent = memo<CaseStudyContentProps>(({
               className="object-cover"
             />
           )}
-          <div className="absolute inset-0 bg-black/50 z-10" aria-hidden="true" />
+
         </div>
         
         {/* Overlay con flecha de scroll down */}
@@ -199,7 +228,7 @@ const CaseStudyContent = memo<CaseStudyContentProps>(({
                 transition={contentAnimation.transition}
               >
                 {/* Descripción larga */}
-                {renderParagraphs(caseStudy.description2)}
+                {renderParagraphs(caseStudy.description)}
                 
                 {/* Línea divisoria */}
                 <div className="border-t border-white/20 my-10 pt-6" aria-hidden="true"></div>
@@ -220,10 +249,12 @@ const CaseStudyContent = memo<CaseStudyContentProps>(({
           className="bg-black w-full pt-0 pb-24"
           aria-label={caseStudyConfig.a11y.gallerySection}
         >
-          <div className="px-16 w-full">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              {galleryImages.map((item, index) => 
-                renderGalleryItem(item, index, galleryImages.length)
+          <div className="w-full">
+            <div className="grid grid-cols-1 gap-12">
+              {galleryImages
+                .filter(item => item.type !== 'avatar')
+                .map((item, index) => 
+                  renderGalleryItem(item, index, galleryImages.length)
               )}
             </div>
           </div>
@@ -237,9 +268,26 @@ const CaseStudyContent = memo<CaseStudyContentProps>(({
           aria-label={caseStudyConfig.a11y.videosSection}
         >
           <div className="px-16 w-full">
-            <div className="grid grid-cols-1 gap-20">
+            <div className="grid grid-cols-1 gap-12">
               {videos.map((video, index) => renderVideoItem(video, index))}
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* Closing Claim Section */}
+      {caseStudy.closingClaim && (
+        <section className="bg-black w-full py-32">
+          <div className="max-w-4xl mx-auto px-6 text-center">
+            <motion.p
+              className="text-3xl md:text-4xl font-light leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              {caseStudy.closingClaim}
+            </motion.p>
           </div>
         </section>
       )}

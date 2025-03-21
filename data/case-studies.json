@@ -1,0 +1,199 @@
+[
+  {
+    "id": "137a44dc-3505-8037-a0aa-f3ce17af874d",
+    "title": "Build",
+    "client": "Build",
+    "description": "This project is the refreshment of the visual identity of BUILD, a brand native to the Farcaster ecosystem.\n\nConceived and built as an open system for the community where the remanence of a retro style based on repetition and error as a source of improvement inspired by the first operating systems of the 80‘s and 90’s is anchored as the core of the visual identity. It is also open source, as the philosophy of the BUILD ecosystem and the community is intended to be a Public Good.\n\nThe new web page is an exercise of how the visual system can be transferred and applied to any digital product in a scalable way.",
+    "tagline": "Embrace error as Public Good",
+    "closingClaim": "Design to bring more builders onchain",
+    "mediaItems": [
+      {
+        "type": "image",
+        "url": "/case-studies/build/z7rBgdCNKvZOUU3O835jN53efuU.jpeg",
+        "alt": "Cover",
+        "width": 0,
+        "height": 0,
+        "order": 0,
+        "displayMode": "single"
+      },
+      {
+        "type": "avatar",
+        "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/a80b79ac-f061-41d5-8c06-6e5c6d00f6f8/e08673e1-e7f2-4da8-bf8c-eb19ee9da820/NUN2xBFLOthPZ55VAIIIjKaVoJ0.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666OAM5JGP%2F20250321%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250321T185144Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEFMaCXVzLXdlc3QtMiJHMEUCIEgEj12Ms8COhWvpCe%2B99tL3S8DzTL7rq2pPCTFOAM7JAiEAwrH4%2BtlhG4vQUo4CPTQryKwR%2BCrggVOb26JxQgxS%2BgoqiAQIq%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDOe%2F9IuXhIRwo%2BPuGSrcA1vUEt26bwpWKvaH7pNk%2FpeIPFHKSfBmMZM6IDxwaVclIEvAqfN3QJLtlku%2Fh6%2BN7NxkLSvIppEKJpXrma1bMAyxBaZ12EjhdjcmD9kuM4M3kxTcS%2BHY%2BJyFRUP7cBDV4JZgMy%2BBAx8Q%2FKHfVt2kr3R0MmkbBMSQoX%2BsR3Tl%2BKp1IXGIbPd%2BEL%2FPlSRqONIKbp1Ph0SO5Ot05RrHJ3PZD%2BPZXEXsT7DWR4SIoqd4KwvzZFZR7SIggI9LKa43Gcjhr8uAb1bHfdqDLykwxc9SowOFihlCdqeXJ01bLb8QVKPFHbGhNGdAA8K5v1%2BCr1z2XQiHco4Z3wE1iShut3tLn3pzb2dl9DtDh6%2FcG6K4dV%2FUpF8Jd3xGUeaaQZt3pdb6kZDfAoFmp%2BWLnCkxEE02bGEKReuXQnyPuprBoMabdZ%2FrIWD7qTTSlmWwywe%2FJMPBRwlSMkvHRKYhZHKULAEErS6s125YaNBBxVUGsUvV6OfcV8C1NWIitwkhlncbqnGLGAAsF8wNaeJcdwUNGCvkenO%2BjrBIpGR%2BgjlUq7k%2FMYzWCnMgBxijw4zQU4lFyq07qBNilIz6uS4H9s0AV362VClX5%2F3PqbXCEQcVKa17SwYraM%2Fv9tputhSG9EFaMInc9r4GOqUBvzA5BSc9rhwhCf30h3PkZBoyrP7fIOsmPooGnDo58i6NYEcgYkNBElW81l0he8firJwhcNO68%2BKLIltDavOJ5EfkF3VkgdHrNsy0z%2FT%2BvGX5EcPAe%2BB9lkrth6wBev5M4%2F5r9YM5o9cbFWFQ%2Btr6P4PnsiSIP7OeVJD1CQoKU9KsUa7cazzHW%2BdMgRSvFOfdiZTZZKW6UDBBTbE6TCCyZ3ImTr%2Bt&X-Amz-Signature=d79b13ca7fcefa5cb048af93d7fa11b26f072ed28d9453b9f802247a4b552e29&X-Amz-SignedHeaders=host&x-id=GetObject",
+        "alt": "Avatar",
+        "width": 0,
+        "height": 0,
+        "order": 0,
+        "displayMode": "single"
+      },
+      {
+        "type": "image",
+        "url": "/case-studies/build/build-hero.webp",
+        "alt": "Hero Image",
+        "width": 0,
+        "height": 0,
+        "order": 0,
+        "displayMode": "single"
+      },
+      {
+        "type": "image",
+        "url": "/case-studies/build/Y6965chUnfujprfhBU0uP7j4.webp",
+        "alt": "Image [1]",
+        "width": 0,
+        "height": 0,
+        "order": 0,
+        "displayMode": "single"
+      },
+      {
+        "type": "image",
+        "url": "/case-studies/build/LcC4Fd4SztZorbCO3isX0OF4hk.webp",
+        "alt": "Image [2]",
+        "width": 0,
+        "height": 0,
+        "order": 0,
+        "displayMode": "single"
+      },
+      {
+        "type": "image",
+        "url": "/case-studies/build/sJBbfQk06s2Lgtneq6jFpLryQI.webp",
+        "alt": "Image [3]",
+        "width": 0,
+        "height": 0,
+        "order": 0,
+        "displayMode": "single"
+      },
+      {
+        "type": "image",
+        "url": "/case-studies/build/zuZlRmAW9NPAc5q3eReMUg5bek.webp",
+        "alt": "Image [4]",
+        "width": 0,
+        "height": 0,
+        "order": 0,
+        "displayMode": "single"
+      },
+      {
+        "type": "image",
+        "url": "/case-studies/build/1.gif",
+        "alt": "Image [5]",
+        "width": 0,
+        "height": 0,
+        "order": 0,
+        "displayMode": "single"
+      },
+      {
+        "type": "image",
+        "url": "/case-studies/build/yCjSxgTZrQnLYOTuMdo2gccPbTo.webp",
+        "alt": "Image [6] ",
+        "width": 0,
+        "height": 0,
+        "order": 0,
+        "displayMode": "single"
+      },
+      {
+        "type": "image",
+        "url": "/case-studies/build/0DPGHRdyhACE5I5UKj8yGfmGNek_%281%29.webp",
+        "alt": "Image [9]",
+        "width": 0,
+        "height": 0,
+        "order": 0,
+        "displayMode": "single"
+      },
+      {
+        "type": "image",
+        "url": "/case-studies/build/TzmTzsAWdX8DwrSReguTLsA8k.webp",
+        "alt": "Image [10]",
+        "width": 0,
+        "height": 0,
+        "order": 0,
+        "displayMode": "single"
+      },
+      {
+        "type": "image",
+        "url": "/case-studies/build/dvgkRCEy9nf1WjiotSYjryxFLq0.webp",
+        "alt": "Image [11]",
+        "width": 0,
+        "height": 0,
+        "order": 0,
+        "displayMode": "single"
+      },
+      {
+        "type": "image",
+        "url": "/case-studies/build/fdhu2swySyTWQIlhV1V1h3pkBU.jpeg",
+        "alt": "Image [12]",
+        "width": 0,
+        "height": 0,
+        "order": 0,
+        "displayMode": "single"
+      },
+      {
+        "type": "video",
+        "url": "https://vimeo.com/1055964106",
+        "videoType": "vimeo",
+        "alt": "Video principal",
+        "width": 0,
+        "height": 0,
+        "order": 13
+      }
+    ],
+    "tags": [
+      "motion graphics",
+      "branding refresh",
+      "ux/ui"
+    ],
+    "order": 0,
+    "slug": "build",
+    "website": "build.top",
+    "status": "published",
+    "featured": false,
+    "featuredOrder": 0,
+    "createdAt": "2024-11-07T09:21:00.000Z",
+    "updatedAt": "2025-03-21T15:06:00.000Z",
+    "synced": true
+  },
+  {
+    "id": "2e5b4dfc-7eba-4063-aed4-99f64c2b7c2b",
+    "title": "BYN",
+    "client": "BYN",
+    "description": "",
+    "tagline": "",
+    "closingClaim": "",
+    "mediaItems": [],
+    "tags": [
+      "web2.5",
+      "branding",
+      "ux/ui",
+      "community"
+    ],
+    "order": 0,
+    "slug": "byn",
+    "website": "https://www.byn.xyz/",
+    "status": "draft",
+    "featured": false,
+    "featuredOrder": 0,
+    "createdAt": "2023-04-11T15:43:00.000Z",
+    "updatedAt": "2025-03-21T14:57:00.000Z",
+    "synced": false
+  },
+  {
+    "id": "f4d575d6-8158-4508-84cf-83803cb066f1",
+    "title": "Tutellus",
+    "client": "Tutellus",
+    "description": "Tutellus is a startup that began over 10 years ago with the mission to change the way we learn. It was one of the first companies to recognize the power of Web3 to empower users and reward the efforts of both teachers and students through the TUT token. Its evolution and exploration across all aspects of the crypto ecosystem has expanded its different business models. As a result, they were no longer just a learning platform and had to embark on a new journey to reconnect with themselves and their community through brand strategy.",
+    "tagline": "Your best travel companion",
+    "closingClaim": "",
+    "mediaItems": [],
+    "tags": [
+      "branding",
+      "ux/ui",
+      "web3"
+    ],
+    "order": 0,
+    "slug": "tutellus",
+    "website": "https://www.tutellus.com/",
+    "status": "published",
+    "featured": false,
+    "featuredOrder": 0,
+    "createdAt": "2022-12-20T08:39:00.000Z",
+    "updatedAt": "2025-03-21T14:57:00.000Z",
+    "synced": true
+  }
+]
