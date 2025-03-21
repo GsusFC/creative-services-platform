@@ -1,5 +1,20 @@
 /* animations.css - Animaciones y transiciones */
 
+/* Animación del slider de logos */
+@keyframes slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-slide {
+  animation: slide var(--animation-duration, 40s) linear infinite;
+  will-change: transform;
+}
+
 /* Estilos para el efecto de gradient border */
 .gradient-card-hover {
   position: relative;

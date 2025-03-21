@@ -67,7 +67,28 @@ export const useCaseStudies = () => {
   };
 
   // Usar el hook de gestión de estudios
-  const { studies } = useCaseStudyManager();
+  const { studies, updateStudy } = useCaseStudyManager();
+
+  // Sincronizar con Notion al montar el componente
+  useEffect(() => {
+    const syncWithNotion = async () => {
+      try {
+        const response = await fetch('/api/notion');
+        if (!response.ok) throw new Error('Error al sincronizar con Notion');
+        
+        const { studies: notionStudies } = await response.json();
+        
+        // Actualizar estudios locales con datos de Notion
+        notionStudies.forEach((study: any) => {
+          updateStudy(study);
+        });
+      } catch (error) {
+        console.error('Error sincronizando con Notion:', error);
+      }
+    };
+
+    syncWithNotion();
+  }, []); // Solo al montar el componente
 
   // Actualizar los casos destacados cuando cambien los estudios
   useEffect(() => {

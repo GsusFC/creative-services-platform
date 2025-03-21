@@ -9,15 +9,15 @@ export interface Logo {
 export const logosConfig = {
   // Configuración de imágenes
   imageConfig: {
-    width: 112,
-    height: 112,
-    className: "h-24 sm:h-32 md:h-28 w-auto md:opacity-50 md:hover:opacity-100 opacity-100 transition-duration-300"
+    width: 2160,
+    height: 2160,
+    className: "h-96 sm:h-[28rem] md:h-[32rem] w-auto opacity-100 transition-duration-300"
   },
   // Configuración de animación
   animationConfig: {
-    speed: 40, // segundos para completar un ciclo
+    speed: 60, // segundos para completar un ciclo
     pauseOnHover: true,
-    spacing: 'space-x-8 sm:space-x-16'
+    spacing: 'space-x-24 sm:space-x-40'
   },
   // Configuración de accesibilidad
   a11y: {
