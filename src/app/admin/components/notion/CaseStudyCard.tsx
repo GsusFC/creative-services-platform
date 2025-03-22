@@ -5,20 +5,20 @@ import { CaseStudy } from '@/types/case-study'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Pencil, Trash2 } from 'lucide-react'
 
-type Status = 'draft' | 'in progress' | 'published'
+type CardState = 'synced' | 'edited' | 'published'
 
-const STATUS_STYLES: Record<Status, { bg: string; text: string; border: string; dot: string }> = {
-  draft: {
-    bg: 'bg-yellow-500/10',
-    text: 'text-yellow-500',
-    border: 'border-yellow-500/20',
-    dot: 'bg-yellow-500'
+const STATE_STYLES: Record<CardState, { bg: string; text: string; border: string; dot: string }> = {
+  synced: {
+    bg: 'bg-[#ff0000]/10',
+    text: 'text-[#ff0000]',
+    border: 'border-[#ff0000]/20',
+    dot: 'bg-[#ff0000]'
   },
-  'in progress': {
-    bg: 'bg-blue-500/10',
-    text: 'text-blue-500',
-    border: 'border-blue-500/20',
-    dot: 'bg-blue-500'
+  edited: {
+    bg: 'bg-[#0000ff]/10',
+    text: 'text-[#0000ff]',
+    border: 'border-[#0000ff]/20',
+    dot: 'bg-[#0000ff]'
   },
   published: {
     bg: 'bg-[#00ff00]/10',
@@ -52,8 +52,21 @@ export function CaseStudyCard({
   synced = false
 }: CaseStudyCardProps) {
   const router = useRouter()
-  const status = (study.status?.toLowerCase() as Status) || 'draft'
-  const styles = STATUS_STYLES[status]
+  const getCardState = (study: CaseStudy): CardState => {
+    if (study.status === 'published') {
+      return 'published'
+    }
+    
+    // Si ha sido editado (tiene cambios locales)
+    if (study.updatedAt !== study.createdAt) {
+      return 'edited'
+    }
+    
+    return 'synced'
+  }
+
+  const state = getCardState(study)
+  const styles = STATE_STYLES[state]
 
   const handleCardClick = () => {
     if (synced) {

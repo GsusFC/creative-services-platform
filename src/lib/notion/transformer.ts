@@ -380,11 +380,15 @@ export function transformNotionToCaseStudy(page: NotionPage): CaseStudy {
   
   // Obtener las propiedades principales
   const brandNameProperty = getPropertyItem('Brand Name');
-  const client = extractText(brandNameProperty) || '';
+  const brandName = extractText(brandNameProperty) || '';
   
-  if (!client) {
+  if (!brandName) {
     throw new Error('El nombre de la marca es requerido');
   }
+  
+  // Usar el nombre exacto de Notion para el título y cliente
+  const title = page.properties['Brand Name']?.title?.[0]?.plain_text || brandName;
+  const client = title; // El cliente es el mismo que el título
   
   // Obtener las propiedades de archivos
   let mediaItems: MediaItem[] = [];
@@ -464,10 +468,10 @@ export function transformNotionToCaseStudy(page: NotionPage): CaseStudy {
   const statusProperty = getPropertyItem('Status');
   const notionStatus = statusProperty && isSelectProperty(statusProperty) && statusProperty.select
     ? statusProperty.select.name
-    : 'Sin empezar';
+    : page.status || 'Sin empezar';
   
-  // Solo publicar los que no estén "Sin empezar"
-  const status = notionStatus === 'Sin empezar' ? 'draft' : 'published';
+  // Solo publicar los que estén "Listo"
+  const status = notionStatus === 'Listo' ? 'published' : 'draft';
   // Solo marcar como sincronizado si está publicado
   const synced = status === 'published';
 
@@ -479,8 +483,8 @@ export function transformNotionToCaseStudy(page: NotionPage): CaseStudy {
 
   const caseStudy: CaseStudy = {
     id: page.id,
-    title: client,
-    client,
+    title,
+    client: title,
     description: extractText(descriptionProperty) || '',
     tagline: extractText(taglineProperty) || '',
     closingClaim: extractText(closingClaimProperty) || '',

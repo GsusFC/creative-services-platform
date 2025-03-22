@@ -1,0 +1,10 @@
+
+78
+79
+80 try <
+const response = await fetch('/api/notion' );
+if (!response.ok) throw new Error('Error al sincronizar con Notion');
+
+npm run dev
+npm run dev
+npm install

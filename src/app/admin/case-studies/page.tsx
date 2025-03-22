@@ -75,8 +75,24 @@ export default function CaseStudiesAdmin() {
     }
   }
 
+  // Efecto para sincronizar al cargar
+  useEffect(() => {
+    console.log('[Debug] CaseStudiesAdmin - Iniciando sincronización inicial')
+    const initialSync = async () => {
+      try {
+        console.log('[Debug] CaseStudiesAdmin - Llamando a handleSyncAll')
+        await handleSyncAll();
+        console.log('[Debug] CaseStudiesAdmin - Sincronización completada')
+      } catch (error) {
+        console.error('[Debug] CaseStudiesAdmin - Error en sincronización inicial:', error);
+      }
+    };
+    initialSync();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Omitimos handleSyncAll intencionalmente para evitar bucles
+
   return (
-    <div className="flex min-h-[calc(100vh-80px)] gap-6 px-6 pb-6 pt-[96px] bg-gray-950">
+    <div className="min-h-[calc(100vh-80px)] p-6 pt-[96px] bg-gray-950">
       {/* Mensaje de error */}
       {error && (
         <Alert variant="destructive" className="absolute top-6 right-6 w-auto">
@@ -84,102 +100,65 @@ export default function CaseStudiesAdmin() {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-        {/* Panel Notion - 30% */}
-        <section className="w-[30%] space-y-4 border-r border-white/10 pr-6">
-          <header className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-white">
-              Notion Case Studies ({filteredPendingStudies.length})
-            </h2>
-            <Button
-              variant="outline"
-              className="border-white/20 text-white hover:bg-white/10 hover:text-white"
-              size="sm"
-              onClick={handleSyncAll}
-              disabled={syncStatus.state === 'syncing'}
-            >
-              <RefreshCw className={`w-4 h-4 mr-2 ${syncStatus.state === 'syncing' ? 'animate-spin' : ''}`} />
-              {syncStatus.state === 'syncing' ? 'Syncing...' : 'Sync All'}
-            </Button>
-          </header>
 
-          <div className="relative">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-white/40" />
-            <Input
-              placeholder="Search in Notion..."
-              value={notionSearch}
-              onChange={(e) => setNotionSearch(e.target.value)}
-              className="pl-8 bg-white/5 border-white/10 text-white placeholder:text-white/40"
+      {/* Header */}
+      <header className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold text-white">
+          Case Studies ({filteredSyncedStudies.length})
+        </h2>
+        <div className="flex gap-4">
+          <Button
+            variant="outline"
+            className="border-white/20 text-white hover:bg-white/10 hover:text-white"
+            onClick={handleSyncAll}
+            disabled={syncStatus.state === 'syncing'}
+          >
+            <RefreshCw className={`w-4 h-4 mr-2 ${syncStatus.state === 'syncing' ? 'animate-spin' : ''}`} />
+            {syncStatus.state === 'syncing' ? 'Syncing...' : 'Sync All'}
+          </Button>
+          <Button
+            className="bg-[#00ff00]/10 text-[#00ff00] hover:bg-[#00ff00]/20 border-0"
+          >
+            <PlusCircle className="w-4 h-4 mr-2" />
+            Create New
+          </Button>
+        </div>
+      </header>
+
+      {/* Buscador */}
+      <div className="relative mb-6">
+        <Search className="absolute left-2 top-2.5 h-4 w-4 text-white/40" />
+        <Input
+          placeholder="Search case studies..."
+          value={projectsSearch}
+          onChange={(e) => setProjectsSearch(e.target.value)}
+          className="pl-8 bg-white/5 border-white/10 text-white placeholder:text-white/40"
+        />
+      </div>
+
+      {/* Grid de Case Studies */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredSyncedStudies.length === 0 ? (
+          <div className="col-span-full text-center py-8 text-white/40">
+            {syncStatus.state === 'syncing' ? 
+              'Sincronizando estudios...' : 
+              'No hay case studies disponibles'
+            }
+          </div>
+        ) : (
+          filteredSyncedStudies.map(study => (
+            <CaseStudyCard
+              key={study.id}
+              study={study}
+              showActions
+              onEdit={handleEdit}
+              onDelete={(study) => removeStudy(study.id)}
+              onPublish={(study) => study.status === 'draft' ? publishStudy(study.id) : unpublishStudy(study.id)}
+              onFeature={(study) => toggleFeatured(study.id)}
             />
-          </div>
-
-          <div className="space-y-2">
-            {filteredPendingStudies.length === 0 ? (
-              <div className="text-center py-8 text-white/40">
-                {syncStatus.state === 'syncing' ? (
-                  'Sincronizando estudios...'
-                ) : (
-                  'No hay estudios pendientes de sincronizar'
-                )}
-              </div>
-            ) : (
-              filteredPendingStudies.map(study => (
-                <CaseStudyCard
-                  key={study.id}
-                  study={study}
-                  onMoveToSynced={handleMoveToSynced}
-                  synced={false}
-                />
-              ))
-            )}
-          </div>
-        </section>
-
-        {/* Panel Proyectos - 70% */}
-        <section className="w-[70%] space-y-4">
-          <header className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-white">
-              Synced Projects ({filteredSyncedStudies.length})
-            </h2>
-            <Button
-              className="bg-[#00ff00]/10 text-[#00ff00] hover:bg-[#00ff00]/20 border-0"
-            >
-              <PlusCircle className="w-4 h-4 mr-2" />
-              Create New
-            </Button>
-          </header>
-
-          <div className="relative">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-white/40" />
-            <Input
-              placeholder="Search projects..."
-              value={projectsSearch}
-              onChange={(e) => setProjectsSearch(e.target.value)}
-              className="pl-8 bg-white/5 border-white/10 text-white placeholder:text-white/40"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            {filteredSyncedStudies.length === 0 ? (
-              <div className="col-span-2 text-center py-8 text-white/40">
-                No hay proyectos sincronizados
-              </div>
-            ) : (
-              filteredSyncedStudies.map(study => (
-                <CaseStudyCard
-                  key={study.id}
-                  study={study}
-                  showActions
-                  synced={true}
-                  onEdit={handleEdit}
-                  onDelete={(study) => removeStudy(study.id)}
-                  onPublish={(study) => study.status === 'draft' ? publishStudy(study.id) : unpublishStudy(study.id)}
-                  onFeature={(study) => toggleFeatured(study.id)}
-                />
-              ))
-            )}
-          </div>
-        </section>
-
+          ))
+        )}
+      </div>
     </div>
   )
 }

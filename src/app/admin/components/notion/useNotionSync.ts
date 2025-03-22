@@ -45,11 +45,29 @@ export function useNotionSync(): UseNotionSyncReturn {
 
   // Cargar estudios de Notion
   const loadNotionStudies = useCallback(async (): Promise<void> => {
-    // Solo cargar si es el montaje inicial o se fuerza la recarga
-    if (!isInitialMount.current) return
+    // Evitar cargas múltiples
+    if (loadedRef.current || syncStatus.isLoading) {
+      return
+    }
+    
+    loadedRef.current = true
+    
+    console.log('[Debug] loadNotionStudies - Estado inicial:', {
+      isInitialMount: isInitialMount.current,
+      loadedRef: loadedRef.current,
+      syncStatus,
+      pendingStudiesCount: pendingStudies.length,
+      syncedStudiesCount: syncedStudies.length
+    })
     try {
       setSyncStatus(prev => ({ ...prev, state: 'loading', isLoading: true }))
+      console.log('[Debug] loadNotionStudies - Iniciando fetchNotionStudies')
       const { studies, error: fetchError } = await fetchNotionStudies()
+      console.log('[Debug] loadNotionStudies - Resultado:', {
+        studiesCount: studies.length,
+        hasError: !!fetchError,
+        error: fetchError
+      })
       
       if (fetchError) {
         setSyncStatus(prev => ({
@@ -104,14 +122,11 @@ export function useNotionSync(): UseNotionSyncReturn {
         error: 'Error al cargar los estudios de Notion'
       }))
     }
-  }, [addStudy, syncedStudies])
+  }, [addStudy, syncedStudies, pendingStudies.length, syncStatus])
 
   // Cargar estudios al montar el componente
   useEffect(() => {
-    if (!loadedRef.current) {
-      loadedRef.current = true
-      loadNotionStudies()
-    }
+    loadNotionStudies()
   }, [loadNotionStudies]) // Incluimos loadNotionStudies como dependencia
 
   const handleSyncSingle = useCallback(async (study: CaseStudy) => {
@@ -152,7 +167,7 @@ export function useNotionSync(): UseNotionSyncReturn {
         error: 'Error al sincronizar el estudio'
       }))
     }
-  }, [addStudy])
+  }, [addStudy, pendingStudies.length, syncStatus])
 
   const handleSyncAll = useCallback(async () => {
     try {
@@ -187,7 +202,7 @@ export function useNotionSync(): UseNotionSyncReturn {
         error: 'Error al sincronizar los estudios'
       }))
     }
-  }, [loadNotionStudies])
+  }, [loadNotionStudies, pendingStudies.length, syncStatus])
 
   const formatLastSync = useCallback((date: string | null) => {
     if (!date) return 'Nunca'
@@ -207,4 +222,3 @@ export function useNotionSync(): UseNotionSyncReturn {
     setPendingStudies
   }
 }
-

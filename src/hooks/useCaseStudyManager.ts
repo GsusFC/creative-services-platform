@@ -2,16 +2,17 @@
 
 import { useState, useEffect } from 'react'
 import { CaseStudy } from '@/types/case-study'
-import { syncStudyWithNotion } from '@/services/notion-sync'
+
 
 const STORAGE_KEY = 'syncedStudies'
-const MAX_FEATURED = 4
+const MAX_FEATURED = 999
 
 export interface UseCaseStudyManagerReturn {
   studies: CaseStudy[]
   featuredStudies: CaseStudy[]
   publishedStudies: CaseStudy[]
   draftStudies: CaseStudy[]
+  unsyncedStudies: CaseStudy[]
   addStudy: (study: CaseStudy) => void
   updateStudy: (study: CaseStudy) => void
   removeStudy: (id: string) => void
@@ -27,15 +28,24 @@ export function useCaseStudyManager(): UseCaseStudyManagerReturn {
   const [studies, setStudies] = useState<CaseStudy[]>(() => {
     if (typeof window === 'undefined') return []
     try {
+      console.log('[Debug] useCaseStudyManager - Cargando estudios iniciales')
       const saved = localStorage.getItem(STORAGE_KEY)
-      if (!saved) return []
+      if (!saved) {
+        console.log('[Debug] useCaseStudyManager - No hay estudios guardados')
+        return []
+      }
       const parsed = JSON.parse(saved)
-      return Array.isArray(parsed) ? parsed.map(study => ({
+      const initialStudies = Array.isArray(parsed) ? parsed.map(study => ({
         ...study,
-        synced: study.synced || false,
+
         status: study.status || 'draft',
         featured: study.featured || false
       })) : []
+      console.log('[Debug] useCaseStudyManager - Estudios cargados:', {
+        count: initialStudies.length,
+        titles: initialStudies.map(s => s.title)
+      })
+      return initialStudies
     } catch (error) {
       console.error('Error loading initial studies:', error)
       return []
@@ -53,7 +63,7 @@ export function useCaseStudyManager(): UseCaseStudyManagerReturn {
         // Asegurarnos de que todos los estudios cargados mantengan su estado de sincronización
         const updatedStudies = validStudies.map(study => ({
           ...study,
-          synced: study.synced || false,
+  
           status: study.status || 'draft',
           featured: study.featured || false
         }))
@@ -66,7 +76,7 @@ export function useCaseStudyManager(): UseCaseStudyManagerReturn {
     }
   }
 
-  // Recargar estudios cuando el componente se monta y cuando cambia la ruta
+  // Sincronizar con Notion y recargar estudios cuando el componente se monta
   useEffect(() => {
     if (typeof window === 'undefined') return
 
@@ -82,11 +92,30 @@ export function useCaseStudyManager(): UseCaseStudyManagerReturn {
       loadStudiesFromStorage()
     }
 
+    const syncWithNotion = async () => {
+      try {
+        console.log('Sincronizando con Notion...')
+        const response = await fetch('/api/notion')
+        if (!response.ok) throw new Error('Error al sincronizar con Notion')
+        const data = await response.json()
+        if (data.studies) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data.studies))
+          setStudies(data.studies)
+          console.log('Sincronización con Notion completada:', {
+            count: data.studies.length,
+            titles: data.studies.map((s: CaseStudy) => s.title)
+          })
+        }
+      } catch (error) {
+        console.error('Error sincronizando con Notion:', error)
+      }
+    }
+
     window.addEventListener('storage', handleStorageChange)
     window.addEventListener('popstate', handleRouteChange)
     
-    // Carga inicial
-    loadStudiesFromStorage()
+    // Sincronizar con Notion y luego cargar del storage
+    syncWithNotion()
 
     return () => {
       window.removeEventListener('storage', handleStorageChange)
@@ -102,8 +131,8 @@ export function useCaseStudyManager(): UseCaseStudyManagerReturn {
 
   // Estudios filtrados
   const featuredStudies = studies
-    .filter(study => study.featured)
-    .sort((a, b) => a.featuredOrder - b.featuredOrder)
+    .filter(study => study.status === 'published' && study.featured)
+    .sort((a, b) => (a.featuredOrder || 0) - (b.featuredOrder || 0))
     .slice(0, MAX_FEATURED)
 
   const publishedStudies = studies
@@ -114,44 +143,49 @@ export function useCaseStudyManager(): UseCaseStudyManagerReturn {
     .filter(study => study.status === 'draft')
     .sort((a, b) => (a.order || 0) - (b.order || 0))
 
+  const unsyncedStudies: CaseStudy[] = []
+
   // Funciones de gestión
   const addStudy = (study: CaseStudy) => {
+    console.log('[Debug] useCaseStudyManager.addStudy - Añadiendo estudio:', {
+      id: study.id,
+      title: study.title,
+      status: study.status,
+      featured: study.featured
+    })
     setStudies(prev => {
       // Si el estudio ya existe, actualizamos sus datos manteniendo estado y featured
       const existingStudy = prev.find(s => s.id === study.id)
       if (existingStudy) {
+        console.log('[Debug] useCaseStudyManager.addStudy - Actualizando estudio existente:', {
+          id: study.id,
+          oldStatus: existingStudy.status,
+          newStatus: study.status,
+          oldFeatured: existingStudy.featured,
+          newFeatured: study.featured
+        })
         return prev.map(s => s.id === study.id ? {
           ...study,
-          status: existingStudy.status,
-          featured: existingStudy.featured,
-          featuredOrder: existingStudy.featuredOrder,
-          synced: true
+          status: study.status || existingStudy.status,
+          featured: study.featured || existingStudy.featured,
+          featuredOrder: study.featuredOrder || existingStudy.featuredOrder || 0,
+
         } : s)
       }
       // Añadir nuevo estudio manteniendo su estado o usando draft por defecto
+      console.log('[Debug] useCaseStudyManager.addStudy - Añadiendo nuevo estudio')
       return [...prev, { 
         ...study,
         status: study.status || 'draft',
         featured: study.featured || false,
+        featuredOrder: study.featuredOrder || 0,
         synced: true
       }]
     })
   }
 
-  const updateStudy = async (study: CaseStudy) => {
-    // Actualizar localmente
-    setStudies(prev => prev.map(s => s.id === study.id ? { ...study, synced: false } : s))
-
-    // Sincronizar con Notion
-    const success = await syncStudyWithNotion(study)
-
-    // Actualizar el estado de sincronización
-    setStudies(prev => prev.map(s => s.id === study.id ? { ...s, synced: success } : s))
-
-    // Mostrar feedback al usuario
-    if (!success) {
-      console.error('Error al sincronizar con Notion')
-    }
+  const updateStudy = (study: CaseStudy) => {
+    setStudies(prev => prev.map(s => s.id === study.id ? study : s))
   }
 
   const publishStudy = (id: string) => {
@@ -184,12 +218,8 @@ export function useCaseStudyManager(): UseCaseStudyManagerReturn {
         return prev.map(s => s.id === id ? { ...s, featured: false, featuredOrder: 0 } : s)
       }
 
-      // Si no está destacado y hay menos de 4 destacados, lo añadimos
+      // Obtener los estudios destacados actuales
       const currentFeatured = prev.filter(s => s.featured)
-      if (currentFeatured.length >= MAX_FEATURED) {
-        console.warn('Ya hay 4 estudios destacados')
-        return prev
-      }
 
       // Asignar orden automáticamente si no se proporciona
       const newOrder = order ?? Math.max(...currentFeatured.map(s => s.featuredOrder), 0) + 1
@@ -225,6 +255,7 @@ export function useCaseStudyManager(): UseCaseStudyManagerReturn {
     featuredStudies,
     publishedStudies,
     draftStudies,
+    unsyncedStudies,
     addStudy,
     updateStudy,
     removeStudy,

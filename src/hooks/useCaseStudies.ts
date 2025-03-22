@@ -69,37 +69,19 @@ export const useCaseStudies = () => {
   // Usar el hook de gestión de estudios
   const { studies, updateStudy } = useCaseStudyManager();
 
-  // Sincronizar con Notion al montar el componente
+  // Cargar estudios locales al montar el componente
   useEffect(() => {
-    const syncWithNotion = async () => {
-      try {
-        const response = await fetch('/api/notion');
-        if (!response.ok) throw new Error('Error al sincronizar con Notion');
-        
-        const { studies: notionStudies } = await response.json();
-        
-        // Actualizar estudios locales con datos de Notion
-        notionStudies.forEach((study: any) => {
-          updateStudy(study);
-        });
-      } catch (error) {
-        console.error('Error sincronizando con Notion:', error);
-      }
-    };
 
-    syncWithNotion();
-  }, []); // Solo al montar el componente
-
-  // Actualizar los casos destacados cuando cambien los estudios
-  useEffect(() => {
-    setIsLoading(true);
-    const featured = studies
+    // Filtrar y ordenar estudios destacados
+    const featured = Object.values(studies)
       .filter(cs => cs.status === 'published' && cs.featured)
-      .sort((a, b) => (a.featuredOrder || 0) - (b.featuredOrder || 0))
-      .slice(0, 4);
+      .sort((a, b) => (a.featuredOrder || 0) - (b.featuredOrder || 0));
+
     setFeaturedCases(featured);
     setIsLoading(false);
-  }, [studies]);
+  }, [studies]); // Sincronizar cuando no hay estudios
+
+
 
   return {
     containerRef,

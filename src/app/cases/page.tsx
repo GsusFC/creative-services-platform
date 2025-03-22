@@ -34,10 +34,10 @@ async function ProjectsDataFetcher() {
   
   console.log('All projects:', projects.map(p => ({ title: p.title, status: p.status })));
   
-  // Filtrar solo los proyectos publicados
-  const publishedProjects = projects.filter(project => project.status === 'published');
+  // Filtrar solo los proyectos con estado "Listo" en Notion
+  const publishedProjects = projects.filter(project => project.status === 'published' && project.synced);
   
-  console.log('Published projects:', publishedProjects.map(p => ({ title: p.title, status: p.status })));
+  console.log('Published projects:', publishedProjects.map(p => ({ title: p.title, status: p.status, synced: p.synced })));
   
   if (publishedProjects.length === 0) {
     return (

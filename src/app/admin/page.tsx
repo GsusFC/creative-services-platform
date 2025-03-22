@@ -5,6 +5,7 @@ import Link from "next/link"
 import { DatabaseIcon, ArrowRightIcon, Settings2Icon, LayoutDashboardIcon, ImageIcon, BookOpenIcon, BarChart3Icon, Gamepad2Icon, FileTextIcon, WrenchIcon } from "lucide-react"
 import { motion } from "framer-motion"
 import SystemTools from "./components/SystemTools"
+import UnsyncedStudies from "./components/UnsyncedStudies"
 
 export default function AdminPage(): React.ReactNode {
   // Animación para los elementos que aparecen en la página
@@ -66,6 +67,16 @@ export default function AdminPage(): React.ReactNode {
           </p>
         </motion.div>
         
+        {/* Estudios no sincronizados */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="mb-6"
+        >
+          <UnsyncedStudies />
+        </motion.div>
+
         {/* Dashboard Analytics Summary */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

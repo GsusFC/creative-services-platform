@@ -34,6 +34,7 @@ export async function syncAllStudiesApi(): Promise<{
   error?: string
 }> {
   try {
+    console.log('[Debug] syncAllStudiesApi - Iniciando llamada al API')
     const response = await fetch('/api/notion', {
       method: 'POST',
       headers: {
@@ -43,6 +44,11 @@ export async function syncAllStudiesApi(): Promise<{
     })
 
     const data = await response.json()
+    console.log('[Debug] syncAllStudiesApi - Respuesta:', {
+      ok: response.ok,
+      status: response.status,
+      data
+    })
 
     if (!response.ok) {
       throw new Error(data.error || 'Error al sincronizar')

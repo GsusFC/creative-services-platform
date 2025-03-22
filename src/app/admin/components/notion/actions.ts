@@ -9,7 +9,12 @@ export async function fetchNotionStudies(): Promise<{
   error?: string
 }> {
   try {
+    console.log('[Debug] fetchNotionStudies - Iniciando getAllCaseStudies')
     const studies = await getAllCaseStudies()
+    console.log('[Debug] fetchNotionStudies - Estudios obtenidos:', {
+      count: studies.length,
+      titles: studies.map(s => s.title)
+    })
     return { studies }
   } catch (error) {
     console.error('Error fetching Notion studies:', error)
@@ -43,12 +48,13 @@ export async function syncAllStudies(): Promise<{
   error?: string
 }> {
   try {
+    console.log('[Debug] syncAllStudies - Iniciando sincronización')
     const response = await fetch('/api/notion', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ action: 'sync_all' })
+      body: JSON.stringify({ action: 'syncAll' })
     })
 
     const data = await response.json()
