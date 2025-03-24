@@ -5,7 +5,8 @@ import Link from "next/link"
 import { DatabaseIcon, ArrowRightIcon, Settings2Icon, LayoutDashboardIcon, ImageIcon, BookOpenIcon, BarChart3Icon, Gamepad2Icon, FileTextIcon, WrenchIcon } from "lucide-react"
 import { motion } from "framer-motion"
 import SystemTools from "./components/SystemTools"
-import UnsyncedStudies from "./components/UnsyncedStudies"
+import { ImportFromNotion } from "./components/ImportFromNotion"
+import { Button } from "./components/ui/button"
 
 export default function AdminPage(): React.ReactNode {
   // Animación para los elementos que aparecen en la página
@@ -67,15 +68,6 @@ export default function AdminPage(): React.ReactNode {
           </p>
         </motion.div>
         
-        {/* Estudios no sincronizados */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="mb-6"
-        >
-          <UnsyncedStudies />
-        </motion.div>
 
         {/* Dashboard Analytics Summary */}
         <motion.div 
@@ -252,51 +244,7 @@ export default function AdminPage(): React.ReactNode {
             </Link>
           </motion.div>
           
-          {/* SVG Master */}
-          <motion.div variants={itemVariants}>
-            <Link href="/svg-master" className="block group">
-              <Card className="bg-gradient-to-br from-gray-900/90 to-gray-950/95 border border-white/10 hover:border-amber-500/50 hover:bg-gray-900/80 transition-all duration-300 shadow-xl h-full">
-                <CardHeader className="pb-4 border-b border-white/5 bg-black/20">
-                  <CardTitle className="flex items-center gap-3 text-xl text-white group-hover:text-amber-400 transition-colors">
-                    <div className="p-2 bg-amber-500/20 rounded-lg">
-                      <Gamepad2Icon className="h-5 w-5 text-amber-400" />
-                    </div>
-                    SVG Master
-                  </CardTitle>
-                  <CardDescription className="text-gray-400">
-                    Editor avanzado de gráficos vectoriales
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <ul className="text-gray-300 space-y-3 mb-8">
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-                      Edición avanzada de SVG
-                    </li>
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-                      Optimización de vectores
-                    </li>
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-                      Exportación en múltiples formatos
-                    </li>
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-                      Biblioteca de elementos
-                    </li>
-                  </ul>
-                  <div className="flex justify-end">
-                    <div className="flex items-center gap-2 text-amber-400 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-0 group-hover:translate-x-1">
-                      <span className="text-sm font-medium">Acceder</span>
-                      <ArrowRightIcon className="h-4 w-4" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          </motion.div>
-          
+
           {/* System Tools */}
           <motion.div variants={itemVariants}>
             <Link href="/admin/system-tools" className="block group">
@@ -342,6 +290,10 @@ export default function AdminPage(): React.ReactNode {
             </Link>
           </motion.div>
           
+          {/* Importar desde Notion */}
+          <motion.div variants={itemVariants} className="mt-8">
+            <ImportFromNotion />
+          </motion.div>
 
         </motion.div>
       </div>

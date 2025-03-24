@@ -1,8 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { CaseStudy } from '@/types/case-study'
+import { CaseStudy, MediaItem } from '@/types/case-study'
+import { v4 as uuidv4 } from 'uuid'
 
+// Flag para desactivar la sincronización hacia Notion
+// Si es true, solo se sincronizará desde Notion hacia la plataforma
+// Si es false, se sincronizará en ambas direcciones
+const DISABLE_SYNC_TO_NOTION = true
 
 const STORAGE_KEY = 'syncedStudies'
 const MAX_FEATURED = 999
@@ -99,7 +104,60 @@ export function useCaseStudyManager(): UseCaseStudyManagerReturn {
         if (!response.ok) throw new Error('Error al sincronizar con Notion')
         const data = await response.json()
         if (data.studies) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(data.studies))
+          // Procesamos los estudios para reducir el tamaño de los datos multimedia
+          const processedStudies = data.studies.map((study: CaseStudy) => {
+            // Creamos una versión ligera del estudio para localStorage
+            return {
+              ...study,
+              // Eliminamos los datos multimedia grandes del almacenamiento local
+              // y mantenemos solo referencias o versiones reducidas
+              mediaItems: study.mediaItems?.map((item: MediaItem) => ({
+                ...item,
+                // Si es una url en base64, guardamos solo la referencia
+                url: item.url && item.url.startsWith('data:') 
+                  ? `ref:${item.order}` // Guardamos solo una referencia
+                  : item.url
+              })) || []
+            };
+          });
+          
+          try {
+            // Intentamos guardar los estudios procesados
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(processedStudies))
+            console.log('Estudios guardados en localStorage con éxito');
+          } catch (storageError) {
+            console.error('Error al guardar en localStorage:', storageError);
+            // Si falla, intentamos una versión aún más ligera sin multimedia
+            const minimalStudies = processedStudies.map((study: CaseStudy) => ({
+              ...study,
+              mediaItems: study.mediaItems?.map((item: MediaItem) => ({
+                ...item,
+                // Guardamos versión reducida sin datos base64
+                url: item.url && item.url.startsWith('data:') ? null : item.url
+              })) || []
+            }));
+            
+            try {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(minimalStudies));
+              console.warn('Guardados estudios en versión mínima sin multimedia');
+            } catch (minimalError) {
+              console.error('Error al guardar versión mínima:', minimalError);
+              // Como último recurso, guardamos solo los IDs y títulos
+              const essentialData = processedStudies.map((study: CaseStudy) => ({
+                id: study.id,
+                title: study.title,
+                status: study.status,
+                featured: study.featured,
+                featuredOrder: study.featuredOrder,
+                order: study.order,
+                synced: study.synced
+              }));
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(essentialData));
+              console.warn('Guardados solo datos esenciales de los estudios');
+            }
+          }
+          
+          // Siempre actualizamos el estado con los datos completos
           setStudies(data.studies)
           console.log('Sincronización con Notion completada:', {
             count: data.studies.length,
@@ -125,8 +183,62 @@ export function useCaseStudyManager(): UseCaseStudyManagerReturn {
 
   // Guardar estudios en localStorage cuando cambien
   useEffect(() => {
+    if (studies.length === 0) return;
+    
     console.log('Guardando estudios en localStorage:', studies)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(studies))
+    
+    try {
+      // Procesamos los estudios para reducir el tamaño
+      const processedStudies = studies.map((study: CaseStudy) => ({
+        ...study,
+        mediaItems: study.mediaItems?.map((item: MediaItem) => ({
+          ...item,
+          // Si es una url en base64, guardamos solo la referencia
+          url: item.url && item.url.startsWith('data:') 
+            ? `ref:${item.order}` // Guardamos solo una referencia
+            : item.url
+        })) || []
+      }));
+      
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(processedStudies))
+    } catch (error) {
+      console.error('Error al guardar estudios en localStorage:', error)
+      
+      try {
+        // Si falla, intentamos una versión más ligera sin multimedia
+        const minimalStudies = studies.map((study: CaseStudy) => ({
+          ...study,
+          mediaItems: study.mediaItems?.map((item: MediaItem) => ({
+            ...item,
+            // Guardamos versión reducida sin datos base64
+            url: item.url && item.url.startsWith('data:') ? null : item.url
+          })) || []
+        }));
+        
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(minimalStudies))
+        console.warn('Guardados estudios en versión mínima sin multimedia');
+      } catch (minimalError) {
+        console.error('Error al guardar versión mínima:', minimalError);
+        
+        // Como último recurso, guardamos solo los IDs y títulos
+        const essentialData = studies.map(study => ({
+          id: study.id,
+          title: study.title,
+          status: study.status,
+          featured: study.featured,
+          featuredOrder: study.featuredOrder,
+          order: study.order,
+          synced: study.synced
+        }));
+        
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(essentialData))
+          console.warn('Guardados solo datos esenciales de los estudios');
+        } catch (essentialError) {
+          console.error('Error al guardar datos esenciales:', essentialError);
+        }
+      }
+    }
   }, [studies])
 
   // Estudios filtrados
@@ -184,48 +296,188 @@ export function useCaseStudyManager(): UseCaseStudyManagerReturn {
     })
   }
 
-  const updateStudy = (study: CaseStudy) => {
-    setStudies(prev => prev.map(s => s.id === study.id ? study : s))
+  // Función auxiliar para esperar un tiempo determinado
+  const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  
+  const updateStudy = async (study: CaseStudy, retryCount = 0, maxRetries = 3) => {
+    console.log(`[Debug] useCaseStudyManager.updateStudy - Actualizando estudio:`, {
+      id: study.id,
+      title: study.title,
+      status: study.status,
+      featured: study.featured
+    });
+
+    // Actualizamos el estado local para una experiencia de usuario fluida
+    const updatedStudy = {
+      ...study,
+      updatedAt: new Date().toISOString(),
+      // Si la sincronización hacia Notion está desactivada, marcamos como sincronizado
+      // para evitar indicadores de error en la UI
+      synced: DISABLE_SYNC_TO_NOTION ? true : false
+    };
+    
+    setStudies(prev => prev.map(s => s.id === study.id ? updatedStudy : s));
+
+    // Si la sincronización hacia Notion está desactivada, simplemente devolvemos el estudio actualizado
+    if (DISABLE_SYNC_TO_NOTION) {
+      console.log('[Debug] Sincronización hacia Notion desactivada. Solo se actualizó localmente.');
+      return updatedStudy;
+    }
+
+    try {
+      // Intentar actualizar en Notion
+      const response = await fetch('/api/notion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'update',
+          study: {
+            ...study,
+            updatedAt: new Date().toISOString()
+          }
+        }),
+        // Aseguramos que no se use caché
+        cache: 'no-store'
+      });
+
+      // Si la respuesta no es exitosa, intentamos extraer más información del error
+      if (!response.ok) {
+        let errorMessage = 'Error al actualizar en Notion';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch (e) {
+          // Si no podemos parsear la respuesta como JSON, usamos el texto de la respuesta
+          errorMessage = await response.text() || errorMessage;
+        }
+        throw new Error(errorMessage);
+      }
+
+      // Intentamos parsear la respuesta como JSON
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.error('Error al parsear respuesta:', parseError);
+        throw new Error('Error al procesar la respuesta del servidor');
+      }
+      
+      // Si la actualización en Notion fue exitosa, actualizamos el estado con los datos retornados
+      if (data.study) {
+        console.log('[Debug] useCaseStudyManager.updateStudy - Actualización exitosa:', data.study);
+        setStudies(prev => prev.map(s => s.id === study.id ? { ...data.study, synced: true } : s));
+        return data.study;
+      } else {
+        // Si no hay datos retornados pero la respuesta fue exitosa
+        console.log('[Debug] useCaseStudyManager.updateStudy - Respuesta exitosa sin datos de estudio');
+        setStudies(prev => prev.map(s => s.id === study.id ? { ...study, synced: true } : s));
+        return study;
+      }
+    } catch (error) {
+      console.error(`Error updating study:`, error);
+      
+      // Si no hemos alcanzado el número máximo de reintentos, esperamos y reintentamos
+      if (retryCount < maxRetries) {
+        const retryDelay = Math.pow(2, retryCount) * 1000; // Backoff exponencial: 1s, 2s, 4s...
+        console.log(`Reintentando en ${retryDelay}ms...`);
+        await wait(retryDelay);
+        return updateStudy(study, retryCount + 1, maxRetries);
+      }
+      
+      // Si hemos agotado los reintentos, mantenemos el estudio como no sincronizado
+      console.error('Se agotaron los reintentos. El estudio quedará marcado como no sincronizado.');
+      
+      // Notificamos el error pero devolvemos el estudio para que la UI pueda continuar
+      return study;
+    }
   }
 
-  const publishStudy = (id: string) => {
-    setStudies(prev => prev.map(study => 
-      study.id === id 
-        ? { ...study, status: 'published' }
-        : study
+  const publishStudy = async (id: string) => {
+    const study = studies.find(s => s.id === id)
+    if (!study) return
+
+    // Primero actualizamos el estado local para una experiencia de usuario más fluida
+    setStudies(prev => prev.map(s => 
+      s.id === id 
+        ? { ...s, status: 'published', updatedAt: new Date().toISOString() }
+        : s
     ))
+
+    // Luego sincronizamos con Notion
+    try {
+      await updateStudy({
+        ...study,
+        status: 'published'
+      })
+    } catch (error) {
+      console.error('Error publishing study:', error)
+    }
   }
 
-  const unpublishStudy = (id: string) => {
-    setStudies(prev => prev.map(study => 
-      study.id === id 
-        ? { ...study, status: 'draft', featured: false }
-        : study
+  const unpublishStudy = async (id: string) => {
+    const study = studies.find(s => s.id === id)
+    if (!study) return
+
+    // Primero actualizamos el estado local para una experiencia de usuario más fluida
+    setStudies(prev => prev.map(s => 
+      s.id === id 
+        ? { ...s, status: 'draft', featured: false, updatedAt: new Date().toISOString() }
+        : s
     ))
+
+    // Luego sincronizamos con Notion
+    try {
+      await updateStudy({
+        ...study,
+        status: 'draft',
+        featured: false
+      })
+    } catch (error) {
+      console.error('Error unpublishing study:', error)
+    }
   }
 
   const removeStudy = (id: string) => {
     setStudies(prev => prev.filter(study => study.id !== id))
   }
 
-  const toggleFeatured = (id: string, order?: number) => {
-    setStudies(prev => {
-      const study = prev.find(s => s.id === id)
-      if (!study) return prev
+  const toggleFeatured = async (id: string, order?: number) => {
+    const study = studies.find(s => s.id === id)
+    if (!study) return
 
+    // Si el estudio no está publicado, no permitimos destacarlo
+    if (study.status !== 'published') return
+
+    // Primero actualizamos el estado local para una experiencia de usuario más fluida
+    let updatedStudy: CaseStudy | null = null
+
+    setStudies(prev => {
       // Si ya está destacado, lo quitamos
       if (study.featured) {
-        return prev.map(s => s.id === id ? { ...s, featured: false, featuredOrder: 0 } : s)
+        updatedStudy = { ...study, featured: false, featuredOrder: 0, updatedAt: new Date().toISOString() }
+        return prev.map(s => s.id === id ? updatedStudy! : s)
       }
 
       // Obtener los estudios destacados actuales
       const currentFeatured = prev.filter(s => s.featured)
 
       // Asignar orden automáticamente si no se proporciona
-      const newOrder = order ?? Math.max(...currentFeatured.map(s => s.featuredOrder), 0) + 1
+      const newOrder = order ?? Math.max(...currentFeatured.map(s => s.featuredOrder || 0), 0) + 1
 
-      return prev.map(s => s.id === id ? { ...s, featured: true, featuredOrder: newOrder } : s)
+      updatedStudy = { ...study, featured: true, featuredOrder: newOrder, updatedAt: new Date().toISOString() }
+      return prev.map(s => s.id === id ? updatedStudy! : s)
     })
+
+    // Luego sincronizamos con Notion
+    try {
+      if (updatedStudy) {
+        await updateStudy(updatedStudy)
+      }
+    } catch (error) {
+      console.error('Error toggling featured status:', error)
+    }
   }
 
   const updateFeaturedOrder = (id: string, order: number) => {

@@ -3,11 +3,12 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeftIcon, RefreshCwIcon, CheckCircleIcon, XCircleIcon, DatabaseIcon } from 'lucide-react'
-import { testSupabaseConnection } from '@/lib/supabase'
+import { checkNotionAvailability } from '@/lib/notion/utils'
 
-export default function SupabaseSettingsPage() {
-  const [supabaseUrl, setSupabaseUrl] = useState('')
-  const [supabaseKey, setSupabaseKey] = useState('')
+export default function NotionSettingsPage() {
+  const [notionDatabaseId, setNotionDatabaseId] = useState('')
+  const [notionApiKey, setNotionApiKey] = useState('')
+  const [syncEnabled, setSyncEnabled] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
   const [connectionStatus, setConnectionStatus] = useState<'idle' | 'checking' | 'success' | 'error'>('idle')
   const [connectionError, setConnectionError] = useState<string | null>(null)
@@ -15,21 +16,27 @@ export default function SupabaseSettingsPage() {
   // Cargar datos de configuración
   useEffect(() => {
     // En un entorno real, estos valores se obtendrían de forma segura
-    setSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL || '')
-    setSupabaseKey(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '')
+    setNotionDatabaseId(process.env['NEXT_PUBLIC_NOTION_DATABASE_ID'] || '')
+    setNotionApiKey(process.env['NEXT_PUBLIC_NOTION_API_KEY'] ? '••••••••••••••••' : '')
+    
+    // Verificar si la sincronización está habilitada
+    // Este valor viene del flag DISABLE_SYNC_TO_NOTION en useCaseStudyManager.ts
+    setSyncEnabled(false) // Por defecto desactivado
   }, [])
 
-  // Probar conexión con Supabase
+  // Probar conexión con MCP-Notion
   const handleTestConnection = async () => {
     setConnectionStatus('checking')
     setConnectionError(null)
     
     try {
-      const result = await testSupabaseConnection();
+      const isAvailable = await checkNotionAvailability();
       
-      setIsConnected(result.connected)
-      setConnectionStatus(result.connected ? 'success' : 'error')
-      setConnectionError(result.error || null)
+      setIsConnected(isAvailable)
+      setConnectionStatus(isAvailable ? 'success' : 'error')
+      if (!isAvailable) {
+        setConnectionError('No se pudo conectar con el servicio MCP-Notion. Asegúrate de que esté en ejecución.')
+      }
     } catch (error) {
       setIsConnected(false)
       setConnectionStatus('error')
@@ -38,60 +45,30 @@ export default function SupabaseSettingsPage() {
     }
   }
   
-  // Verificar tablas en Supabase
-  const checkTables = async () => {
-    if (!isConnected) {
-      setConnectionError('Debes conectar primero con Supabase')
-      return
-    }
-    
-    try {
-      // Aquí se podría implementar una verificación de las tablas disponibles
-      console.log('Verificación de tablas no implementada')
-    } catch (error) {
-      setConnectionError('Error al verificar las tablas: ' + 
-        (error instanceof Error ? error.message : String(error)))
-    }
-  }
-
-  // Guardar configuración
-  const handleSaveConfig = async () => {
+  // Sincronizar con Notion
+  const syncWithNotion = async () => {
     setConnectionStatus('checking')
     setConnectionError(null)
     
     try {
-      const response = await fetch('/api/cms/config', {
+      const response = await fetch('/api/notion', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          supabaseUrl,
-          supabaseKey,
-        }),
-      })
+          action: 'syncAll'
+        })
+      });
       
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Error al guardar la configuración')
+        throw new Error('Error al sincronizar con Notion')
       }
       
-      const data = await response.json()
-      
-      if (data.success) {
-        setConnectionStatus('success')
-        alert(data.message)
-        
-        // Intentar conectarse con la nueva configuración
-        setTimeout(() => {
-          handleTestConnection()
-        }, 1000)
-      } else {
-        throw new Error('Error al guardar la configuración')
-      }
+      setConnectionStatus('success')
     } catch (error) {
       setConnectionStatus('error')
-      setConnectionError('Error al guardar la configuración: ' + 
+      setConnectionError('Error al sincronizar: ' + 
         (error instanceof Error ? error.message : String(error)))
     }
   }
@@ -100,58 +77,67 @@ export default function SupabaseSettingsPage() {
     <div className="admin-page min-h-screen bg-black bg-gradient-to-br from-black via-black/95 to-purple-950/10 text-white p-8 pt-24">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Configuración de Supabase</h1>
-          <p className="text-gray-400">Configura la conexión a la base de datos Supabase</p>
+          <Link href="/admin/case-studies" className="inline-flex items-center text-blue-500 hover:text-blue-400 mb-4">
+            <ArrowLeftIcon className="w-4 h-4 mr-1" /> Volver a Case Studies
+          </Link>
+          <h1 className="text-3xl font-bold mb-2">Configuración de Notion</h1>
+          <p className="text-gray-400">Configura la conexión con Notion para gestionar los case studies</p>
         </div>
         
         <div className="space-y-8">
-          {/* Panel de configuración de Supabase */}
+          {/* Panel de configuración de Notion */}
           <div className="bg-black/30 p-6 rounded-lg border border-white/10">
-            <h2 className="text-xl font-bold mb-4 text-white">Configuración de Supabase</h2>
+            <h2 className="text-xl font-bold mb-4 text-white">Configuración de Notion</h2>
             
             <div className="space-y-4 mb-6">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
-                  URL de Supabase <span className="technical-term">https://[proyecto].supabase.co</span>
+                  ID de Base de Datos de Notion
                 </label>
                 <input
                   type="text"
-                  value={supabaseUrl}
-                  onChange={(e) => setSupabaseUrl(e.target.value)}
+                  value={notionDatabaseId}
+                  readOnly
                   className="w-full p-2 border border-gray-700 rounded-md bg-black/50 text-white"
-                  placeholder="https://xxxxxxxx.supabase.co"
+                  placeholder="notion-database-id"
                 />
                 <p className="mt-1 text-xs text-gray-500">
-                  URL del proyecto de Supabase
+                  Configurado en variables de entorno (NEXT_PUBLIC_NOTION_DATABASE_ID)
                 </p>
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
-                  API Key de Supabase <span className="technical-term api-key">************</span>
+                  API Key de Notion <span className="technical-term api-key">************</span>
                 </label>
                 <input
                   type="password"
-                  value={supabaseKey}
-                  onChange={(e) => setSupabaseKey(e.target.value)}
+                  value={notionApiKey}
+                  readOnly
                   className="w-full p-2 border border-gray-700 rounded-md bg-black/50 text-white"
-                  placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                  placeholder="notion-api-key"
                 />
                 <p className="mt-1 text-xs text-gray-500">
-                  Clave anónima de tu proyecto (anon key)
+                  Configurado en variables de entorno (NEXT_PUBLIC_NOTION_API_KEY)
+                </p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  Estado de Sincronización
+                </label>
+                <div className="flex items-center mt-2">
+                  <div className={`w-3 h-3 rounded-full mr-2 ${syncEnabled ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                  <span>{syncEnabled ? 'Habilitada' : 'Deshabilitada'}</span>
+                </div>
+                <p className="mt-1 text-xs text-gray-500">
+                  La sincronización hacia Notion está actualmente {syncEnabled ? 'habilitada' : 'deshabilitada'}. 
+                  {!syncEnabled && ' Los cambios solo se guardan localmente.'}
                 </p>
               </div>
             </div>
             
             <div className="flex items-center space-x-4">
-              <button
-                onClick={handleSaveConfig}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white font-medium transition-colors"
-                disabled={connectionStatus === 'checking'}
-              >
-                Guardar configuración
-              </button>
-              
               <button
                 onClick={handleTestConnection}
                 className={`px-4 py-2 rounded-md text-white font-medium transition-colors flex items-center ${connectionStatus === 'checking' ? 'bg-gray-600' : 'bg-purple-600 hover:bg-purple-700'}`}
@@ -165,6 +151,15 @@ export default function SupabaseSettingsPage() {
                 ) : (
                   <>Probar conexión</>
                 )}
+              </button>
+              
+              <button
+                onClick={syncWithNotion}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white font-medium transition-colors flex items-center"
+                disabled={connectionStatus === 'checking' || !isConnected}
+              >
+                <RefreshCwIcon className="w-4 h-4 mr-2" />
+                Sincronizar ahora
               </button>
               
               {connectionStatus === 'success' && (
@@ -189,69 +184,40 @@ export default function SupabaseSettingsPage() {
             )}
           </div>
           
-          {/* Panel de información de Base de Datos */}
+          {/* Panel de información de Notion */}
           <div className="bg-black/30 p-6 rounded-lg border border-white/10">
-            <h2 className="text-xl font-bold mb-4 text-white">Información de la Base de Datos</h2>
+            <h2 className="text-xl font-bold mb-4 text-white">Información de Notion</h2>
             
             <div className="mb-6">
               <p className="text-gray-300 mb-4">
-                La plataforma utiliza Supabase como base de datos para gestionar los casos de estudio y sus recursos relacionados.
+                La plataforma utiliza Notion como fuente de datos para gestionar los case studies y sus recursos relacionados.
               </p>
-              
-              <div className="flex items-center space-x-4 mb-4">
-                <button
-                  onClick={checkTables}
-                  className="px-4 py-2 rounded-md text-white font-medium transition-colors flex items-center bg-purple-600 hover:bg-purple-700"
-                  disabled={!isConnected}
-                >
-                  <DatabaseIcon className="w-4 h-4 mr-2" />
-                  Verificar tablas
-                </button>
-              </div>
               
               {isConnected && (
                 <div className="mt-4 p-4 bg-gray-800/50 rounded-md">
-                  <h3 className="text-lg font-medium mb-2">Estructura de la base de datos</h3>
+                  <h3 className="text-lg font-medium mb-2">Estructura de datos en Notion</h3>
                   <ul className="list-disc pl-5 space-y-1 text-gray-300">
-                    <li>Tabla <code>case_studies</code>: Almacena los datos principales de los casos de estudio</li>
-                    <li>Tabla <code>media_items</code>: Almacena los recursos multimedia asociados a los casos</li>
+                    <li><strong>Brand Name</strong>: Nombre principal del case study</li>
+                    <li><strong>Description</strong>: Descripción detallada</li>
+                    <li><strong>Tagline</strong>: Frase destacada</li>
+                    <li><strong>Closing Claim</strong>: Frase de cierre</li>
+                    <li><strong>Slug</strong>: URL amigable</li>
+                    <li><strong>Services</strong>: Etiquetas de servicios (tags)</li>
+                    <li><strong>Multimedia</strong>: Imágenes y videos asociados</li>
                   </ul>
                 </div>
               )}
-            </div>
-          </div>
-          
-          {/* Panel de información adicional */}
-          <div className="bg-black/30 p-6 rounded-lg border border-white/10">
-            <h2 className="text-xl font-bold mb-4 text-white">Documentación y recursos</h2>
-            
-            <div className="mb-6">
-              <p className="text-gray-300 mb-4">
-                Recursos útiles para trabajar con Supabase y la plataforma de servicios creativos.
-              </p>
               
-              <div className="mt-4 p-4 bg-gray-800/50 rounded-md">
-                <h3 className="text-lg font-medium mb-2">Enlaces útiles</h3>
-                <ul className="list-disc pl-5 space-y-2 text-gray-300">
-                  <li>
-                    <a href="https://supabase.com/docs" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300 underline">Documentación oficial de Supabase</a>
-                  </li>
-                  <li>
-                    <a href="/admin/case-studies" className="text-purple-400 hover:text-purple-300 underline">Volver al panel de administración de casos de estudio</a>
-                  </li>
-                </ul>
+              <div className="mt-4 p-3 bg-blue-900/30 border border-blue-900 rounded-md text-blue-200 text-sm">
+                <p>
+                  <strong>Nota:</strong> Para habilitar la sincronización bidireccional, cambia el valor de 
+                  <code className="bg-blue-900/50 px-1 rounded mx-1">DISABLE_SYNC_TO_NOTION</code> a 
+                  <code className="bg-blue-900/50 px-1 rounded mx-1">false</code> 
+                  en el archivo <code className="bg-blue-900/50 px-1 rounded mx-1">src/hooks/useCaseStudyManager.ts</code>.
+                </p>
               </div>
             </div>
           </div>
-        </div>
-        
-        <div className="mt-8">
-          <Link 
-            href="/admin/case-studies" 
-            className="flex items-center text-gray-400 hover:text-white transition-colors">
-            <ArrowLeftIcon className="w-4 h-4 mr-2" />
-            Volver a Casos de Estudio
-          </Link>
         </div>
       </div>
     </div>

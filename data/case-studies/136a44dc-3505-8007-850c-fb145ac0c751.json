@@ -1,0 +1,22 @@
+{
+  "id": "136a44dc-3505-8007-850c-fb145ac0c751",
+  "title": "F/OS",
+  "client": "F/OS",
+  "description": "",
+  "tagline": "",
+  "closingClaim": "",
+  "mediaItems": [],
+  "tags": [
+    "system",
+    "brand3"
+  ],
+  "order": 0,
+  "slug": "f-os",
+  "website": "https://www.figma.com/community/file/1385269507043606775/f-os-system",
+  "status": "draft",
+  "featured": false,
+  "featuredOrder": 0,
+  "createdAt": "2024-11-06T12:56:00.000Z",
+  "updatedAt": "2025-03-24T20:27:35.292Z",
+  "synced": true
+}

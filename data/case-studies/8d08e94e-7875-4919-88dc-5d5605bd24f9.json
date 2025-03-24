@@ -1,0 +1,23 @@
+{
+  "id": "8d08e94e-7875-4919-88dc-5d5605bd24f9",
+  "title": "Troops",
+  "client": "Troops",
+  "description": "",
+  "tagline": "",
+  "closingClaim": "",
+  "mediaItems": [],
+  "tags": [
+    "web3",
+    "branding",
+    "ux/ui"
+  ],
+  "order": 0,
+  "slug": "troops",
+  "website": "https://troo.ps/",
+  "status": "draft",
+  "featured": false,
+  "featuredOrder": 0,
+  "createdAt": "2023-11-08T11:59:00.000Z",
+  "updatedAt": "2025-03-24T20:27:35.303Z",
+  "synced": true
+}

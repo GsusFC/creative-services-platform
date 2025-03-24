@@ -1,0 +1,33 @@
+{
+  "id": "1a1a44dc-3505-80e4-9f48-df9510c70c81",
+  "title": "Degen",
+  "client": "Degen",
+  "description": "The legendary Top Hat design emerged as the winner in the public contest for the Degen logo. Following this victory, we continue to imagine the future of this Open Source brand, constantly shaping different narratives that align with the Degen universe.\n\nOur vision was to channel a diversified identity across various worlds—each one an unlimited stage that opens up to different personalities and moments. The Degen Worlds have served as a conceptual guide in creating another historic milestone for the brand: The Degen Official Store.\n\nBut this is just the beginning—because the best of Degen is yet to come.",
+  "tagline": "Meme brand with a dream",
+  "closingClaim": "",
+  "mediaItems": [
+    {
+      "type": "image",
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/a80b79ac-f061-41d5-8c06-6e5c6d00f6f8/3cd31d5c-24da-4127-b40f-222e49996fb7/Project_COVER.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VX3Z32PR%2F20250324%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250324T202725Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIErZtGyi6dXYa63nvl2xE%2FSBwF%2FSYAEeIksE21FyESXDAiEA5u2koCNSZktmXZVwFmPeRwrR38qQs9Sr83%2Fz1LFfnSsqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIEddfIuekNTI05hGircA59BXRFIjdQJGjhVqn6A8YtGw6GRu3W0Gy4MsmdJaL360GJeCiBFceVAzRqPJN%2FtXdQ1bDYh9EVTkiL9iXaB3MG7UGdzS%2F00g6JP2xqJczJdFr3zmz5Bz%2FpdxP3cynXl11tj94CqPOuZ8pYSFmFxSUyOotEq4d5scdYiLx0j5FPfspnRepmxp5%2FBjmKxB8%2FKTNDL2AfgyPSMblVay0MRRbrXgxFwfJwsmV3SHGp9Dhzb7WoR5RXfTc1iKJ0L9wme4kD9BKG61knDLrL5XVz%2F9E9foO%2B29lfYC%2By839vQlYgUcye23q5EDk3voLT4e6bpT1%2FoiYVKVonDxU0UOFTCNuLh%2BJdaQoHPI5d2vqmSsPYizijiQsWe9%2BQTmAW169T47Vr90ipbSk30D80wUIQoFWv3Mo5b%2BH6lVUKQQP12QHtRBl22w26u921%2FvLHiK58lPI9uQ7S9nu%2FJnqpN%2BCOSwN%2BcSUsNZEWqKQEc65AZgU8Ssurn3Zu8qUn6ddVnMEe3qQr7iWwSWzAVeBY9Usg07VMlL31tOJiFoDBR66p9DyNUOWi8ltVfY45IgIH%2B2o2Ax%2B3M3yGyxqEqnH1Ij3WIiQ4R6%2B4qY6hN%2FS4BgBnV2afRj0f8THEeZEy%2BCayoMPn%2Bhb8GOqUBfEKJ5cxEhUDwM%2BJiMxU66U01pFSQarsnphCJT7rniEk0It15U9E2apKf58GvUjAbdkGxh39wASz1Bb1QW1u9%2BZ5U%2FDxu2BVwIwwihGhf9rMZvgS0IBbLQmio023HQ%2BC9voRcPDzt7v547QQU%2BFsx8WC%2BDvvHn4ZXqg8wuEuidnh0wZoT%2BtWhfACFmAKXnIBzLLvyzQQwvB8B14cL6SDqThgXV9lb&X-Amz-Signature=f3f8ac5ac4b0e54b7d5739b750b3dce37c3171f105535beb0c74b0a1695c3343&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "alt": "Cover",
+      "width": 1000,
+      "height": 1000,
+      "order": 0,
+      "displayMode": "single"
+    }
+  ],
+  "tags": [
+    "branding",
+    "community",
+    "brand3"
+  ],
+  "order": 0,
+  "slug": "degen",
+  "website": "shop.degen.tips",
+  "status": "draft",
+  "featured": false,
+  "featuredOrder": 0,
+  "createdAt": "2025-02-21T10:41:00.000Z",
+  "updatedAt": "2025-03-24T20:27:35.287Z",
+  "synced": true
+}

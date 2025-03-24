@@ -1,0 +1,150 @@
+{
+  "id": "137a44dc-3505-8037-a0aa-f3ce17af874d",
+  "title": "Build",
+  "client": "Build",
+  "description": "This project is the refreshment of the visual identity of BUILD, a brand native to the Farcaster ecosystem. \n\nConceived and built as an open system for the community where the remanence of a retro style based on repetition and error as a source of improvement inspired by the first operating systems of the 80‘s and 90’s is anchored as the core of the visual identity. It is also open source, as the philosophy of the BUILD ecosystem and the community is intended to be a Public Good. \n\nThe new web page is an exercise of how the visual system can be transferred and applied to any digital product in a scalable way.",
+  "tagline": "Embrace error as Public Good",
+  "closingClaim": "Design to bring more builders onchain",
+  "mediaItems": [
+    {
+      "type": "image",
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/a80b79ac-f061-41d5-8c06-6e5c6d00f6f8/065de422-02a9-4205-bb38-d0c9dc76cb67/z7rBgdCNKvZOUU3O835jN53efuU.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VX3Z32PR%2F20250324%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250324T202725Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIErZtGyi6dXYa63nvl2xE%2FSBwF%2FSYAEeIksE21FyESXDAiEA5u2koCNSZktmXZVwFmPeRwrR38qQs9Sr83%2Fz1LFfnSsqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIEddfIuekNTI05hGircA59BXRFIjdQJGjhVqn6A8YtGw6GRu3W0Gy4MsmdJaL360GJeCiBFceVAzRqPJN%2FtXdQ1bDYh9EVTkiL9iXaB3MG7UGdzS%2F00g6JP2xqJczJdFr3zmz5Bz%2FpdxP3cynXl11tj94CqPOuZ8pYSFmFxSUyOotEq4d5scdYiLx0j5FPfspnRepmxp5%2FBjmKxB8%2FKTNDL2AfgyPSMblVay0MRRbrXgxFwfJwsmV3SHGp9Dhzb7WoR5RXfTc1iKJ0L9wme4kD9BKG61knDLrL5XVz%2F9E9foO%2B29lfYC%2By839vQlYgUcye23q5EDk3voLT4e6bpT1%2FoiYVKVonDxU0UOFTCNuLh%2BJdaQoHPI5d2vqmSsPYizijiQsWe9%2BQTmAW169T47Vr90ipbSk30D80wUIQoFWv3Mo5b%2BH6lVUKQQP12QHtRBl22w26u921%2FvLHiK58lPI9uQ7S9nu%2FJnqpN%2BCOSwN%2BcSUsNZEWqKQEc65AZgU8Ssurn3Zu8qUn6ddVnMEe3qQr7iWwSWzAVeBY9Usg07VMlL31tOJiFoDBR66p9DyNUOWi8ltVfY45IgIH%2B2o2Ax%2B3M3yGyxqEqnH1Ij3WIiQ4R6%2B4qY6hN%2FS4BgBnV2afRj0f8THEeZEy%2BCayoMPn%2Bhb8GOqUBfEKJ5cxEhUDwM%2BJiMxU66U01pFSQarsnphCJT7rniEk0It15U9E2apKf58GvUjAbdkGxh39wASz1Bb1QW1u9%2BZ5U%2FDxu2BVwIwwihGhf9rMZvgS0IBbLQmio023HQ%2BC9voRcPDzt7v547QQU%2BFsx8WC%2BDvvHn4ZXqg8wuEuidnh0wZoT%2BtWhfACFmAKXnIBzLLvyzQQwvB8B14cL6SDqThgXV9lb&X-Amz-Signature=22ef442e8cc558e53dd83e67ea7f20eebffa850b3798444637c43bb53908c7bc&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "alt": "Cover",
+      "width": 1024,
+      "height": 1024,
+      "order": 0,
+      "displayMode": "single"
+    },
+    {
+      "type": "avatar",
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/a80b79ac-f061-41d5-8c06-6e5c6d00f6f8/e08673e1-e7f2-4da8-bf8c-eb19ee9da820/NUN2xBFLOthPZ55VAIIIjKaVoJ0.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VX3Z32PR%2F20250324%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250324T202725Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIErZtGyi6dXYa63nvl2xE%2FSBwF%2FSYAEeIksE21FyESXDAiEA5u2koCNSZktmXZVwFmPeRwrR38qQs9Sr83%2Fz1LFfnSsqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIEddfIuekNTI05hGircA59BXRFIjdQJGjhVqn6A8YtGw6GRu3W0Gy4MsmdJaL360GJeCiBFceVAzRqPJN%2FtXdQ1bDYh9EVTkiL9iXaB3MG7UGdzS%2F00g6JP2xqJczJdFr3zmz5Bz%2FpdxP3cynXl11tj94CqPOuZ8pYSFmFxSUyOotEq4d5scdYiLx0j5FPfspnRepmxp5%2FBjmKxB8%2FKTNDL2AfgyPSMblVay0MRRbrXgxFwfJwsmV3SHGp9Dhzb7WoR5RXfTc1iKJ0L9wme4kD9BKG61knDLrL5XVz%2F9E9foO%2B29lfYC%2By839vQlYgUcye23q5EDk3voLT4e6bpT1%2FoiYVKVonDxU0UOFTCNuLh%2BJdaQoHPI5d2vqmSsPYizijiQsWe9%2BQTmAW169T47Vr90ipbSk30D80wUIQoFWv3Mo5b%2BH6lVUKQQP12QHtRBl22w26u921%2FvLHiK58lPI9uQ7S9nu%2FJnqpN%2BCOSwN%2BcSUsNZEWqKQEc65AZgU8Ssurn3Zu8qUn6ddVnMEe3qQr7iWwSWzAVeBY9Usg07VMlL31tOJiFoDBR66p9DyNUOWi8ltVfY45IgIH%2B2o2Ax%2B3M3yGyxqEqnH1Ij3WIiQ4R6%2B4qY6hN%2FS4BgBnV2afRj0f8THEeZEy%2BCayoMPn%2Bhb8GOqUBfEKJ5cxEhUDwM%2BJiMxU66U01pFSQarsnphCJT7rniEk0It15U9E2apKf58GvUjAbdkGxh39wASz1Bb1QW1u9%2BZ5U%2FDxu2BVwIwwihGhf9rMZvgS0IBbLQmio023HQ%2BC9voRcPDzt7v547QQU%2BFsx8WC%2BDvvHn4ZXqg8wuEuidnh0wZoT%2BtWhfACFmAKXnIBzLLvyzQQwvB8B14cL6SDqThgXV9lb&X-Amz-Signature=686608cea774fc7d2ab7871c1490810ba6f3d999ea239defbfbb5e8bddd7f982&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "alt": "Avatar",
+      "width": 400,
+      "height": 400,
+      "order": 0,
+      "displayMode": "single"
+    },
+    {
+      "type": "image",
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/a80b79ac-f061-41d5-8c06-6e5c6d00f6f8/fa05c5c9-046c-4057-b6d4-69d2a21bd646/build-hero.webp?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VX3Z32PR%2F20250324%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250324T202725Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIErZtGyi6dXYa63nvl2xE%2FSBwF%2FSYAEeIksE21FyESXDAiEA5u2koCNSZktmXZVwFmPeRwrR38qQs9Sr83%2Fz1LFfnSsqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIEddfIuekNTI05hGircA59BXRFIjdQJGjhVqn6A8YtGw6GRu3W0Gy4MsmdJaL360GJeCiBFceVAzRqPJN%2FtXdQ1bDYh9EVTkiL9iXaB3MG7UGdzS%2F00g6JP2xqJczJdFr3zmz5Bz%2FpdxP3cynXl11tj94CqPOuZ8pYSFmFxSUyOotEq4d5scdYiLx0j5FPfspnRepmxp5%2FBjmKxB8%2FKTNDL2AfgyPSMblVay0MRRbrXgxFwfJwsmV3SHGp9Dhzb7WoR5RXfTc1iKJ0L9wme4kD9BKG61knDLrL5XVz%2F9E9foO%2B29lfYC%2By839vQlYgUcye23q5EDk3voLT4e6bpT1%2FoiYVKVonDxU0UOFTCNuLh%2BJdaQoHPI5d2vqmSsPYizijiQsWe9%2BQTmAW169T47Vr90ipbSk30D80wUIQoFWv3Mo5b%2BH6lVUKQQP12QHtRBl22w26u921%2FvLHiK58lPI9uQ7S9nu%2FJnqpN%2BCOSwN%2BcSUsNZEWqKQEc65AZgU8Ssurn3Zu8qUn6ddVnMEe3qQr7iWwSWzAVeBY9Usg07VMlL31tOJiFoDBR66p9DyNUOWi8ltVfY45IgIH%2B2o2Ax%2B3M3yGyxqEqnH1Ij3WIiQ4R6%2B4qY6hN%2FS4BgBnV2afRj0f8THEeZEy%2BCayoMPn%2Bhb8GOqUBfEKJ5cxEhUDwM%2BJiMxU66U01pFSQarsnphCJT7rniEk0It15U9E2apKf58GvUjAbdkGxh39wASz1Bb1QW1u9%2BZ5U%2FDxu2BVwIwwihGhf9rMZvgS0IBbLQmio023HQ%2BC9voRcPDzt7v547QQU%2BFsx8WC%2BDvvHn4ZXqg8wuEuidnh0wZoT%2BtWhfACFmAKXnIBzLLvyzQQwvB8B14cL6SDqThgXV9lb&X-Amz-Signature=b8ead39f725ed41c43e4f570360093d56def07a0fa1ebeaa3f509f9baff5ec05&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "alt": "Hero Image",
+      "width": 1920,
+      "height": 1081,
+      "order": 0,
+      "displayMode": "single"
+    },
+    {
+      "type": "image",
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/a80b79ac-f061-41d5-8c06-6e5c6d00f6f8/c9a1e818-d7cf-4744-9acd-cb8700bc5257/Y6965chUnfujprfhBU0uP7j4.webp?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VX3Z32PR%2F20250324%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250324T202725Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIErZtGyi6dXYa63nvl2xE%2FSBwF%2FSYAEeIksE21FyESXDAiEA5u2koCNSZktmXZVwFmPeRwrR38qQs9Sr83%2Fz1LFfnSsqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIEddfIuekNTI05hGircA59BXRFIjdQJGjhVqn6A8YtGw6GRu3W0Gy4MsmdJaL360GJeCiBFceVAzRqPJN%2FtXdQ1bDYh9EVTkiL9iXaB3MG7UGdzS%2F00g6JP2xqJczJdFr3zmz5Bz%2FpdxP3cynXl11tj94CqPOuZ8pYSFmFxSUyOotEq4d5scdYiLx0j5FPfspnRepmxp5%2FBjmKxB8%2FKTNDL2AfgyPSMblVay0MRRbrXgxFwfJwsmV3SHGp9Dhzb7WoR5RXfTc1iKJ0L9wme4kD9BKG61knDLrL5XVz%2F9E9foO%2B29lfYC%2By839vQlYgUcye23q5EDk3voLT4e6bpT1%2FoiYVKVonDxU0UOFTCNuLh%2BJdaQoHPI5d2vqmSsPYizijiQsWe9%2BQTmAW169T47Vr90ipbSk30D80wUIQoFWv3Mo5b%2BH6lVUKQQP12QHtRBl22w26u921%2FvLHiK58lPI9uQ7S9nu%2FJnqpN%2BCOSwN%2BcSUsNZEWqKQEc65AZgU8Ssurn3Zu8qUn6ddVnMEe3qQr7iWwSWzAVeBY9Usg07VMlL31tOJiFoDBR66p9DyNUOWi8ltVfY45IgIH%2B2o2Ax%2B3M3yGyxqEqnH1Ij3WIiQ4R6%2B4qY6hN%2FS4BgBnV2afRj0f8THEeZEy%2BCayoMPn%2Bhb8GOqUBfEKJ5cxEhUDwM%2BJiMxU66U01pFSQarsnphCJT7rniEk0It15U9E2apKf58GvUjAbdkGxh39wASz1Bb1QW1u9%2BZ5U%2FDxu2BVwIwwihGhf9rMZvgS0IBbLQmio023HQ%2BC9voRcPDzt7v547QQU%2BFsx8WC%2BDvvHn4ZXqg8wuEuidnh0wZoT%2BtWhfACFmAKXnIBzLLvyzQQwvB8B14cL6SDqThgXV9lb&X-Amz-Signature=ff09aca1e38652b2496bc60afce615486429370020d2c9ab1920485232ecfcd1&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "alt": "Image [1]",
+      "width": 1920,
+      "height": 1081,
+      "order": 0,
+      "displayMode": "single"
+    },
+    {
+      "type": "image",
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/a80b79ac-f061-41d5-8c06-6e5c6d00f6f8/e5773635-fdff-4cad-8307-7eb78e1790d9/LcC4Fd4SztZorbCO3isX0OF4hk.webp?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VX3Z32PR%2F20250324%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250324T202725Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIErZtGyi6dXYa63nvl2xE%2FSBwF%2FSYAEeIksE21FyESXDAiEA5u2koCNSZktmXZVwFmPeRwrR38qQs9Sr83%2Fz1LFfnSsqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIEddfIuekNTI05hGircA59BXRFIjdQJGjhVqn6A8YtGw6GRu3W0Gy4MsmdJaL360GJeCiBFceVAzRqPJN%2FtXdQ1bDYh9EVTkiL9iXaB3MG7UGdzS%2F00g6JP2xqJczJdFr3zmz5Bz%2FpdxP3cynXl11tj94CqPOuZ8pYSFmFxSUyOotEq4d5scdYiLx0j5FPfspnRepmxp5%2FBjmKxB8%2FKTNDL2AfgyPSMblVay0MRRbrXgxFwfJwsmV3SHGp9Dhzb7WoR5RXfTc1iKJ0L9wme4kD9BKG61knDLrL5XVz%2F9E9foO%2B29lfYC%2By839vQlYgUcye23q5EDk3voLT4e6bpT1%2FoiYVKVonDxU0UOFTCNuLh%2BJdaQoHPI5d2vqmSsPYizijiQsWe9%2BQTmAW169T47Vr90ipbSk30D80wUIQoFWv3Mo5b%2BH6lVUKQQP12QHtRBl22w26u921%2FvLHiK58lPI9uQ7S9nu%2FJnqpN%2BCOSwN%2BcSUsNZEWqKQEc65AZgU8Ssurn3Zu8qUn6ddVnMEe3qQr7iWwSWzAVeBY9Usg07VMlL31tOJiFoDBR66p9DyNUOWi8ltVfY45IgIH%2B2o2Ax%2B3M3yGyxqEqnH1Ij3WIiQ4R6%2B4qY6hN%2FS4BgBnV2afRj0f8THEeZEy%2BCayoMPn%2Bhb8GOqUBfEKJ5cxEhUDwM%2BJiMxU66U01pFSQarsnphCJT7rniEk0It15U9E2apKf58GvUjAbdkGxh39wASz1Bb1QW1u9%2BZ5U%2FDxu2BVwIwwihGhf9rMZvgS0IBbLQmio023HQ%2BC9voRcPDzt7v547QQU%2BFsx8WC%2BDvvHn4ZXqg8wuEuidnh0wZoT%2BtWhfACFmAKXnIBzLLvyzQQwvB8B14cL6SDqThgXV9lb&X-Amz-Signature=efa75f575e59f9523745ce1c66174bd79b9571eb99e7b6c358d7236eb73e6edf&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "alt": "Image [2]",
+      "width": 1920,
+      "height": 1080,
+      "order": 0,
+      "displayMode": "single"
+    },
+    {
+      "type": "image",
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/a80b79ac-f061-41d5-8c06-6e5c6d00f6f8/624d8c7b-3336-42eb-970e-73f74160f58d/sJBbfQk06s2Lgtneq6jFpLryQI.webp?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VX3Z32PR%2F20250324%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250324T202725Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIErZtGyi6dXYa63nvl2xE%2FSBwF%2FSYAEeIksE21FyESXDAiEA5u2koCNSZktmXZVwFmPeRwrR38qQs9Sr83%2Fz1LFfnSsqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIEddfIuekNTI05hGircA59BXRFIjdQJGjhVqn6A8YtGw6GRu3W0Gy4MsmdJaL360GJeCiBFceVAzRqPJN%2FtXdQ1bDYh9EVTkiL9iXaB3MG7UGdzS%2F00g6JP2xqJczJdFr3zmz5Bz%2FpdxP3cynXl11tj94CqPOuZ8pYSFmFxSUyOotEq4d5scdYiLx0j5FPfspnRepmxp5%2FBjmKxB8%2FKTNDL2AfgyPSMblVay0MRRbrXgxFwfJwsmV3SHGp9Dhzb7WoR5RXfTc1iKJ0L9wme4kD9BKG61knDLrL5XVz%2F9E9foO%2B29lfYC%2By839vQlYgUcye23q5EDk3voLT4e6bpT1%2FoiYVKVonDxU0UOFTCNuLh%2BJdaQoHPI5d2vqmSsPYizijiQsWe9%2BQTmAW169T47Vr90ipbSk30D80wUIQoFWv3Mo5b%2BH6lVUKQQP12QHtRBl22w26u921%2FvLHiK58lPI9uQ7S9nu%2FJnqpN%2BCOSwN%2BcSUsNZEWqKQEc65AZgU8Ssurn3Zu8qUn6ddVnMEe3qQr7iWwSWzAVeBY9Usg07VMlL31tOJiFoDBR66p9DyNUOWi8ltVfY45IgIH%2B2o2Ax%2B3M3yGyxqEqnH1Ij3WIiQ4R6%2B4qY6hN%2FS4BgBnV2afRj0f8THEeZEy%2BCayoMPn%2Bhb8GOqUBfEKJ5cxEhUDwM%2BJiMxU66U01pFSQarsnphCJT7rniEk0It15U9E2apKf58GvUjAbdkGxh39wASz1Bb1QW1u9%2BZ5U%2FDxu2BVwIwwihGhf9rMZvgS0IBbLQmio023HQ%2BC9voRcPDzt7v547QQU%2BFsx8WC%2BDvvHn4ZXqg8wuEuidnh0wZoT%2BtWhfACFmAKXnIBzLLvyzQQwvB8B14cL6SDqThgXV9lb&X-Amz-Signature=cd9ac5b2cd9b20daed9b638eda6b43d629ab3cd649b942b930fa1dbabaeafa2d&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "alt": "Image [3]",
+      "width": 1920,
+      "height": 1080,
+      "order": 0,
+      "displayMode": "single"
+    },
+    {
+      "type": "image",
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/a80b79ac-f061-41d5-8c06-6e5c6d00f6f8/000f4b3b-06aa-46bc-8e52-d4b56148e1ed/zuZlRmAW9NPAc5q3eReMUg5bek.webp?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VX3Z32PR%2F20250324%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250324T202725Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIErZtGyi6dXYa63nvl2xE%2FSBwF%2FSYAEeIksE21FyESXDAiEA5u2koCNSZktmXZVwFmPeRwrR38qQs9Sr83%2Fz1LFfnSsqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIEddfIuekNTI05hGircA59BXRFIjdQJGjhVqn6A8YtGw6GRu3W0Gy4MsmdJaL360GJeCiBFceVAzRqPJN%2FtXdQ1bDYh9EVTkiL9iXaB3MG7UGdzS%2F00g6JP2xqJczJdFr3zmz5Bz%2FpdxP3cynXl11tj94CqPOuZ8pYSFmFxSUyOotEq4d5scdYiLx0j5FPfspnRepmxp5%2FBjmKxB8%2FKTNDL2AfgyPSMblVay0MRRbrXgxFwfJwsmV3SHGp9Dhzb7WoR5RXfTc1iKJ0L9wme4kD9BKG61knDLrL5XVz%2F9E9foO%2B29lfYC%2By839vQlYgUcye23q5EDk3voLT4e6bpT1%2FoiYVKVonDxU0UOFTCNuLh%2BJdaQoHPI5d2vqmSsPYizijiQsWe9%2BQTmAW169T47Vr90ipbSk30D80wUIQoFWv3Mo5b%2BH6lVUKQQP12QHtRBl22w26u921%2FvLHiK58lPI9uQ7S9nu%2FJnqpN%2BCOSwN%2BcSUsNZEWqKQEc65AZgU8Ssurn3Zu8qUn6ddVnMEe3qQr7iWwSWzAVeBY9Usg07VMlL31tOJiFoDBR66p9DyNUOWi8ltVfY45IgIH%2B2o2Ax%2B3M3yGyxqEqnH1Ij3WIiQ4R6%2B4qY6hN%2FS4BgBnV2afRj0f8THEeZEy%2BCayoMPn%2Bhb8GOqUBfEKJ5cxEhUDwM%2BJiMxU66U01pFSQarsnphCJT7rniEk0It15U9E2apKf58GvUjAbdkGxh39wASz1Bb1QW1u9%2BZ5U%2FDxu2BVwIwwihGhf9rMZvgS0IBbLQmio023HQ%2BC9voRcPDzt7v547QQU%2BFsx8WC%2BDvvHn4ZXqg8wuEuidnh0wZoT%2BtWhfACFmAKXnIBzLLvyzQQwvB8B14cL6SDqThgXV9lb&X-Amz-Signature=223281affa23081da6493ba76f8f50c69a7dbd2897a4904e294836adf4a22f6a&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "alt": "Image [4]",
+      "width": 1920,
+      "height": 1080,
+      "order": 0,
+      "displayMode": "single"
+    },
+    {
+      "type": "image",
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/a80b79ac-f061-41d5-8c06-6e5c6d00f6f8/c57853d1-f7c0-4a38-83b3-4cedd12a636f/1.gif?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VX3Z32PR%2F20250324%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250324T202725Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIErZtGyi6dXYa63nvl2xE%2FSBwF%2FSYAEeIksE21FyESXDAiEA5u2koCNSZktmXZVwFmPeRwrR38qQs9Sr83%2Fz1LFfnSsqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIEddfIuekNTI05hGircA59BXRFIjdQJGjhVqn6A8YtGw6GRu3W0Gy4MsmdJaL360GJeCiBFceVAzRqPJN%2FtXdQ1bDYh9EVTkiL9iXaB3MG7UGdzS%2F00g6JP2xqJczJdFr3zmz5Bz%2FpdxP3cynXl11tj94CqPOuZ8pYSFmFxSUyOotEq4d5scdYiLx0j5FPfspnRepmxp5%2FBjmKxB8%2FKTNDL2AfgyPSMblVay0MRRbrXgxFwfJwsmV3SHGp9Dhzb7WoR5RXfTc1iKJ0L9wme4kD9BKG61knDLrL5XVz%2F9E9foO%2B29lfYC%2By839vQlYgUcye23q5EDk3voLT4e6bpT1%2FoiYVKVonDxU0UOFTCNuLh%2BJdaQoHPI5d2vqmSsPYizijiQsWe9%2BQTmAW169T47Vr90ipbSk30D80wUIQoFWv3Mo5b%2BH6lVUKQQP12QHtRBl22w26u921%2FvLHiK58lPI9uQ7S9nu%2FJnqpN%2BCOSwN%2BcSUsNZEWqKQEc65AZgU8Ssurn3Zu8qUn6ddVnMEe3qQr7iWwSWzAVeBY9Usg07VMlL31tOJiFoDBR66p9DyNUOWi8ltVfY45IgIH%2B2o2Ax%2B3M3yGyxqEqnH1Ij3WIiQ4R6%2B4qY6hN%2FS4BgBnV2afRj0f8THEeZEy%2BCayoMPn%2Bhb8GOqUBfEKJ5cxEhUDwM%2BJiMxU66U01pFSQarsnphCJT7rniEk0It15U9E2apKf58GvUjAbdkGxh39wASz1Bb1QW1u9%2BZ5U%2FDxu2BVwIwwihGhf9rMZvgS0IBbLQmio023HQ%2BC9voRcPDzt7v547QQU%2BFsx8WC%2BDvvHn4ZXqg8wuEuidnh0wZoT%2BtWhfACFmAKXnIBzLLvyzQQwvB8B14cL6SDqThgXV9lb&X-Amz-Signature=415d9fdefd1f857ae53a5e96bec37d27cdcf65aca4ce6d20f85910c6bf713731&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "alt": "Image [5]",
+      "width": 1920,
+      "height": 1080,
+      "order": 0,
+      "displayMode": "single"
+    },
+    {
+      "type": "image",
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/a80b79ac-f061-41d5-8c06-6e5c6d00f6f8/fb168fd3-6e13-4c41-bd5d-13b0f998516a/yCjSxgTZrQnLYOTuMdo2gccPbTo.webp?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VX3Z32PR%2F20250324%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250324T202725Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIErZtGyi6dXYa63nvl2xE%2FSBwF%2FSYAEeIksE21FyESXDAiEA5u2koCNSZktmXZVwFmPeRwrR38qQs9Sr83%2Fz1LFfnSsqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIEddfIuekNTI05hGircA59BXRFIjdQJGjhVqn6A8YtGw6GRu3W0Gy4MsmdJaL360GJeCiBFceVAzRqPJN%2FtXdQ1bDYh9EVTkiL9iXaB3MG7UGdzS%2F00g6JP2xqJczJdFr3zmz5Bz%2FpdxP3cynXl11tj94CqPOuZ8pYSFmFxSUyOotEq4d5scdYiLx0j5FPfspnRepmxp5%2FBjmKxB8%2FKTNDL2AfgyPSMblVay0MRRbrXgxFwfJwsmV3SHGp9Dhzb7WoR5RXfTc1iKJ0L9wme4kD9BKG61knDLrL5XVz%2F9E9foO%2B29lfYC%2By839vQlYgUcye23q5EDk3voLT4e6bpT1%2FoiYVKVonDxU0UOFTCNuLh%2BJdaQoHPI5d2vqmSsPYizijiQsWe9%2BQTmAW169T47Vr90ipbSk30D80wUIQoFWv3Mo5b%2BH6lVUKQQP12QHtRBl22w26u921%2FvLHiK58lPI9uQ7S9nu%2FJnqpN%2BCOSwN%2BcSUsNZEWqKQEc65AZgU8Ssurn3Zu8qUn6ddVnMEe3qQr7iWwSWzAVeBY9Usg07VMlL31tOJiFoDBR66p9DyNUOWi8ltVfY45IgIH%2B2o2Ax%2B3M3yGyxqEqnH1Ij3WIiQ4R6%2B4qY6hN%2FS4BgBnV2afRj0f8THEeZEy%2BCayoMPn%2Bhb8GOqUBfEKJ5cxEhUDwM%2BJiMxU66U01pFSQarsnphCJT7rniEk0It15U9E2apKf58GvUjAbdkGxh39wASz1Bb1QW1u9%2BZ5U%2FDxu2BVwIwwihGhf9rMZvgS0IBbLQmio023HQ%2BC9voRcPDzt7v547QQU%2BFsx8WC%2BDvvHn4ZXqg8wuEuidnh0wZoT%2BtWhfACFmAKXnIBzLLvyzQQwvB8B14cL6SDqThgXV9lb&X-Amz-Signature=8b479c2ece56ecc2a2bc095b44d2a7a848650b90aaf36fcb60505c184ed979e6&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "alt": "Image [6] ",
+      "width": 1920,
+      "height": 1080,
+      "order": 0,
+      "displayMode": "single"
+    },
+    {
+      "type": "image",
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/a80b79ac-f061-41d5-8c06-6e5c6d00f6f8/51e60646-0102-4529-b16b-95634f89ac74/0DPGHRdyhACE5I5UKj8yGfmGNek_%281%29.webp?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VX3Z32PR%2F20250324%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250324T202725Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIErZtGyi6dXYa63nvl2xE%2FSBwF%2FSYAEeIksE21FyESXDAiEA5u2koCNSZktmXZVwFmPeRwrR38qQs9Sr83%2Fz1LFfnSsqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIEddfIuekNTI05hGircA59BXRFIjdQJGjhVqn6A8YtGw6GRu3W0Gy4MsmdJaL360GJeCiBFceVAzRqPJN%2FtXdQ1bDYh9EVTkiL9iXaB3MG7UGdzS%2F00g6JP2xqJczJdFr3zmz5Bz%2FpdxP3cynXl11tj94CqPOuZ8pYSFmFxSUyOotEq4d5scdYiLx0j5FPfspnRepmxp5%2FBjmKxB8%2FKTNDL2AfgyPSMblVay0MRRbrXgxFwfJwsmV3SHGp9Dhzb7WoR5RXfTc1iKJ0L9wme4kD9BKG61knDLrL5XVz%2F9E9foO%2B29lfYC%2By839vQlYgUcye23q5EDk3voLT4e6bpT1%2FoiYVKVonDxU0UOFTCNuLh%2BJdaQoHPI5d2vqmSsPYizijiQsWe9%2BQTmAW169T47Vr90ipbSk30D80wUIQoFWv3Mo5b%2BH6lVUKQQP12QHtRBl22w26u921%2FvLHiK58lPI9uQ7S9nu%2FJnqpN%2BCOSwN%2BcSUsNZEWqKQEc65AZgU8Ssurn3Zu8qUn6ddVnMEe3qQr7iWwSWzAVeBY9Usg07VMlL31tOJiFoDBR66p9DyNUOWi8ltVfY45IgIH%2B2o2Ax%2B3M3yGyxqEqnH1Ij3WIiQ4R6%2B4qY6hN%2FS4BgBnV2afRj0f8THEeZEy%2BCayoMPn%2Bhb8GOqUBfEKJ5cxEhUDwM%2BJiMxU66U01pFSQarsnphCJT7rniEk0It15U9E2apKf58GvUjAbdkGxh39wASz1Bb1QW1u9%2BZ5U%2FDxu2BVwIwwihGhf9rMZvgS0IBbLQmio023HQ%2BC9voRcPDzt7v547QQU%2BFsx8WC%2BDvvHn4ZXqg8wuEuidnh0wZoT%2BtWhfACFmAKXnIBzLLvyzQQwvB8B14cL6SDqThgXV9lb&X-Amz-Signature=20fa4a025cb255cd22edcbee546af043ce5fb34d07af995a2ab739b5ff2e239a&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "alt": "Image [9]",
+      "width": 2048,
+      "height": 1152,
+      "order": 0,
+      "displayMode": "single"
+    },
+    {
+      "type": "image",
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/a80b79ac-f061-41d5-8c06-6e5c6d00f6f8/4812348e-63ad-4556-8b5e-9f4fa6c2a740/TzmTzsAWdX8DwrSReguTLsA8k.webp?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VX3Z32PR%2F20250324%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250324T202725Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIErZtGyi6dXYa63nvl2xE%2FSBwF%2FSYAEeIksE21FyESXDAiEA5u2koCNSZktmXZVwFmPeRwrR38qQs9Sr83%2Fz1LFfnSsqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIEddfIuekNTI05hGircA59BXRFIjdQJGjhVqn6A8YtGw6GRu3W0Gy4MsmdJaL360GJeCiBFceVAzRqPJN%2FtXdQ1bDYh9EVTkiL9iXaB3MG7UGdzS%2F00g6JP2xqJczJdFr3zmz5Bz%2FpdxP3cynXl11tj94CqPOuZ8pYSFmFxSUyOotEq4d5scdYiLx0j5FPfspnRepmxp5%2FBjmKxB8%2FKTNDL2AfgyPSMblVay0MRRbrXgxFwfJwsmV3SHGp9Dhzb7WoR5RXfTc1iKJ0L9wme4kD9BKG61knDLrL5XVz%2F9E9foO%2B29lfYC%2By839vQlYgUcye23q5EDk3voLT4e6bpT1%2FoiYVKVonDxU0UOFTCNuLh%2BJdaQoHPI5d2vqmSsPYizijiQsWe9%2BQTmAW169T47Vr90ipbSk30D80wUIQoFWv3Mo5b%2BH6lVUKQQP12QHtRBl22w26u921%2FvLHiK58lPI9uQ7S9nu%2FJnqpN%2BCOSwN%2BcSUsNZEWqKQEc65AZgU8Ssurn3Zu8qUn6ddVnMEe3qQr7iWwSWzAVeBY9Usg07VMlL31tOJiFoDBR66p9DyNUOWi8ltVfY45IgIH%2B2o2Ax%2B3M3yGyxqEqnH1Ij3WIiQ4R6%2B4qY6hN%2FS4BgBnV2afRj0f8THEeZEy%2BCayoMPn%2Bhb8GOqUBfEKJ5cxEhUDwM%2BJiMxU66U01pFSQarsnphCJT7rniEk0It15U9E2apKf58GvUjAbdkGxh39wASz1Bb1QW1u9%2BZ5U%2FDxu2BVwIwwihGhf9rMZvgS0IBbLQmio023HQ%2BC9voRcPDzt7v547QQU%2BFsx8WC%2BDvvHn4ZXqg8wuEuidnh0wZoT%2BtWhfACFmAKXnIBzLLvyzQQwvB8B14cL6SDqThgXV9lb&X-Amz-Signature=679b6324ff5688ac097de19366d6b6492e55762c9728dd4445be2c266d3fe8ca&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "alt": "Image [10]",
+      "width": 1920,
+      "height": 1081,
+      "order": 0,
+      "displayMode": "single"
+    },
+    {
+      "type": "image",
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/a80b79ac-f061-41d5-8c06-6e5c6d00f6f8/d56b3563-2b18-43b5-9e4d-2f13c8475ba4/dvgkRCEy9nf1WjiotSYjryxFLq0.webp?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VX3Z32PR%2F20250324%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250324T202725Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIErZtGyi6dXYa63nvl2xE%2FSBwF%2FSYAEeIksE21FyESXDAiEA5u2koCNSZktmXZVwFmPeRwrR38qQs9Sr83%2Fz1LFfnSsqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIEddfIuekNTI05hGircA59BXRFIjdQJGjhVqn6A8YtGw6GRu3W0Gy4MsmdJaL360GJeCiBFceVAzRqPJN%2FtXdQ1bDYh9EVTkiL9iXaB3MG7UGdzS%2F00g6JP2xqJczJdFr3zmz5Bz%2FpdxP3cynXl11tj94CqPOuZ8pYSFmFxSUyOotEq4d5scdYiLx0j5FPfspnRepmxp5%2FBjmKxB8%2FKTNDL2AfgyPSMblVay0MRRbrXgxFwfJwsmV3SHGp9Dhzb7WoR5RXfTc1iKJ0L9wme4kD9BKG61knDLrL5XVz%2F9E9foO%2B29lfYC%2By839vQlYgUcye23q5EDk3voLT4e6bpT1%2FoiYVKVonDxU0UOFTCNuLh%2BJdaQoHPI5d2vqmSsPYizijiQsWe9%2BQTmAW169T47Vr90ipbSk30D80wUIQoFWv3Mo5b%2BH6lVUKQQP12QHtRBl22w26u921%2FvLHiK58lPI9uQ7S9nu%2FJnqpN%2BCOSwN%2BcSUsNZEWqKQEc65AZgU8Ssurn3Zu8qUn6ddVnMEe3qQr7iWwSWzAVeBY9Usg07VMlL31tOJiFoDBR66p9DyNUOWi8ltVfY45IgIH%2B2o2Ax%2B3M3yGyxqEqnH1Ij3WIiQ4R6%2B4qY6hN%2FS4BgBnV2afRj0f8THEeZEy%2BCayoMPn%2Bhb8GOqUBfEKJ5cxEhUDwM%2BJiMxU66U01pFSQarsnphCJT7rniEk0It15U9E2apKf58GvUjAbdkGxh39wASz1Bb1QW1u9%2BZ5U%2FDxu2BVwIwwihGhf9rMZvgS0IBbLQmio023HQ%2BC9voRcPDzt7v547QQU%2BFsx8WC%2BDvvHn4ZXqg8wuEuidnh0wZoT%2BtWhfACFmAKXnIBzLLvyzQQwvB8B14cL6SDqThgXV9lb&X-Amz-Signature=b3d913b6be603b6895283e8880a46ab80783b6d6a20d9409866c04847fd40973&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "alt": "Image [11]",
+      "width": 1920,
+      "height": 1080,
+      "order": 0,
+      "displayMode": "single"
+    },
+    {
+      "type": "image",
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/a80b79ac-f061-41d5-8c06-6e5c6d00f6f8/2b33d537-a519-4599-99ae-5681ecddf8fe/fdhu2swySyTWQIlhV1V1h3pkBU.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VX3Z32PR%2F20250324%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250324T202725Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIErZtGyi6dXYa63nvl2xE%2FSBwF%2FSYAEeIksE21FyESXDAiEA5u2koCNSZktmXZVwFmPeRwrR38qQs9Sr83%2Fz1LFfnSsqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIEddfIuekNTI05hGircA59BXRFIjdQJGjhVqn6A8YtGw6GRu3W0Gy4MsmdJaL360GJeCiBFceVAzRqPJN%2FtXdQ1bDYh9EVTkiL9iXaB3MG7UGdzS%2F00g6JP2xqJczJdFr3zmz5Bz%2FpdxP3cynXl11tj94CqPOuZ8pYSFmFxSUyOotEq4d5scdYiLx0j5FPfspnRepmxp5%2FBjmKxB8%2FKTNDL2AfgyPSMblVay0MRRbrXgxFwfJwsmV3SHGp9Dhzb7WoR5RXfTc1iKJ0L9wme4kD9BKG61knDLrL5XVz%2F9E9foO%2B29lfYC%2By839vQlYgUcye23q5EDk3voLT4e6bpT1%2FoiYVKVonDxU0UOFTCNuLh%2BJdaQoHPI5d2vqmSsPYizijiQsWe9%2BQTmAW169T47Vr90ipbSk30D80wUIQoFWv3Mo5b%2BH6lVUKQQP12QHtRBl22w26u921%2FvLHiK58lPI9uQ7S9nu%2FJnqpN%2BCOSwN%2BcSUsNZEWqKQEc65AZgU8Ssurn3Zu8qUn6ddVnMEe3qQr7iWwSWzAVeBY9Usg07VMlL31tOJiFoDBR66p9DyNUOWi8ltVfY45IgIH%2B2o2Ax%2B3M3yGyxqEqnH1Ij3WIiQ4R6%2B4qY6hN%2FS4BgBnV2afRj0f8THEeZEy%2BCayoMPn%2Bhb8GOqUBfEKJ5cxEhUDwM%2BJiMxU66U01pFSQarsnphCJT7rniEk0It15U9E2apKf58GvUjAbdkGxh39wASz1Bb1QW1u9%2BZ5U%2FDxu2BVwIwwihGhf9rMZvgS0IBbLQmio023HQ%2BC9voRcPDzt7v547QQU%2BFsx8WC%2BDvvHn4ZXqg8wuEuidnh0wZoT%2BtWhfACFmAKXnIBzLLvyzQQwvB8B14cL6SDqThgXV9lb&X-Amz-Signature=074d79f0cb33fc32a84d680a886feb5fdc124bc44b23207891fb0c33233802e9&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "alt": "Image [12]",
+      "width": 1920,
+      "height": 1080,
+      "order": 0,
+      "displayMode": "single"
+    },
+    {
+      "type": "video",
+      "url": "https://vimeo.com/1055964106",
+      "videoType": "vimeo",
+      "alt": "Video principal",
+      "width": 0,
+      "height": 0,
+      "order": 13
+    }
+  ],
+  "tags": [
+    "motion graphics",
+    "branding refresh",
+    "ux/ui"
+  ],
+  "order": 0,
+  "slug": "build",
+  "website": "https://build.top/",
+  "status": "published",
+  "featured": false,
+  "featuredOrder": 0,
+  "createdAt": "2024-11-07T09:21:00.000Z",
+  "updatedAt": "2025-03-24T20:27:35.292Z",
+  "synced": true
+}

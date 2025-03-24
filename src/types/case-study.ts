@@ -13,6 +13,7 @@ export interface MediaItem {
   height: number;
   order: number;
   displayMode?: 'single' | 'dual' | 'dual_left' | 'dual_right';
+  role?: 'cover' | 'hero' | 'avatar' | 'gallery' | 'detail';
 }
 
 // Estructura principal de Case Study
@@ -42,7 +43,8 @@ export interface CaseStudy {
 
 // Tipo para actualizar el estado de destacado
 export interface FeaturedCaseUpdate {
-  id: string;
+  id?: string;
+  slug: string;
   featured: boolean;
   featuredOrder: number;
 }

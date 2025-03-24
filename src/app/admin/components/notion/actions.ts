@@ -32,7 +32,7 @@ export async function syncStudy(id: string): Promise<{
   try {
     // Aquí iría la lógica de sincronización directa con Notion
     // Por ahora simplemente revalidamos el path
-    revalidatePath('/admin/case-studies')
+    revalidatePath('/admin')
     return { success: true }
   } catch (error) {
     console.error('Error syncing study:', error)
@@ -63,7 +63,7 @@ export async function syncAllStudies(): Promise<{
       throw new Error(data.error || 'Error al sincronizar')
     }
 
-    revalidatePath('/admin/case-studies')
+    revalidatePath('/admin')
     return { success: true }
   } catch (error) {
     console.error('Error syncing all studies:', error)

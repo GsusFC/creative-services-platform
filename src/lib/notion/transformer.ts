@@ -25,6 +25,49 @@ import type {
   RichTextItemResponse
 } from '@notionhq/client/build/src/api-endpoints';
 
+import probe from 'probe-image-size';
+
+/**
+ * Obtiene las dimensiones de una imagen
+ */
+async function getImageDimensions(url: string): Promise<{ width: number; height: number }> {
+  try {
+    const result = await probe(url);
+    return { width: result.width, height: result.height };
+  } catch (error) {
+    console.error(`Error al obtener dimensiones de imagen ${url}:`, error);
+    return { width: 0, height: 0 }; // Valores por defecto en caso de error
+  }
+}
+
+/**
+ * Extrae el ID de Vimeo de una URL
+ */
+function extractVimeoId(url: string | null): string | null {
+  if (!url) return null;
+  const match = url.match(/vimeo\.com\/([0-9]+)/);
+  return match ? match[1] : null;
+}
+
+/**
+ * Obtiene la URL del thumbnail de un video de Vimeo
+ */
+async function getVimeoThumbnail(vimeoId: string): Promise<string | null> {
+  try {
+    const response = await fetch(`https://vimeo.com/api/v2/video/${vimeoId}.json`);
+    if (!response.ok) throw new Error('Failed to fetch Vimeo data');
+    
+    const data = await response.json();
+    if (Array.isArray(data) && data.length > 0 && data[0].thumbnail_large) {
+      return data[0].thumbnail_large;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error fetching Vimeo thumbnail:', error);
+    return null;
+  }
+}
+
 type NotionFileBase = {
   name: string;
   caption?: RichTextItemResponse[];
@@ -271,9 +314,9 @@ function extractMultipleValues(property: PropertyItemObjectResponse | undefined)
 /**
  * Convierte los archivos de Notion a nuestro formato MediaItem
  */
-function transformMediaItems(files: NotionFile[] = []): MediaItem[] {
-  return files
-    .map((file, index) => {
+async function transformMediaItems(files: NotionFile[] = []): Promise<MediaItem[]> {
+  const items = await Promise.all(
+    files.map(async (file, index) => {
       let url = '';
       
       if (file.type === 'external' && file.external) {
@@ -300,7 +343,19 @@ function transformMediaItems(files: NotionFile[] = []): MediaItem[] {
         displayMode: 'single'
       };
 
-      if (type === 'video') {
+      if (type === 'image') {
+        try {
+          // Obtener dimensiones de la imagen
+          const dimensions = await getImageDimensions(url);
+          item.width = dimensions.width;
+          item.height = dimensions.height;
+        } catch (error) {
+          console.error(`Error al obtener dimensiones de la imagen ${url}:`, error);
+          // Usar dimensiones por defecto si hay error
+          item.width = 1200;
+          item.height = 800;
+        }
+      } else if (type === 'video') {
         const videoType = determineVideoType(url);
         item.videoType = videoType;
         item.thumbnailUrl = '';
@@ -308,12 +363,26 @@ function transformMediaItems(files: NotionFile[] = []): MediaItem[] {
         // Procesar URL de Vimeo si es necesario
         if (videoType === 'vimeo') {
           item.url = processVimeoUrl(url);
+          // Intentar obtener el thumbnail de Vimeo
+          try {
+            const vimeoId = extractVimeoId(url);
+            if (vimeoId) {
+              const thumbnailUrl = await getVimeoThumbnail(vimeoId);
+              if (thumbnailUrl) {
+                item.thumbnailUrl = thumbnailUrl;
+              }
+            }
+          } catch (error) {
+            console.error(`Error al obtener thumbnail de Vimeo para ${url}:`, error);
+          }
         }
       }
 
       return item;
     })
-    .filter((item): item is MediaItem => item !== null);
+  );
+
+  return items.filter((item): item is MediaItem => item !== null);
 }
 
 /**
@@ -358,7 +427,7 @@ function processVimeoUrl(url: string): string {
 /**
  * Transforma una página de Notion en nuestro formato CaseStudy
  */
-export function transformNotionToCaseStudy(page: NotionPage): CaseStudy {
+export async function transformNotionToCaseStudy(page: NotionPage): Promise<CaseStudy> {
   const props = page.properties;
   
   // Función para convertir cualquier propiedad a PropertyItemObjectResponse
@@ -387,7 +456,8 @@ export function transformNotionToCaseStudy(page: NotionPage): CaseStudy {
   }
   
   // Usar el nombre exacto de Notion para el título y cliente
-  const title = page.properties['Brand Name']?.title?.[0]?.plain_text || brandName;
+  const brandNameProp = page.properties['Brand Name'] as PropertyItemObjectResponse;
+  const title = isTitleProperty(brandNameProp) && Array.isArray(brandNameProp.title) && brandNameProp.title[0]?.plain_text ? brandNameProp.title[0].plain_text : brandName;
   const client = title; // El cliente es el mismo que el título
   
   // Obtener las propiedades de archivos
@@ -415,7 +485,7 @@ export function transformNotionToCaseStudy(page: NotionPage): CaseStudy {
   for (const propertyName of imageProperties) {
     const property = getPropertyItem(propertyName);
     if (property && isFilesProperty(property)) {
-      const items = transformMediaItems(property.files as NotionFile[]);
+      const items = await transformMediaItems(property.files as NotionFile[]);
       // Añadir el nombre de la propiedad como alt para identificar el tipo de imagen
       items.forEach(item => {
         item.alt = propertyName;
@@ -465,10 +535,10 @@ export function transformNotionToCaseStudy(page: NotionPage): CaseStudy {
   const websiteProperty = getPropertyItem('Website');
   
   // Obtener el estado desde Notion
-  const statusProperty = getPropertyItem('Status');
-  const notionStatus = statusProperty && isSelectProperty(statusProperty) && statusProperty.select
+  const statusProperty = getPropertyItem('Status') as PropertyItemObjectResponse;
+  const notionStatus = isSelectProperty(statusProperty) && statusProperty.select?.name
     ? statusProperty.select.name
-    : page.status || 'Sin empezar';
+    : 'Sin empezar';
   
   // Solo publicar los que estén "Listo"
   const status = notionStatus === 'Listo' ? 'published' : 'draft';
@@ -483,16 +553,16 @@ export function transformNotionToCaseStudy(page: NotionPage): CaseStudy {
 
   const caseStudy: CaseStudy = {
     id: page.id,
-    title,
-    client: title,
+    title: title || '',
+    client: title || '',
     description: extractText(descriptionProperty) || '',
     tagline: extractText(taglineProperty) || '',
     closingClaim: extractText(closingClaimProperty) || '',
     mediaItems,
     tags: extractMultipleValues(servicesProperty),
     order: 0,
-    slug: extractText(slugProperty) || generateSlug(client),
-    website: websiteProperty && isUrlProperty(websiteProperty) ? websiteProperty.url || undefined : undefined,
+    slug: extractText(slugProperty) || generateSlug(title || ''),
+    website: websiteProperty && isUrlProperty(websiteProperty) && websiteProperty.url ? websiteProperty.url : undefined,
     status,
     featured,
     featuredOrder: 0,

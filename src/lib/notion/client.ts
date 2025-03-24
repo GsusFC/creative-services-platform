@@ -14,8 +14,7 @@ import {
   fetchNotion
 } from './utils';
 
-// Importamos downloadFileToBase64 desde utils.ts
-import { downloadFileToBase64 } from './utils';
+import { downloadAndSaveImage } from '../utils/image-handler';
 
 // Interfaces para tipado estricto
 interface NotionPage {
@@ -1284,6 +1283,8 @@ type BasicFields = {
  */
 async function extractMediaItems(data: NotionPage, isMcpFormat: boolean): Promise<MediaItem[]> {
   const mediaItems: MediaItem[] = [];
+  const slug = isMcpFormat ? (data as McpNotionData).slug || data.id : data.id;
+
   try {
     if (isMcpFormat) {
       const mcpData = data as McpNotionData;
@@ -1291,9 +1292,12 @@ async function extractMediaItems(data: NotionPage, isMcpFormat: boolean): Promis
       // Procesar cover
       if (mcpData.media?.cover?.url) {
         try {
-          const coverBase64 = await downloadFileToBase64(mcpData.media.cover.url);
+          const localPath = await downloadAndSaveImage(mcpData.media.cover.url, {
+            caseStudySlug: slug,
+            imageType: 'cover'
+          });
           mediaItems.push({
-            url: coverBase64 || mcpData.media.cover.url,
+            url: localPath,
             type: 'image',
             alt: 'Cover',
             width: 0,
@@ -1309,9 +1313,12 @@ async function extractMediaItems(data: NotionPage, isMcpFormat: boolean): Promis
       // Procesar avatar
       if (mcpData.media?.avatar?.url) {
         try {
-          const avatarBase64 = await downloadFileToBase64(mcpData.media.avatar.url);
+          const localPath = await downloadAndSaveImage(mcpData.media.avatar.url, {
+            caseStudySlug: slug,
+            imageType: 'avatar'
+          });
           mediaItems.push({
-            url: avatarBase64 || mcpData.media.avatar.url,
+            url: localPath,
             type: 'image',
             alt: 'Avatar',
             width: 0,
@@ -1327,9 +1334,12 @@ async function extractMediaItems(data: NotionPage, isMcpFormat: boolean): Promis
       // Procesar hero image
       if (mcpData.media?.hero_image?.url) {
         try {
-          const heroBase64 = await downloadFileToBase64(mcpData.media.hero_image.url);
+          const localPath = await downloadAndSaveImage(mcpData.media.hero_image.url, {
+            caseStudySlug: slug,
+            imageType: 'hero'
+          });
           mediaItems.push({
-            url: heroBase64 || mcpData.media.hero_image.url,
+            url: localPath,
             type: 'image',
             alt: 'Hero Image',
             width: 0,
@@ -1348,9 +1358,13 @@ async function extractMediaItems(data: NotionPage, isMcpFormat: boolean): Promis
           const image = mcpData.media.images[i];
           if (image?.url) {
             try {
-              const imageBase64 = await downloadFileToBase64(image.url);
+              const localPath = await downloadAndSaveImage(image.url, {
+                caseStudySlug: slug,
+                imageType: 'gallery',
+                originalFilename: `gallery-${i + 1}`
+              });
               mediaItems.push({
-                url: imageBase64 || image.url,
+                url: localPath,
                 type: 'image',
                 alt: `Image ${i + 1}`,
                 width: 0,
@@ -1396,18 +1410,20 @@ async function extractMediaItems(data: NotionPage, isMcpFormat: boolean): Promis
       }
     } else {
       // Formato Notion nativo
+      const slug = data.slug || data.id;
+      
       // Procesar Cover
-      await processNotionFiles(data.properties?.['Cover']?.files, 'Cover', mediaItems);
+      await processNotionFiles(data.properties?.['Cover']?.files, 'Cover', mediaItems, slug);
       
       // Procesar Avatar
-      await processNotionFiles(data.properties?.['Avatar']?.files, 'Avatar', mediaItems);
+      await processNotionFiles(data.properties?.['Avatar']?.files, 'Avatar', mediaItems, slug);
       
       // Procesar Hero Image
-      await processNotionFiles(data.properties?.['Hero Image']?.files, 'Hero Image', mediaItems);
+      await processNotionFiles(data.properties?.['Hero Image']?.files, 'Hero Image', mediaItems, slug);
       
       // Procesar imágenes numeradas
       for (let i = 1; i <= 12; i++) {
-        await processNotionFiles(data.properties?.[`Image ${i}`]?.files, `Image ${i}`, mediaItems);
+        await processNotionFiles(data.properties?.[`Image ${i}`]?.files, `Image ${i}`, mediaItems, slug);
       }
       
       // Procesar videos
@@ -1458,7 +1474,7 @@ async function extractMediaItems(data: NotionPage, isMcpFormat: boolean): Promis
  * @param alt Texto alternativo para los archivos
  * @param mediaItems Array de MediaItems donde se agregarán los resultados
  */
-async function processNotionFiles(files: any, alt: string, mediaItems: MediaItem[]): Promise<void> {
+async function processNotionFiles(files: any, alt: string, mediaItems: MediaItem[], caseStudySlug: string): Promise<void> {
   // Validar que files sea un array no nulo
   if (!files || !Array.isArray(files) || files.length === 0) {
     console.log(`No hay archivos para procesar en ${alt}`);
@@ -1531,21 +1547,24 @@ async function processNotionFiles(files: any, alt: string, mediaItems: MediaItem
     try {
       // Solo intentar descargar si es una imagen
       if (mediaType === 'image') {
-        const fileBase64 = await downloadFileToBase64(fileUrl);
-        
-        if (fileBase64) {
-          // Si se descargó correctamente, usar la versión base64
+        try {
+          const localPath = await downloadAndSaveImage(fileUrl, {
+            caseStudySlug,
+            imageType: 'gallery',
+            originalFilename: file.name || ''
+          });
+          
           mediaItems.push({
-            url: fileBase64,
+            url: localPath,
             type: mediaType,
             alt,
-            width: 800, // Valores por defecto más razonables
+            width: 800,
             height: 600,
             order: mediaItems.length,
-            displayMode: 'single' // Valor por defecto
+            displayMode: 'single'
           });
           console.log(`Archivo ${fileType} procesado correctamente para ${alt}`);
-        } else {
+        } catch (error) {
           // Si falló la descarga, usar la URL original como fallback
           console.warn(`No se pudo descargar el archivo ${fileType} para ${alt}, usando URL original:`, fileUrl);
           mediaItems.push({

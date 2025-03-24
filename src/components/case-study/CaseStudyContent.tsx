@@ -1,6 +1,6 @@
 "use client"
 
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useState, useRef, useEffect } from 'react';
 import { CaseStudy, MediaItem } from '@/types/case-study';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -13,6 +13,196 @@ export interface CaseStudyContentProps {
   mediaFilters: MediaFilters;
   animationSettings: AnimationSettings;
 }
+
+// Componente de imagen con manejo de errores
+const GalleryImage = memo(({ 
+  item, 
+  index, 
+  totalItems,
+  caseStudyTitle,
+  galleryAnimation
+}: {
+  item: MediaItem;
+  index: number;
+  totalItems: number;
+  caseStudyTitle: string;
+  galleryAnimation: any;
+}) => {
+  const [imageError, setImageError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Verificar si la URL es válida
+  const imageUrl = item.url && item.url.trim() !== '' 
+    ? item.url 
+    : caseStudyConfig.placeholders.fallbackImage;
+  
+  return (
+    <motion.div 
+      key={`gallery-${index}`}
+      initial={galleryAnimation.initial}
+      whileInView={galleryAnimation.whileInView}
+      viewport={{ once: true }}
+      transition={{ ...galleryAnimation.transition, delay: index * 0.1 }}
+      className="relative w-full"
+    >
+      <div className="aspect-video relative bg-zinc-900 overflow-hidden">
+        {/* Indicador de carga */}
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/80 z-10">
+            <div className="w-8 h-8 border-2 border-white/20 border-t-white/80 rounded-full animate-spin" />
+          </div>
+        )}
+        
+        {/* Indicador de error */}
+        {imageError && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-900/90 z-10">
+            <svg className="w-8 h-8 text-red-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <p className="text-xs text-red-300">Error al cargar imagen</p>
+          </div>
+        )}
+        
+        {/* La imagen */}
+        <Image 
+          src={imageUrl}
+          alt={item.alt || `${caseStudyTitle} - ${caseStudyConfig.placeholders.imageAlt} ${index + 1}`}
+          fill
+          className="object-cover"
+          priority={index < 2} // Priorizar las primeras imágenes
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          onLoadingComplete={() => setIsLoading(false)}
+          onError={() => {
+            console.error(`Error al cargar imagen de case study: ${caseStudyTitle}, índice: ${index}`);
+            setImageError(true);
+            setIsLoading(false);
+          }}
+          unoptimized={imageUrl.startsWith('data:')} // No optimizar imágenes base64
+        />
+      </div>
+    </motion.div>
+  );
+});
+
+// Añadimos displayName para mejorar la depuración
+GalleryImage.displayName = 'GalleryImage';
+
+// Componente de video con manejo de errores
+const VideoItem = memo(({ 
+  video, 
+  index,
+  caseStudyTitle
+}: {
+  video: MediaItem;
+  index: number;
+  caseStudyTitle: string;
+}) => {
+  const [videoError, setVideoError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  
+  // Función para manejar errores de carga de video
+  const handleVideoError = useCallback(() => {
+    console.error(`Error al cargar video de case study: ${caseStudyTitle}, índice: ${index}`);
+    setVideoError(true);
+    setIsLoading(false);
+  }, [caseStudyTitle, index]);
+  
+  // Función para manejar la carga exitosa del video
+  const handleVideoLoad = useCallback(() => {
+    setIsLoading(false);
+  }, []);
+  
+  // Efecto para detectar cuando el iframe ha cargado
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (iframe) {
+      iframe.addEventListener('load', handleVideoLoad);
+      return () => iframe.removeEventListener('load', handleVideoLoad);
+    }
+    return undefined;
+  }, [handleVideoLoad]);
+  
+  if (video.videoType === 'vimeo') {
+    return (
+      <motion.div 
+        key={`video-${index}`}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4, delay: index * 0.1 }}
+        className="relative w-full"
+      >
+        <div className="aspect-video bg-zinc-900 rounded-lg overflow-hidden">
+          {/* Indicador de carga */}
+          {isLoading && !videoError && (
+            <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/80 z-10">
+              <div className="w-8 h-8 border-2 border-white/20 border-t-white/80 rounded-full animate-spin" />
+            </div>
+          )}
+          
+          {/* Indicador de error */}
+          {videoError && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-900/90 z-10">
+              <svg className="w-8 h-8 text-red-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <p className="text-xs text-red-300">Error al cargar video</p>
+            </div>
+          )}
+          
+          {/* El iframe del video */}
+          {!videoError && (
+            <iframe
+              ref={iframeRef}
+              src={video.url}
+              title={`${caseStudyTitle} - Video ${index + 1}`}
+              className="w-full h-full"
+              frameBorder="0"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowFullScreen
+              loading="lazy"
+              onError={() => handleVideoError()}
+            />
+          )}
+        </div>
+      </motion.div>
+    );
+  }
+  
+  return (
+    <motion.div 
+      key={`video-${index}`}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.1 }}
+      className="relative w-full"
+    >
+      <div className="aspect-video bg-zinc-900 rounded-lg overflow-hidden">
+        <video
+          src={video.url}
+          title={`${caseStudyTitle} - Video ${index + 1}`}
+          className="w-full h-full object-cover"
+          controls
+          playsInline
+          onError={(e) => {
+            console.error(`Error al cargar video local de case study: ${caseStudyTitle}, índice: ${index}`);
+            const target = e.target as HTMLVideoElement;
+            target.style.display = 'none';
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'w-full h-full flex items-center justify-center text-white/50';
+            errorDiv.textContent = 'Error al cargar el video';
+            target.parentElement?.appendChild(errorDiv);
+          }}
+        />
+      </div>
+    </motion.div>
+  );
+});
+
+// Añadimos displayName para mejorar la depuración
+VideoItem.displayName = 'VideoItem';
 
 // Componente principal memoizado para evitar renderizaciones innecesarias
 const CaseStudyContent = memo<CaseStudyContentProps>(({ 
@@ -47,32 +237,47 @@ const CaseStudyContent = memo<CaseStudyContentProps>(({
     ));
   }, []);
 
-  // Renderizar un ítem de imagen
+  // Renderizar un ítem de imagen utilizando el componente GalleryImage
   const renderGalleryItem = useCallback((item: MediaItem, index: number, totalItems: number) => {
-    const isFirstAndMany = index === 0 && totalItems > 1;
     return (
-      <motion.div 
-        key={`gallery-${index}`}
-        initial={galleryAnimation.initial}
-        whileInView={galleryAnimation.whileInView}
-        viewport={{ once: true }}
-        transition={{ ...galleryAnimation.transition, delay: index * 0.1 }}
-        className="relative w-full"
-      >
-        <div className="aspect-video relative">
-          <Image 
-            src={item.url || caseStudyConfig.placeholders.fallbackImage}
-            alt={item.alt || `${caseStudy.title} - ${caseStudyConfig.placeholders.imageAlt} ${index + 1}`}
-            fill
-            className="object-cover"
-          />
-        </div>
-      </motion.div>
+      <GalleryImage
+        key={`gallery-item-${index}`}
+        item={item}
+        index={index}
+        totalItems={totalItems}
+        caseStudyTitle={caseStudy.title}
+        galleryAnimation={galleryAnimation}
+      />
     );
   }, [galleryAnimation, caseStudy.title]);
 
   // Renderizar un ítem de video
   const renderVideoItem = useCallback((video: MediaItem, index: number) => {
+    const [videoError, setVideoError] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(true);
+    const iframeRef = React.useRef<HTMLIFrameElement>(null);
+    
+    // Función para manejar errores de carga de video
+    const handleVideoError = React.useCallback(() => {
+      console.error(`Error al cargar video de case study: ${caseStudy.title}, índice: ${index}`);
+      setVideoError(true);
+      setIsLoading(false);
+    }, [index]);
+    
+    // Función para manejar la carga exitosa del video
+    const handleVideoLoad = React.useCallback(() => {
+      setIsLoading(false);
+    }, []);
+    
+    // Efecto para detectar cuando el iframe ha cargado
+    React.useEffect(() => {
+      const iframe = iframeRef.current;
+      if (iframe) {
+        iframe.addEventListener('load', handleVideoLoad);
+        return () => iframe.removeEventListener('load', handleVideoLoad);
+      }
+    }, [handleVideoLoad]);
+    
     return (
       <motion.div 
         key={`video-${index}`}
@@ -82,9 +287,28 @@ const CaseStudyContent = memo<CaseStudyContentProps>(({
         transition={{ duration: 0.4, delay: index * 0.1 }}
         className="relative w-full"
       >
-        {video.videoType === 'vimeo' ? (
-          <div className="aspect-video bg-zinc-900 rounded-lg overflow-hidden">
+        <div className="aspect-video bg-zinc-900 rounded-lg overflow-hidden">
+          {/* Indicador de carga */}
+          {isLoading && !videoError && (
+            <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/80 z-10">
+              <div className="w-8 h-8 border-2 border-white/20 border-t-white/80 rounded-full animate-spin" />
+            </div>
+          )}
+          
+          {/* Indicador de error */}
+          {videoError && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-900/90 z-10">
+              <svg className="w-8 h-8 text-red-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <p className="text-xs text-red-300">Error al cargar video</p>
+            </div>
+          )}
+          
+          {/* El iframe del video */}
+          {!videoError && (
             <iframe
+              ref={iframeRef}
               src={video.url}
               title={`${caseStudy.title} - Video ${index + 1}`}
               className="w-full h-full"
@@ -93,16 +317,12 @@ const CaseStudyContent = memo<CaseStudyContentProps>(({
               allowFullScreen
               loading="lazy"
               onError={(e) => {
-                const target = e.target as HTMLIFrameElement;
-                target.style.display = 'none';
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'w-full h-full flex items-center justify-center text-white/50';
-                errorDiv.textContent = 'Error al cargar el video';
-                target.parentElement?.appendChild(errorDiv);
+                handleVideoError();
               }}
             />
-          </div>
-        ) : (
+          )}
+        </div>
+        {video.videoType !== 'vimeo' && (
           <div className="aspect-video bg-zinc-900 rounded-lg overflow-hidden">
             <video
               src={video.url}

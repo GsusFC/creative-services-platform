@@ -1,84 +1,65 @@
-import { NextRequest, NextResponse } from 'next/server'
-import fs from 'fs/promises'
-import path from 'path'
+import { NextResponse } from 'next/server';
+import fs from 'fs/promises';
+import path from 'path';
+
+const ENV_FILE = path.join(process.cwd(), '.env.local');
 
 /**
- * Endpoint para guardar configuraciones de conexión
- * 
- * IMPORTANTE: Esta implementación es solo para desarrollo local.
- * En un entorno de producción, NUNCA se deben almacenar credenciales
- * de esta manera y se recomienda usar variables de entorno seguras
- * a través de plataformas como Vercel.
+ * Actualiza la configuración del CMS
  */
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const data = await request.json()
-    
-    // Valida que los datos requeridos estén presentes
-    if (!data.supabaseUrl || !data.supabaseKey) {
+    const data = await request.json();
+
+    // Verificar que tenemos las variables de entorno necesarias
+    if (!data.notionDatabaseId || !data.notionApiKey) {
       return NextResponse.json(
-        { error: 'URL y API Key de Supabase son requeridos' },
+        { error: 'Database ID y API Key de Notion son requeridos' },
         { status: 400 }
-      )
+      );
     }
-    
-    // Obtener el contenido actual del archivo .env
-    const envPath = path.join(process.cwd(), '.env')
-    let envContent = await fs.readFile(envPath, 'utf-8')
-    
-    // Actualizar las variables de Supabase
+
+    // Leer el archivo .env.local
+    let envContent = await fs.readFile(ENV_FILE, 'utf-8');
+
+    // Actualizar las variables de Notion
     envContent = envContent.replace(
-      /NEXT_PUBLIC_SUPABASE_URL=".*"/,
-      `NEXT_PUBLIC_SUPABASE_URL="${data.supabaseUrl}"`
-    )
-    
+      /NEXT_PUBLIC_NOTION_DATABASE_ID=".*"/,
+      `NEXT_PUBLIC_NOTION_DATABASE_ID="${data.notionDatabaseId}"`
+    );
+
     envContent = envContent.replace(
-      /NEXT_PUBLIC_SUPABASE_ANON_KEY=".*"/,
-      `NEXT_PUBLIC_SUPABASE_ANON_KEY="${data.supabaseKey}"`
-    )
-    
-    // Configuración actualizada solo para Supabase
-    
-    // Guardar el archivo .env actualizado
-    await fs.writeFile(envPath, envContent)
-    
-    // Retornar respuesta exitosa
-    return NextResponse.json({
-      success: true,
-      message: 'Configuración guardada exitosamente. La aplicación necesita reiniciarse para aplicar los cambios.'
-    })
-    
+      /NEXT_PUBLIC_NOTION_API_KEY=".*"/,
+      `NEXT_PUBLIC_NOTION_API_KEY="${data.notionApiKey}"`
+    );
+
+    // Guardar los cambios
+    await fs.writeFile(ENV_FILE, envContent, 'utf-8');
+
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error al guardar la configuración:', error)
+    console.error('Error al actualizar la configuración:', error);
     return NextResponse.json(
-      { 
-        error: 'Error al guardar la configuración',
-        details: error instanceof Error ? error.message : String(error)
-      },
+      { error: 'Error al actualizar la configuración' },
       { status: 500 }
-    )
+    );
   }
 }
 
 /**
- * Endpoint para obtener la configuración actual
+ * Obtiene la configuración actual del CMS
  */
 export async function GET() {
   try {
-    // En un entorno real, esto podría obtener las configuraciones de una base de datos segura
-    // Aquí simplemente devolvemos los valores de las variables de entorno
     return NextResponse.json({
-      supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-      // No devolvemos la clave por seguridad, solo si está configurada
-      supabaseKeyConfigured: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-      // Solo se administra la configuración de Supabase
-    })
-    
+      notionDatabaseId: process.env['NEXT_PUBLIC_NOTION_DATABASE_ID'] || '',
+      notionApiKeyConfigured: Boolean(process.env['NEXT_PUBLIC_NOTION_API_KEY'])
+    });
   } catch (error) {
-    console.error('Error al obtener la configuración:', error)
+    console.error('Error al obtener la configuración:', error);
     return NextResponse.json(
       { error: 'Error al obtener la configuración' },
       { status: 500 }
-    )
+    );
   }
 }

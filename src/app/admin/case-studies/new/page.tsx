@@ -29,7 +29,7 @@ export default function NewCaseStudyPage() {
       }
       
       // Redireccionar a la lista de case studies después de crear
-      router.push('/admin/case-studies')
+      router.push('/admin')
       router.refresh() // Refrescar la página para mostrar los datos actualizados
     } catch (err) {
       console.error('Error al crear el case study:', err)

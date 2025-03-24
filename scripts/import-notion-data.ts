@@ -1,4 +1,4 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env node
 
 /**
  * Script para importar datos completos desde Notion
@@ -7,33 +7,37 @@
  * todos los casos de estudio desde Notion y guardarlos localmente.
  * 
  * Uso:
- * npx ts-node scripts/import-notion-data.ts
+ * npx ts-node --esm scripts/import-notion-data.ts
  */
 
 import { config } from 'dotenv';
-import path from 'path';
-import fs from 'fs';
-import { getAllCaseStudies } from '../src/lib/notion/client';
-import { CaseStudy } from '../src/types/case-study';
+import { fileURLToPath } from 'url';
+import { dirname, resolve, join } from 'path';
+import { writeFileSync, mkdirSync, existsSync } from 'fs';
+import { NotionService } from '../src/lib/notion/service.js';
+import type { CaseStudy } from '../src/types/case-study';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Cargar variables de entorno
-config({ path: path.resolve(process.cwd(), '.env.local') });
+config({ path: resolve(process.cwd(), '.env.local') });
 
 // Directorio para almacenar los datos
-const DATA_DIR = path.resolve(process.cwd(), 'data');
-const CASE_STUDIES_FILE = path.join(DATA_DIR, 'case-studies.json');
+const DATA_DIR = resolve(process.cwd(), 'data');
+const CASE_STUDIES_FILE = join(DATA_DIR, 'case-studies.json');
 
 // Asegurar que el directorio de datos existe
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
+if (!existsSync(DATA_DIR)) {
+  mkdirSync(DATA_DIR, { recursive: true });
 }
 
 /**
  * Guarda los casos de estudio en un archivo local
  */
-async function saveToLocalStorage(studies: CaseStudy[]): Promise<void> {
+async function saveToLocalStorage(studies: any[]): Promise<void> {
   try {
-    fs.writeFileSync(
+    writeFileSync(
       CASE_STUDIES_FILE,
       JSON.stringify(studies, null, 2),
       'utf-8'
@@ -53,8 +57,8 @@ async function importFromNotion(): Promise<void> {
   
   try {
     // Verificar variables de entorno
-    const databaseId = process.env.NEXT_PUBLIC_NOTION_DATABASE_ID;
-    const apiKey = process.env.NEXT_PUBLIC_NOTION_API_KEY;
+    const databaseId = process.env['NEXT_PUBLIC_NOTION_DATABASE_ID'];
+    const apiKey = process.env['NEXT_PUBLIC_NOTION_API_KEY'];
     
     if (!databaseId || !apiKey) {
       throw new Error('Variables de entorno no configuradas. Verifica NEXT_PUBLIC_NOTION_DATABASE_ID y NEXT_PUBLIC_NOTION_API_KEY');
@@ -63,12 +67,13 @@ async function importFromNotion(): Promise<void> {
     console.log(`📋 Usando base de datos: ${databaseId}`);
     
     // Obtener datos de Notion
-    const studies = await getAllCaseStudies();
+    const notionService = new NotionService();
+  const studies = await notionService.getAllCaseStudies();
     
     console.log(`✅ Se obtuvieron ${studies.length} casos de estudio de Notion`);
     
     // Mostrar títulos de los casos de estudio
-    studies.forEach((study, index) => {
+    studies.forEach((study: any, index: number) => {
       console.log(`  ${index + 1}. ${study.title} (${study.status})`);
     });
     

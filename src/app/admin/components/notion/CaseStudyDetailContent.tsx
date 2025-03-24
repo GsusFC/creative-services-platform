@@ -61,7 +61,7 @@ export function CaseStudyDetailContent({ id }: CaseStudyDetailContentProps) {
           <Button
             variant="ghost"
             className="admin-page absolute left-0 flex items-center px-3 py-2 bg-black/50 hover:bg-black/70 backdrop-blur-sm border border-white/10 text-gray-300 hover:text-white transition-all"
-            onClick={() => router.push('/admin/case-studies')}
+            onClick={() => router.push('/admin')}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Volver a Case Studies
