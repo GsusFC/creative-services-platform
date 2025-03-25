@@ -43,16 +43,17 @@ async function getImageDimensions(url: string): Promise<{ width: number; height:
 /**
  * Extrae el ID de Vimeo de una URL
  */
-function extractVimeoId(url: string | null): string | null {
+function extractVimeoId(url: string | null | undefined): string | null {
   if (!url) return null;
   const match = url.match(/vimeo\.com\/([0-9]+)/);
-  return match ? match[1] : null;
+  return (match && match[1]) || null;
 }
 
 /**
  * Obtiene la URL del thumbnail de un video de Vimeo
  */
-async function getVimeoThumbnail(vimeoId: string): Promise<string | null> {
+async function getVimeoThumbnail(vimeoId: string | null): Promise<string | null> {
+  if (!vimeoId) return null;
   try {
     const response = await fetch(`https://vimeo.com/api/v2/video/${vimeoId}.json`);
     if (!response.ok) throw new Error('Failed to fetch Vimeo data');
@@ -317,7 +318,7 @@ function extractMultipleValues(property: PropertyItemObjectResponse | undefined)
 async function transformMediaItems(files: NotionFile[] = []): Promise<MediaItem[]> {
   const items = await Promise.all(
     files.map(async (file, index) => {
-      let url = '';
+      let url: string | null = null;
       
       if (file.type === 'external' && file.external) {
         url = file.external.url;
@@ -325,7 +326,7 @@ async function transformMediaItems(files: NotionFile[] = []): Promise<MediaItem[
         url = file.file.url;
       }
       
-      if (!url) return null;
+      if (!url || url === '') return null;
 
       const type = determineMediaType(url);
       let caption = '';
@@ -388,7 +389,8 @@ async function transformMediaItems(files: NotionFile[] = []): Promise<MediaItem[
 /**
  * Determina el tipo de medio basado en la URL
  */
-function determineMediaType(url: string): 'image' | 'video' {
+function determineMediaType(url: string | null): 'image' | 'video' {
+  if (!url) return 'image'; // fallback por defecto
   const extension = url.split('.').pop()?.toLowerCase();
   if (extension && ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
     return 'image';
@@ -402,14 +404,16 @@ function determineMediaType(url: string): 'image' | 'video' {
 /**
  * Determina el tipo de video
  */
-function determineVideoType(url: string): 'vimeo' | 'local' {
+function determineVideoType(url: string | null): 'vimeo' | 'local' {
+  if (!url) return 'local'; // fallback por defecto
   if (url.includes('vimeo.com')) {
     return 'vimeo';
   }
   return 'local';
 }
 
-function processVimeoUrl(url: string): string {
+function processVimeoUrl(url: string | null): string {
+  if (!url) return ''; // fallback por defecto
   // Si ya es un embed, devolverlo tal cual
   if (url.includes('player.vimeo.com')) {
     return url;

@@ -2,7 +2,8 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { getCaseStudyBySlug } from '@/lib/storage/case-studies'
+import { getLocalStudyBySlug } from '@/lib/storage/case-studies'
+import { MediaItem } from '@/types/case-study'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { notFound } from 'next/navigation'
@@ -14,7 +15,7 @@ interface CaseStudyPageProps {
 }
 
 export async function generateMetadata({ params }: CaseStudyPageProps): Promise<Metadata> {
-  const study = await getCaseStudyBySlug(params.slug)
+  const study = await getLocalStudyBySlug(params.slug)
   if (!study) return {}
 
   return {
@@ -24,19 +25,19 @@ export async function generateMetadata({ params }: CaseStudyPageProps): Promise<
 }
 
 export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
-  const study = await getCaseStudyBySlug(params.slug)
+  const study = await getLocalStudyBySlug(params.slug)
   if (!study || study.status !== 'published') notFound()
 
   // Encontrar la imagen hero
-  const heroImage = study.mediaItems.find(item => item.alt === 'Hero Image')
-  const coverImage = study.mediaItems.find(item => item.alt === 'Cover')
-  const galleryImages = study.mediaItems.filter(item => 
+  const heroImage = study.mediaItems.find((item: MediaItem) => item.alt === 'Hero Image')
+  const coverImage = study.mediaItems.find((item: MediaItem) => item.alt === 'Cover')
+  const galleryImages = study.mediaItems.filter((item: MediaItem) => 
     item.alt !== 'Hero Image' && 
     item.alt !== 'Cover' && 
     item.alt !== 'Avatar' &&
     item.type === 'image'
   )
-  const videos = study.mediaItems.filter(item => item.type === 'video')
+  const videos = study.mediaItems.filter((item: MediaItem) => item.type === 'video')
 
   return (
     <main className="min-h-screen bg-black">
@@ -107,7 +108,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
             <div className="space-y-4">
               <h2 className="text-xl font-semibold text-white/80">Servicios</h2>
               <div className="flex flex-wrap gap-2">
-                {study.tags.map((tag, index) => (
+                {study.tags.map((tag: string, index: number) => (
                   <Badge key={index} variant="outline" className="text-white border-white/20">
                     {tag}
                   </Badge>
@@ -127,7 +128,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
           <section className="space-y-8">
             <h2 className="text-2xl font-semibold text-white/80">Galería</h2>
             <div className="grid grid-cols-2 gap-8">
-              {galleryImages.map((image, index) => (
+              {galleryImages.map((image: MediaItem, index: number) => (
                 <div key={index} className="relative aspect-video">
                   <Image
                     src={image.url}
@@ -146,7 +147,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
           <section className="space-y-8">
             <h2 className="text-2xl font-semibold text-white/80">Videos</h2>
             <div className="grid grid-cols-2 gap-8">
-              {videos.map((video, index) => (
+              {videos.map((video: MediaItem, index: number) => (
                 <div key={index} className="relative aspect-video">
                   <iframe
                     src={video.url.replace('vimeo.com', 'player.vimeo.com/video')}

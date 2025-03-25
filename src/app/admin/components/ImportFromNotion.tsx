@@ -11,7 +11,7 @@ export function ImportFromNotion() {
   const handleImport = async (formData: FormData) => {
     startTransition(async () => {
       try {
-        const result = await importFromNotion();
+        const result = await importFromNotion(formData);
         console.log('Importación exitosa:', result);
       } catch (error) {
         console.error('Error durante la importación:', error);
