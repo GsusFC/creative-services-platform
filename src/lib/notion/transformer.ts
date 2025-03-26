@@ -315,7 +315,7 @@ function extractMultipleValues(property: PropertyItemObjectResponse | undefined)
 /**
  * Convierte los archivos de Notion a nuestro formato MediaItem
  */
-async function transformMediaItems(files: NotionFile[] = []): Promise<MediaItem[]> {
+async function transformMediaItems(files: NotionFile[] = [], propertyName: string): Promise<MediaItem[]> {
   const items = await Promise.all(
     files.map(async (file, index) => {
       let url: string | null = null;
@@ -345,16 +345,17 @@ async function transformMediaItems(files: NotionFile[] = []): Promise<MediaItem[
       };
 
       if (type === 'image') {
-        try {
-          // Obtener dimensiones de la imagen
-          const dimensions = await getImageDimensions(url);
-          item.width = dimensions.width;
-          item.height = dimensions.height;
-        } catch (error) {
-          console.error(`Error al obtener dimensiones de la imagen ${url}:`, error);
-          // Usar dimensiones por defecto si hay error
-          item.width = 1200;
+        const propNameLower = propertyName.toLowerCase();
+        
+        // Avatar y Cover son cuadrados (1:1)
+        if (propNameLower === 'avatar' || propNameLower === 'cover') {
+          item.width = 800;
           item.height = 800;
+        }
+        // El resto de imágenes son 16:9
+        else {
+          item.width = 1920;
+          item.height = 1080;
         }
       } else if (type === 'video') {
         const videoType = determineVideoType(url);
@@ -466,41 +467,35 @@ export async function transformNotionToCaseStudy(page: NotionPage): Promise<Case
   
   // Obtener las propiedades de archivos
   let mediaItems: MediaItem[] = [];
-  const imageProperties = [
-    'Cover',
-    'Avatar',
-    'Hero Image',
-    'Image [1]',
-    'Image [2]',
-    'Image [3]',
-    'Image [4]',
-    'Image [5]',
-    'Image [6] ',
-    'Image [7.1] square image',
-    'Image [7.2] square image',
-    'Image [8]',
-    'Image [9]',
-    'Image [10]',
-    'Image [11]',
-    'Image [12]'
-  ];
-
-  // Procesar todas las imágenes
-  for (const propertyName of imageProperties) {
-    const property = getPropertyItem(propertyName);
-    if (property && isFilesProperty(property)) {
-      const items = await transformMediaItems(property.files as NotionFile[]);
+  
+  // Procesar todas las propiedades buscando imágenes
+  for (const [propertyName, property] of Object.entries(props)) {
+    // Convertir la propiedad al formato correcto
+    const propertyItem = getPropertyItem(propertyName);
+    
+    if (propertyItem && isFilesProperty(propertyItem)) {
+      console.log(`  - ${propertyName}:`, propertyItem.files.length > 0 ? 'Tiene archivos' : 'Sin archivos');
+      if (propertyItem.files.length > 0) {
+        console.log('    URLs:', propertyItem.files.map((f: any) => f.type === 'external' ? f.external?.url : f.file?.url));
+      }
+      
+      const items = await transformMediaItems(propertyItem.files as NotionFile[], propertyName);
+      
       // Añadir el nombre de la propiedad como alt para identificar el tipo de imagen
       items.forEach(item => {
         item.alt = propertyName;
+        
         // Marcar las imágenes de avatar
-        if (propertyName === 'Avatar') {
+        if (propertyName.toLowerCase() === 'avatar') {
           item.type = 'avatar';
         }
       });
+      
       mediaItems.push(...items);
     }
   }
+
+
   
   // Obtener las URLs de videos
   const video1Property = getPropertyItem('Video 1');

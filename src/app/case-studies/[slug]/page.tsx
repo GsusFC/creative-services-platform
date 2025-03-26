@@ -25,8 +25,17 @@ export async function generateMetadata({ params }: CaseStudyPageProps): Promise<
 }
 
 export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
+  console.log('Buscando caso de estudio con slug:', params.slug)
   const study = await getLocalStudyBySlug(params.slug)
+  console.log('Datos del estudio encontrado:', {
+    title: study?.title,
+    tagline: study?.tagline,
+    status: study?.status,
+    source: 'Directo de getLocalStudyBySlug'
+  })
   if (!study || study.status !== 'published') notFound()
+
+  console.log('Study data:', { title: study.title, tagline: study.tagline })
 
   // Encontrar la imagen hero
   const heroImage = study.mediaItems.find((item: MediaItem) => item.alt === 'Hero Image')
@@ -74,9 +83,11 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
         </Link>
 
         {/* Contenido del Hero */}
-        <div className="absolute bottom-0 left-0 right-0 p-12 space-y-4">
-          <h1 className="text-6xl font-bold text-white">{study.title}</h1>
-          <p className="text-2xl text-white/80">{study.tagline}</p>
+        <div className="absolute bottom-0 left-0 right-0 p-12">
+          <div className="max-w-7xl mx-auto">
+            <p className="text-2xl font-medium text-white/90 mb-4">{study.title}</p>
+            <h1 className="text-[50px] font-black uppercase tracking-tight leading-[0.95]" style={{ fontFamily: 'var(--font-druk-text-wide)' }}>{study.tagline}</h1>
+          </div>
         </div>
       </div>
 

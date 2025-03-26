@@ -217,9 +217,12 @@ export async function getLocalStudy(id: string): Promise<CaseStudy | null> {
  */
 export async function getLocalStudyBySlug(slug: string): Promise<CaseStudy | null> {
   try {
+    console.log('getLocalStudyBySlug - Buscando slug:', slug)
     // Leer el índice para encontrar el ID correspondiente al slug
     const index = await getCaseStudyIndex()
+    console.log('getLocalStudyBySlug - Índice cargado, entradas:', index.length)
     const entry = index.find(item => item.slug === slug)
+    console.log('getLocalStudyBySlug - Entrada encontrada en índice:', entry?.id)
     
     if (entry) {
       // Obtener el case study completo usando el ID
@@ -227,8 +230,15 @@ export async function getLocalStudyBySlug(slug: string): Promise<CaseStudy | nul
     }
     
     // Si no se encuentra en el índice, intentar en el archivo legacy
+    console.log('getLocalStudyBySlug - Buscando en archivo legacy')
     const legacyStudies = await getLegacyStudies()
-    return legacyStudies.find(study => study.slug === slug) || null
+    const legacyStudy = legacyStudies.find(study => study.slug === slug)
+    console.log('getLocalStudyBySlug - Estudio encontrado en legacy:', {
+      found: !!legacyStudy,
+      title: legacyStudy?.title,
+      tagline: legacyStudy?.tagline
+    })
+    return legacyStudy || null
   } catch (error) {
     console.error(`Error al buscar case study con slug ${slug}:`, error)
     return null
@@ -283,8 +293,17 @@ export async function getCaseStudiesByTag(tag: string): Promise<CaseStudyIndex[]
  */
 async function getLegacyStudies(): Promise<CaseStudy[]> {
   try {
+    console.log('getLegacyStudies - Intentando leer archivo:', LEGACY_CASE_STUDIES_FILE)
     const content = await fs.readFile(LEGACY_CASE_STUDIES_FILE, 'utf-8')
-    return JSON.parse(content)
+    const studies = JSON.parse(content)
+    console.log('getLegacyStudies - Estudios encontrados:', studies.length)
+    const buildStudy = studies.find((s: CaseStudy) => s.slug === 'build')
+    console.log('getLegacyStudies - Build study:', buildStudy ? {
+      title: buildStudy.title,
+      tagline: buildStudy.tagline,
+      status: buildStudy.status
+    } : 'No encontrado')
+    return studies
   } catch (error) {
     return []
   }

@@ -29,6 +29,17 @@ async function getImageUrl(url: string): Promise<string> {
 
 export default async function BuildPage() {
   const study = await getCaseStudy('137a44dc-3505-8037-a0aa-f3ce17af874d')
+  
+  // Procesar todas las URLs de forma asíncrona antes de renderizar
+  const processedMediaItems = await Promise.all(
+    study.mediaItems.map(async (item) => {
+      const resolvedUrl = await getImageUrl(item.url);
+      return {
+        ...item,
+        processedUrl: resolvedUrl
+      };
+    })
+  );
 
   return (
     <div className="p-8">
@@ -57,20 +68,23 @@ export default async function BuildPage() {
 
       {/* Media Items */}
       <section>
-        <h2 className="text-2xl font-bold mb-4">Media Items ({study.mediaItems.length})</h2>
+        <h2 className="text-2xl font-bold mb-4">Media Items ({processedMediaItems.length})</h2>
         <div className="grid grid-cols-1 gap-8">
-          {study.mediaItems.map((item, index) => {
-            console.log(`Rendering media item ${index}:`, item);
-            return (
+          {processedMediaItems.length > 0 ? (
+            processedMediaItems.map((item, index) => (
               <div key={index} className="space-y-2">
                 <MediaItem 
-                  url={getImageUrl(item.url)}
+                  url={item.processedUrl}
                   alt={item.alt || ''}
                   type={item.type}
+                  videoType={item.videoType}
                 />
+                <p className="text-xs text-gray-500">Item {index + 1}: {item.alt || 'Sin descripción'}</p>
               </div>
-            );
-          })}
+            ))
+          ) : (
+            <p>No hay imágenes disponibles</p>
+          )}
         </div>
 
         {/* Debug Info */}

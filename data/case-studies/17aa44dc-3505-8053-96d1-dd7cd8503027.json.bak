@@ -1,0 +1,22 @@
+{
+  "id": "17aa44dc-3505-8053-96d1-dd7cd8503027",
+  "title": "Vocdoni",
+  "client": "Vocdoni",
+  "description": "We partnered with Vocdoni to redesign their brand identity, positioning them as leaders in the future of voting.\n\nOur approach emphasized a visual identity that conveys their commitment to transparency, security and the progressive evolution of democratic processes. Using Webflow, we developed a no-code website with a dynamic, intuitive UI that underscores the immediacy and accessibility of digital voting.\n\nThis new identity and digital experience align with Vocdoni’s mission to transform voting for a secure, decentralized and future-forward democratic landscape.",
+  "tagline": "The voice of digital voting",
+  "closingClaim": "",
+  "mediaItems": [],
+  "tags": [
+    "web3",
+    "voting"
+  ],
+  "order": 0,
+  "slug": "vocdoni",
+  "website": "https://www.vocdoni.io/",
+  "status": "draft",
+  "featured": false,
+  "featuredOrder": 0,
+  "createdAt": "2025-01-13T10:15:00.000Z",
+  "updatedAt": "2025-03-25T23:54:32.562Z",
+  "synced": true
+}

@@ -1,0 +1,23 @@
+{
+  "id": "f4d575d6-8158-4508-84cf-83803cb066f1",
+  "title": "Tutellus",
+  "client": "Tutellus",
+  "description": "Descripción actualizada de prueba",
+  "tagline": "Nuevo tagline de prueba",
+  "closingClaim": "",
+  "mediaItems": [],
+  "tags": [
+    "branding",
+    "ux/ui",
+    "web3"
+  ],
+  "order": 0,
+  "slug": "tutellus",
+  "website": "https://www.tutellus.com/",
+  "status": "draft",
+  "featured": false,
+  "featuredOrder": 0,
+  "createdAt": "2022-12-20T08:39:00.000Z",
+  "updatedAt": "2025-03-25T23:54:32.562Z",
+  "synced": true
+}

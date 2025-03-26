@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 import SystemTools from "./components/SystemTools"
 import { ImportFromNotion } from "./components/ImportFromNotion"
 import { Button } from "./components/ui/button"
+import { NotionMCPCard } from "./components/NotionMCPCard"
 
 export default function AdminPage(): React.ReactNode {
   // Animación para los elementos que aparecen en la página
@@ -290,8 +291,13 @@ export default function AdminPage(): React.ReactNode {
             </Link>
           </motion.div>
           
+          {/* Integración MCP con Notion */}
+          <motion.div variants={itemVariants}>
+            <NotionMCPCard />
+          </motion.div>
+          
           {/* Importar desde Notion */}
-          <motion.div variants={itemVariants} className="mt-8">
+          <motion.div variants={itemVariants} className="md:col-span-2 mt-8">
             <ImportFromNotion />
           </motion.div>
 

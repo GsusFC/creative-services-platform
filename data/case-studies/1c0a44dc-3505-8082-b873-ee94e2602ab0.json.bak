@@ -1,0 +1,21 @@
+{
+  "id": "1c0a44dc-3505-8082-b873-ee94e2602ab0",
+  "title": "Onvote",
+  "client": "Onvote",
+  "description": "The Web3 modular voting system brand embodies innovation and reliability through a minimalist, futuristic design. Utilizing a monochromatic palette of grays and blacks with strategic blue accents, the visual identity features clean lines, geometric shapes, and ample white space. An abstract logo represents modularity and blockchain connectivity, while modern typography and simplified iconography enhance the tech-forward aesthetic. \n\n\nThis cohesive design system, applied across digital platforms and marketing materials, effectively communicates technological sophistication, trust, and user-friendly accessibility. The result is a forward-thinking brand that positions the voting system as a cutting-edge solution in the Web3 space, aligning seamlessly with its creators' vision and meeting the expectations of tech-savvy users.",
+  "tagline": "Anonymous, gasless and modular voting for Web3 ",
+  "closingClaim": "",
+  "mediaItems": [],
+  "tags": [
+    "ux/ui",
+    "design sprint"
+  ],
+  "order": 0,
+  "slug": "onvote",
+  "status": "draft",
+  "featured": false,
+  "featuredOrder": 0,
+  "createdAt": "2025-03-24T04:53:00.000Z",
+  "updatedAt": "2025-03-25T23:54:32.561Z",
+  "synced": true
+}

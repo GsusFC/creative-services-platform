@@ -1,0 +1,22 @@
+{
+  "id": "526c5d5e-63bd-4f8d-9b22-0db3b46c0f85",
+  "title": "Nektar",
+  "client": "Nektar",
+  "description": "Nektar emerges as a hub of transformation and resilience, fusing the fluidity of a liquid with the unifying force of a hive. From its foundations, Nektar has led a revolution, challenging traditional statics and turning assets into a dynamic stream of possibilities.\n\nBoosting liquidity across the ecosystem, allowing assets to circulate freely and adapt to the changing needs of your community. Every transaction is a drop that contributes to the constant flow of innovation and growth.",
+  "tagline": "The essence of the liquid community",
+  "closingClaim": "",
+  "mediaItems": [],
+  "tags": [
+    "branding",
+    "ux/ui"
+  ],
+  "order": 0,
+  "slug": "nektar",
+  "website": "https://nektar.network/",
+  "status": "draft",
+  "featured": false,
+  "featuredOrder": 0,
+  "createdAt": "2024-06-12T12:05:00.000Z",
+  "updatedAt": "2025-03-25T23:54:32.562Z",
+  "synced": true
+}

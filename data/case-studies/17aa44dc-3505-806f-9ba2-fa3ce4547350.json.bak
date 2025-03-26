@@ -1,0 +1,21 @@
+{
+  "id": "17aa44dc-3505-806f-9ba2-fa3ce4547350",
+  "title": "Onit",
+  "client": "Onit",
+  "description": "",
+  "tagline": "The new multiplayer crypto experience",
+  "closingClaim": "",
+  "mediaItems": [],
+  "tags": [
+    "branding",
+    "brand3"
+  ],
+  "order": 0,
+  "slug": "onit",
+  "status": "draft",
+  "featured": false,
+  "featuredOrder": 0,
+  "createdAt": "2025-01-13T10:14:00.000Z",
+  "updatedAt": "2025-03-25T23:54:32.562Z",
+  "synced": true
+}
