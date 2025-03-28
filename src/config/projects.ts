@@ -17,7 +17,9 @@ export interface ProjectConfig {
   };
   animations: {
     grid: {
-      staggerChildren: number;
+      // Permitir propiedades de variantes de Framer Motion
+      initial?: any; 
+      animate?: any;
     };
     card: {
       initial: {

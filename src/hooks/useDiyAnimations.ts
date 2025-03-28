@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo } from 'react';
 import { diyAnimations, cardGradientStyles } from '@/config/do-it-yourself';
-import { AnimationSettings } from '@/types/do-it-yourself';
+// import { AnimationSettings } from '@/types/do-it-yourself'; // Tipo no encontrado, se eliminará
 
 /**
  * Hook para gestionar las animaciones de los componentes del módulo Do-It-Yourself
@@ -22,7 +22,8 @@ export const useDiyAnimations = () => {
   }, []);
   
   // Configuraciones de animación memoizadas para diferentes elementos
-  const animationSettings: AnimationSettings = useMemo(() => ({
+  // Se elimina la anotación de tipo explícita AnimationSettings
+  const animationSettings = useMemo(() => ({
     // Variantes para el contenedor de tarjetas
     catalogContainer: diyAnimations.catalogContainer,
     

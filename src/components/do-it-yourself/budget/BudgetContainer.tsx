@@ -59,7 +59,8 @@ const BudgetContainer: React.FC = () => {
   
   // Renderizar diferentes estados según la situación
   if (estaCargando) {
-    return <BudgetStates.Loading />;
+    // El estado de carga se maneja globalmente, no renderizar nada aquí
+    return null; 
   }
   
   if (error) {
