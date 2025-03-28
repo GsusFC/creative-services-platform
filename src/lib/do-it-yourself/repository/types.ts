@@ -1,15 +1,15 @@
 import { 
-  ServiceCategory, 
+  Category as ServiceCategory, // Importar Category y renombrar a ServiceCategory para compatibilidad interna
   Service,
-  Budget,
-  BudgetService 
-} from '@/types/services-supabase';
+  // Budget, // Tipo no encontrado, comentado
+  // BudgetService // Tipo no encontrado, comentado
+} from '@/types/services'; // Corregida la ruta
 
 // Re-exportar los tipos importados para que estén disponibles
-export type { ServiceCategory, Service, Budget, BudgetService };
+export type { ServiceCategory, Service }; // Eliminados Budget y BudgetService
 
 /**
- * Datos para crear un nuevo presupuesto
+ * Datos para crear un nuevo presupuesto - Mantener por si se usa en otro lugar
  */
 export interface BudgetCreateData {
   client: {
@@ -76,33 +76,34 @@ export interface IServiceRepository {
   getByCategory(categoryId: string): Promise<RepositoryResult<Service[]>>;
 }
 
-/**
- * Interfaz para el repositorio de presupuestos
- */
-export interface IBudgetRepository {
-  /**
-   * Crea un nuevo presupuesto
-   * @returns El código del presupuesto creado
-   */
-  create(budgetData: BudgetCreateData): Promise<RepositoryResult<string>>;
+// /**
+//  * Interfaz para el repositorio de presupuestos - COMENTADO
+//  * Depende de tipos Budget y BudgetService que fueron eliminados de la importación.
+//  */
+// export interface IBudgetRepository {
+//   /**
+//    * Crea un nuevo presupuesto
+//    * @returns El código del presupuesto creado
+//    */
+//   create(budgetData: BudgetCreateData): Promise<RepositoryResult<string>>;
   
-  /**
-   * Obtiene un presupuesto por su código
-   */
-  getByCode(code: string): Promise<RepositoryResult<Budget | null>>;
+//   /**
+//    * Obtiene un presupuesto por su código
+//    */
+//   getByCode(code: string): Promise<RepositoryResult<Budget | null>>;
   
-  /**
-   * Obtiene todos los presupuestos
-   */
-  getAll(): Promise<RepositoryResult<Budget[]>>;
+//   /**
+//    * Obtiene todos los presupuestos
+//    */
+//   getAll(): Promise<RepositoryResult<Budget[]>>;
   
-  /**
-   * Actualiza el estado de un presupuesto
-   */
-  updateStatus(code: string, status: 'pending' | 'approved' | 'rejected'): Promise<RepositoryResult<boolean>>;
+//   /**
+//    * Actualiza el estado de un presupuesto
+//    */
+//   updateStatus(code: string, status: 'pending' | 'approved' | 'rejected'): Promise<RepositoryResult<boolean>>;
   
-  /**
-   * Obtiene los servicios incluidos en un presupuesto
-   */
-  getBudgetServices(budgetId: string): Promise<RepositoryResult<BudgetService[]>>;
-}
+//   /**
+//    * Obtiene los servicios incluidos en un presupuesto
+//    */
+//   getBudgetServices(budgetId: string): Promise<RepositoryResult<BudgetService[]>>;
+// }

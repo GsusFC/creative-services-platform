@@ -19,12 +19,12 @@ export enum TipoElemento {
  */
 export interface ElementoBase {
   id: number; // Mantenemos number por ahora, el mapeo se hace en la capa de servicio
-  nombre: string;
-  descripcion: string | null;
-  precio: number;
-  tiempo_estimado: string | null;
-}
-
+   nombre: string;
+   descripcion: string | null;
+   precio: number;
+   tiempo_estimado?: string | null; // Hecho opcional con ?
+ }
+ 
 /**
  * Interfaz para servicios (Tipo UI)
  */

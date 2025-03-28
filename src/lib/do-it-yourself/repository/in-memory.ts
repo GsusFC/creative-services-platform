@@ -8,7 +8,7 @@ import {
 import {
   IServiceCategoryRepository,
   IServiceRepository,
-  IBudgetRepository, // Mantener por si se usa en './types', aunque la implementación se elimina
+  // IBudgetRepository, // Comentado: La interfaz está comentada en ./types
   BudgetCreateData, // Mantener por si se usa en './types'
   RepositoryResult
 } from './types';

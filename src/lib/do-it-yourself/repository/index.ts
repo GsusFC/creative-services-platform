@@ -1,7 +1,7 @@
 import { 
   IServiceCategoryRepository,
-  IServiceRepository,
-  IBudgetRepository
+  IServiceRepository
+  // IBudgetRepository // Comentado: La interfaz está comentada en ./types
 } from './types';
 
 import {

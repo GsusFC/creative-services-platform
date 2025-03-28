@@ -17,10 +17,10 @@ import {
 import {
   // Usar la ruta correcta para los repositorios
   getServiceCategoryRepository,
-  getServiceRepository,
+  getServiceRepository
   // Repositorios de Producto/Paquete no existen en esta implementación
-  getBudgetRepository
-} from './repository'; // Corregido a ./repository
+  // getBudgetRepository // Comentado: No se exporta desde ./repository
+} from './repository'; 
 
 /**
  * Servicio para interactuar con los datos de Do It Yourself
@@ -129,13 +129,13 @@ export async function getServicios(): Promise<{
   // Mapear Service[] a Servicio[]
   const servicios = result.data.map((service: RepoService): Servicio => ({
     id: getNumericServiceId(service.id), // Mapear ID string a number
-    nombre: service.name,
-    descripcion: service.description,
-    precio: service.price,
-    tiempo_estimado: service.tiempo_estimado || null, // Asumir que Service puede tener tiempo_estimado opcional
-    es_independiente: true, // Default a true ya que no está en el repo
-    departamentoId: getNumericCategoryId(service.category_id) // Añadir el ID numérico del departamento
-  }));
+     nombre: service.name,
+     descripcion: service.description,
+     precio: service.price,
+     tiempo_estimado: null, // Añadido valor por defecto ya que es requerido por Servicio (UI type)
+     es_independiente: true, // Default a true ya que no está en el repo
+     departamentoId: getNumericCategoryId(service.category_id) // Añadir el ID numérico del departamento
+   }));
   
   return {
     servicios,
@@ -169,13 +169,13 @@ export async function getServiciosByDepartamento(departamentoId: number): Promis
   // Mapear Service[] a Servicio[]
   const servicios = result.data.map((service: RepoService): Servicio => ({
     id: getNumericServiceId(service.id),
-    nombre: service.name,
-    descripcion: service.description,
-    precio: service.price,
-    tiempo_estimado: service.tiempo_estimado || null,
-    es_independiente: true, // Default
-    departamentoId: getNumericCategoryId(service.category_id) // Añadir el ID numérico del departamento
-  }));
+     nombre: service.name,
+     descripcion: service.description,
+     precio: service.price,
+     tiempo_estimado: null, // Añadido valor por defecto ya que es requerido por Servicio (UI type)
+     es_independiente: true, // Default
+     departamentoId: getNumericCategoryId(service.category_id) // Añadir el ID numérico del departamento
+   }));
 
   return {
     servicios,
@@ -213,12 +213,12 @@ export async function getServicioById(servicioId: number): Promise<{
   // Mapear Service a Servicio
   const servicio: Servicio = {
     id: servicioId,
-    nombre: result.data.name,
-    descripcion: result.data.description,
-    precio: result.data.price,
-    tiempo_estimado: result.data.tiempo_estimado || null,
-    es_independiente: true // Default
-  };
+     nombre: result.data.name,
+     descripcion: result.data.description,
+     precio: result.data.price,
+     tiempo_estimado: null, // Añadido valor por defecto ya que es requerido por Servicio (UI type)
+     es_independiente: true // Default
+   };
 
   return {
     servicio,
@@ -269,25 +269,28 @@ export async function getPaqueteById(_paqueteId: number): Promise<{ paquete: Paq
 /*
 export async function getElementosPaginados(...) { ... }
 export async function getElementoById(...) { ... }
-*/
-
-// ---- Presupuesto (Sin cambios en la capa de servicio, usa repo directamente) ----
-
-/**
- * Actualiza el estado de un presupuesto
  */
-export async function updateBudgetStatus(code: string, status: 'pending' | 'approved' | 'rejected'): Promise<{
-  success: boolean;
-  error: string | null;
-}> {
-  const repository = getBudgetRepository(); // Usa el repo correcto
-  const result = await repository.updateStatus(code, status);
+
+// ---- Presupuesto (Funcionalidad comentada debido a dependencias faltantes) ----
+
+// /**
+//  * Actualiza el estado de un presupuesto - COMENTADO
+//  * Depende de getBudgetRepository que fue comentado.
+//  */
+// export async function updateBudgetStatus(code: string, status: 'pending' | 'approved' | 'rejected'): Promise<{
+//   success: boolean;
+//   error: string | null;
+// }> {
+//   // const repository = getBudgetRepository(); // Usa el repo correcto
+//   // const result = await repository.updateStatus(code, status);
   
-  return {
-    success: result.data,
-    error: result.error
-  };
-}
+//   // return {
+//   //   success: result.data,
+//   //   error: result.error
+//   // };
+//   console.warn("updateBudgetStatus functionality is currently disabled.");
+//   return { success: false, error: "Budget functionality disabled" };
+// }
 
 // Eliminar la función duplicada
 
