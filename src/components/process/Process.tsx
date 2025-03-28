@@ -52,32 +52,42 @@ export function Process() {
   const [lineTop, setLineTop] = useState("0px")
   const [lineHeight, setLineHeight] = useState("0px")
 
-  // Calcular la posición y altura exactas de la línea después del montaje
+  // Calcular la posición y altura exactas de la línea después del montaje y en resize
   useEffect(() => {
-    if (containerRef.current) {
-      const timelineContainer = containerRef.current
-      // Asegurarse de que los nodos existen antes de calcular
-      // NOTE: This calculation relies on querySelector, which can be brittle if HTML structure changes.
-      // Consider using refs for each node if more robustness is needed, though it adds complexity.
-      const firstNode = timelineContainer.querySelector('.timeline-nodes:first-child .timeline-node-element') as HTMLElement | null
-      const lastNode = timelineContainer.querySelector('.timeline-nodes:last-child .timeline-node-element') as HTMLElement | null
+    const calculateLineGeometry = () => {
+      if (containerRef.current) {
+        const timelineContainer = containerRef.current
+        const firstNode = timelineContainer.querySelector('.timeline-nodes:first-child .timeline-node-element') as HTMLElement | null
+        const lastNode = timelineContainer.querySelector('.timeline-nodes:last-child .timeline-node-element') as HTMLElement | null
 
-      if (firstNode && lastNode) {
-        const containerRect = timelineContainer.getBoundingClientRect()
-        const firstNodeRect = firstNode.getBoundingClientRect()
-        const lastNodeRect = lastNode.getBoundingClientRect()
+        if (firstNode && lastNode) {
+          const containerRect = timelineContainer.getBoundingClientRect()
+          // Usar scrollY para compensar el scroll de la página al calcular posiciones relativas
+          const scrollTop = window.scrollY || document.documentElement.scrollTop; 
+          const firstNodeRect = firstNode.getBoundingClientRect()
+          const lastNodeRect = lastNode.getBoundingClientRect()
 
-        // Calcular el centro vertical de los nodos relativo al contenedor
-        const firstNodeCenterY = (firstNodeRect.top - containerRect.top) + (firstNodeRect.height / 2)
-        const lastNodeCenterY = (lastNodeRect.top - containerRect.top) + (lastNodeRect.height / 2)
+          // Calcular el centro vertical de los nodos relativo al contenedor, ajustado por scroll
+          const firstNodeCenterY = (firstNodeRect.top + scrollTop - (containerRect.top + scrollTop)) + (firstNodeRect.height / 2)
+          const lastNodeCenterY = (lastNodeRect.top + scrollTop - (containerRect.top + scrollTop)) + (lastNodeRect.height / 2)
 
-        // Establecer la posición top y la altura de la línea
-        setLineTop(`${firstNodeCenterY}px`)
-        setLineHeight(`${lastNodeCenterY - firstNodeCenterY}px`)
+          setLineTop(`${firstNodeCenterY}px`)
+          setLineHeight(`${lastNodeCenterY - firstNodeCenterY}px`)
+        }
       }
-    }
-    // Dependencia vacía para ejecutar solo una vez después del montaje inicial
-  }, [])
+    };
+
+    // Calcular al montar
+    calculateLineGeometry();
+
+    // Añadir listener para recalcular en resize
+    window.addEventListener('resize', calculateLineGeometry);
+
+    // Limpiar listener al desmontar
+    return () => {
+      window.removeEventListener('resize', calculateLineGeometry);
+    };
+  }, []) // Dependencia vacía para ejecutar solo una vez al montar y configurar listeners
 
   // Hook useScroll para seguir el progreso del scroll dentro del contenedor
   const { scrollYProgress } = useScroll({
@@ -122,10 +132,10 @@ export function Process() {
             height: lineHeight, // Altura total calculada
             scaleY             // Escala animada por scroll
           }}
-        />
+         />
 
         {/* Process Phases */}
-        <div className="relative space-y-48 md:space-y-48">
+        <div className="relative space-y-24 md:space-y-36 lg:space-y-48"> {/* Espaciado responsivo */}
           {phases.map((phase, index) => {
             const isEven = index % 2 === 0
             return (
@@ -138,38 +148,38 @@ export function Process() {
                 transition={{ duration: 0.6 }}
               >
                 {/* Content */}
-                <div className={`w-full md:w-1/2 ${isEven ? 'md:text-right' : 'md:text-left'} text-center md:text-left`}>
-                  <motion.div
-                    className="bg-white/5 rounded-lg p-8 hover:bg-white/10 transition-all duration-300"
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    <h3 
-                      className="text-4xl text-white mb-4"
-                      style={{ fontFamily: 'var(--font-druk-text-wide)' }}
+                 <div className={`w-full md:w-1/2 ${isEven ? 'md:text-right' : 'md:text-left'} text-center md:text-left`}>
+                   <motion.div
+                     className="bg-white/5 rounded-lg p-4 sm:p-6 md:p-8 hover:bg-white/10 transition-all duration-300" // Padding responsivo
+                     whileHover={{ scale: 1.02 }}
                     >
+                      <h3 
+                       className="text-3xl md:text-4xl text-white mb-4" // Tamaño de fuente responsivo
+                       style={{ fontFamily: 'var(--font-druk-text-wide)' }}
+                     >
                       {phase.title}
-                    </h3>
-                    <p 
-                      className="text-white/60 mb-6"
-                      style={{ fontFamily: 'var(--font-geist-mono)' }}
-                    >
+                     </h3>
+                     <p 
+                       className="text-sm md:text-base text-white/60 mb-6" // Tamaño de fuente responsivo
+                       style={{ fontFamily: 'var(--font-geist-mono)' }}
+                     >
                       {phase.description}
                     </p>
-                    
-                    {/* Milestones */}
-                    <div className={`space-y-3 ${isEven ? 'md:items-end' : 'md:items-start'} flex flex-col items-center md:items-start ${isEven ? 'md:items-end' : ''}`}>
-                      {phase.milestones.map((milestone) => (
-                        <motion.div 
-                          key={milestone.name}
+                     
+                     {/* Milestones */}
+                     <div className={`space-y-3 flex flex-col items-start ${isEven ? 'md:items-end' : 'md:items-start'}`}> {/* Alineación móvil a start */}
+                       {phase.milestones.map((milestone) => (
+                         <motion.div 
+                           key={milestone.name}
                           className={`flex items-center gap-3 text-white/80 ${isEven ? 'md:flex-row-reverse' : 'md:flex-row'} flex-row`}
                           whileHover={{ x: isEven ? -5 : 5 }}
                         >
                           <span className="text-xl" role="img" aria-label={milestone.name}>{milestone.icon}</span>
-                          <span 
-                            style={{ fontFamily: 'var(--font-geist-mono)' }}
-                            className="text-sm"
-                          >
-                            {milestone.name}
+                           <span 
+                             style={{ fontFamily: 'var(--font-geist-mono)' }}
+                             className="text-xs sm:text-sm" // Tamaño de fuente responsivo
+                           >
+                             {milestone.name}
                           </span>
                         </motion.div>
                       ))}
@@ -200,18 +210,18 @@ export function Process() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-      >
-        <h2 
-          className="text-3xl text-white mb-8"
-          style={{ fontFamily: 'var(--font-druk-text-wide)' }}
-        >
+       >
+         <h2 
+           className="text-2xl md:text-3xl text-white mb-8" // Tamaño de fuente responsivo
+           style={{ fontFamily: 'var(--font-druk-text-wide)' }}
+         >
           Ready to Start Your Project?
-        </h2>
-        <motion.a 
-          href="/pricing" 
-          className="inline-block bg-white text-black px-8 py-4 rounded-full font-bold hover:bg-white/90 transition-all duration-300"
-          style={{ fontFamily: 'var(--font-geist-mono)' }}
-          whileHover={{ scale: 1.05 }}
+         </h2>
+         <motion.a 
+           href="/pricing" 
+           className="inline-block bg-white text-black px-6 py-3 md:px-8 md:py-4 rounded-full font-bold hover:bg-white/90 transition-all duration-300" // Padding responsivo
+           style={{ fontFamily: 'var(--font-geist-mono)' }}
+           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
           GET STARTED
