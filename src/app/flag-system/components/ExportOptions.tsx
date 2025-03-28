@@ -6,9 +6,47 @@ import { saveAs } from 'file-saver';
 interface ExportOptionsProps {
   svgRef: React.RefObject<SVGSVGElement | null>;
   word: string;
+  backgroundColor: string; // Añadir prop para el color de fondo
 }
 
-export const ExportOptions = ({ svgRef, word }: ExportOptionsProps) => {
+// Helper function to embed SVG images
+const embedSvgImages = async (svgElement: SVGSVGElement): Promise<void> => {
+  const images = svgElement.querySelectorAll('image');
+  await Promise.all(Array.from(images).map(async (image) => {
+    const href = image.getAttribute('href');
+    if (href && href.startsWith('/assets/')) {
+      try {
+        const response = await fetch(href);
+        const svgText = await response.text();
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = svgText;
+        const svgContent = tempDiv.querySelector('svg');
+
+        if (svgContent) {
+          const x = image.getAttribute('x') || '0';
+          const y = image.getAttribute('y') || '0';
+          const width = image.getAttribute('width') || '100';
+          const height = image.getAttribute('height') || '100';
+          const style = image.getAttribute('style') || '';
+
+          svgContent.setAttribute('x', x);
+          svgContent.setAttribute('y', y);
+          svgContent.setAttribute('width', width);
+          svgContent.setAttribute('height', height);
+          svgContent.setAttribute('style', style);
+
+          image.parentNode?.replaceChild(svgContent, image);
+        }
+      } catch (error) {
+        console.error(`Error processing image ${href}:`, error);
+        // Optionally re-throw or handle the error differently
+      }
+    }
+  }));
+};
+
+
+export const ExportOptions = ({ svgRef, word, backgroundColor }: ExportOptionsProps) => {
   const [isExporting, setIsExporting] = useState(false);
 
   // Función para exportar como PNG
@@ -28,48 +66,10 @@ export const ExportOptions = ({ svgRef, word }: ExportOptionsProps) => {
       svgClone.setAttribute('width', '1000');
       svgClone.setAttribute('height', '1000');
       svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      
-      // Procesar todas las imágenes para incluirlas en el SVG
-      const images = svgClone.querySelectorAll('image');
-      
-      // Convertir las imágenes externas en imágenes embebidas
-      await Promise.all(Array.from(images).map(async (image) => {
-        const href = image.getAttribute('href');
-        if (href && href.startsWith('/assets/')) {
-          try {
-            // Cargar la imagen SVG de la bandera
-            const response = await fetch(href);
-            const svgText = await response.text();
-            
-            // Crear un elemento SVG con el contenido de la bandera
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = svgText;
-            const svgContent = tempDiv.querySelector('svg');
-            
-            if (svgContent) {
-              // Obtener los atributos de la imagen original
-              const x = image.getAttribute('x') || '0';
-              const y = image.getAttribute('y') || '0';
-              const width = image.getAttribute('width') || '100';
-              const height = image.getAttribute('height') || '100';
-              const style = image.getAttribute('style') || '';
-              
-              // Configurar el SVG con los atributos de la imagen
-              svgContent.setAttribute('x', x);
-              svgContent.setAttribute('y', y);
-              svgContent.setAttribute('width', width);
-              svgContent.setAttribute('height', height);
-              svgContent.setAttribute('style', style);
-              
-              // Reemplazar la imagen con el SVG
-              image.parentNode?.replaceChild(svgContent, image);
-            }
-          } catch (error) {
-            console.error(`Error al procesar la imagen ${href}:`, error);
-          }
-        }
-      }));
-      
+
+      // Usar helper function para incrustar imágenes
+      await embedSvgImages(svgClone);
+
       // Serializar el SVG a una cadena
       const svgData = new XMLSerializer().serializeToString(svgClone);
       const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
@@ -137,58 +137,20 @@ export const ExportOptions = ({ svgRef, word }: ExportOptionsProps) => {
       svgClone.setAttribute('height', '1000');
       svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
       
-      // Asegurar que el fondo sea negro
+      // Usar el backgroundColor recibido como prop
       const rectElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       rectElement.setAttribute('width', '1000');
       rectElement.setAttribute('height', '1000');
-      rectElement.setAttribute('fill', '#000000');
+      rectElement.setAttribute('fill', backgroundColor); // Usar prop
       rectElement.setAttribute('x', '0');
       rectElement.setAttribute('y', '0');
       
       // Insertar el rectángulo negro al principio del SVG para que sirva como fondo
       svgClone.insertBefore(rectElement, svgClone.firstChild);
-      
-      // Procesar todas las imágenes para incluirlas en el SVG
-      const images = svgClone.querySelectorAll('image');
-      
-      // Convertir las imágenes externas en imágenes embebidas
-      await Promise.all(Array.from(images).map(async (image) => {
-        const href = image.getAttribute('href');
-        if (href && href.startsWith('/assets/')) {
-          try {
-            // Cargar la imagen SVG de la bandera
-            const response = await fetch(href);
-            const svgText = await response.text();
-            
-            // Crear un elemento SVG con el contenido de la bandera
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = svgText;
-            const svgContent = tempDiv.querySelector('svg');
-            
-            if (svgContent) {
-              // Obtener los atributos de la imagen original
-              const x = image.getAttribute('x') || '0';
-              const y = image.getAttribute('y') || '0';
-              const width = image.getAttribute('width') || '100';
-              const height = image.getAttribute('height') || '100';
-              const style = image.getAttribute('style') || '';
-              
-              // Configurar el SVG con los atributos de la imagen
-              svgContent.setAttribute('x', x);
-              svgContent.setAttribute('y', y);
-              svgContent.setAttribute('width', width);
-              svgContent.setAttribute('height', height);
-              svgContent.setAttribute('style', style);
-              
-              // Reemplazar la imagen con el SVG
-              image.parentNode?.replaceChild(svgContent, image);
-            }
-          } catch (error) {
-            console.error(`Error al procesar la imagen ${href}:`, error);
-          }
-        }
-      }));
-      
+
+      // Usar helper function para incrustar imágenes
+      await embedSvgImages(svgClone);
+
       // Convertir el SVG a una cadena
       const svgData = new XMLSerializer().serializeToString(svgClone);
       
@@ -208,9 +170,11 @@ export const ExportOptions = ({ svgRef, word }: ExportOptionsProps) => {
   // La función de copia al portapapeles ha sido eliminada ya que no se utiliza
 
   return (
-    <div className="bg-black border-t border-gray-800">
+    // Usar clases Tailwind para borde
+    <div className="bg-black border-t border-gray-800 pt-4"> {/* Añadir padding top */}
       <h2 className="text-white text-lg font-semibold mb-4 flex items-center font-mono">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="#00FF00">
+        {/* Usar clase Tailwind para fill */}
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 fill-green-500" viewBox="0 0 20 20">
           <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V8a2 2 0 00-2-2h-5L9 4H4zm7 5a1 1 0 10-2 0v1.586l-.293-.293a1 1 0 10-1.414 1.414l2 2 .707.707.707-.707 2-2a1 1 0 10-1.414-1.414l-.293.293V9z" clipRule="evenodd" />
         </svg>
         Download Composition
@@ -221,7 +185,8 @@ export const ExportOptions = ({ svgRef, word }: ExportOptionsProps) => {
         <button
           onClick={handleExportPNG}
           disabled={isExporting}
-          className="px-4 py-2 bg-black hover:bg-gray-900 text-white border transition-colors flex items-center justify-center font-mono" style={{ borderColor: '#00FF00' }}
+          // Usar clases Tailwind para borde y fuente
+          className="px-4 py-2 bg-black hover:bg-gray-900 text-white border border-green-500 transition-colors flex items-center justify-center font-mono"
           aria-label="Download as PNG"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
@@ -233,7 +198,8 @@ export const ExportOptions = ({ svgRef, word }: ExportOptionsProps) => {
         <button
           onClick={handleExportSVG}
           disabled={isExporting}
-          className="px-4 py-2 bg-black hover:bg-gray-900 text-white border transition-colors flex items-center justify-center font-mono" style={{ borderColor: '#00FF00' }}
+          // Usar clases Tailwind para borde y fuente
+          className="px-4 py-2 bg-black hover:bg-gray-900 text-white border border-green-500 transition-colors flex items-center justify-center font-mono"
           aria-label="Download as SVG"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">

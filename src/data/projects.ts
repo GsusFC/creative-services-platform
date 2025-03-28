@@ -11,78 +11,7 @@ export const featuredProjects: Project[] = [
     color: 'rgb(255, 0, 0)',
     tags: ['branding', 'digital', 'campaign', 'social media', 'art direction'],
     year: '2024',
-    gallery: [
-      {
-        url: 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=1920&q=80',
-        alt: 'Adidas Originals Campaign',
-        width: 1920,
-        height: 1080,
-        caption: 'Visual Identity Development'
-      },
-      {
-        url: 'https://images.unsplash.com/photo-1556906781-9a412961c28c?w=1920&q=80',
-        alt: 'Campaign Photography',
-        width: 1920,
-        height: 1080,
-        caption: 'Campaign Photography'
-      },
-      {
-        url: 'https://images.unsplash.com/photo-1597045566677-8cf032ed6634?w=1920&q=80',
-        alt: 'Digital Experience',
-        width: 1920,
-        height: 1080,
-        caption: 'Interactive Digital Experience'
-      },
-      {
-        url: 'https://images.unsplash.com/photo-1543508282-6319a3e2621f?w=1920&q=80',
-        alt: 'Social Media Assets',
-        width: 1920,
-        height: 1080,
-        caption: 'Social Media Strategy'
-      },
-      {
-        url: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=1920&q=80',
-        alt: 'Brand Elements',
-        width: 1920,
-        height: 1080,
-        caption: 'Brand Identity Elements'
-      },
-      {
-        url: 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=1920&q=80',
-        alt: 'Mobile Experience',
-        width: 1920,
-        height: 1080,
-        caption: 'Mobile-First Design'
-      },
-      {
-        url: 'https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=1920&q=80',
-        alt: 'Motion Design',
-        width: 1920,
-        height: 1080,
-        caption: 'Motion Graphics'
-      },
-      {
-        url: 'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=1920&q=80',
-        alt: 'Product Photography',
-        width: 1920,
-        height: 1080,
-        caption: 'Product Showcase'
-      },
-      {
-        url: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1920&q=80',
-        alt: 'Hero Shot',
-        width: 1920,
-        height: 1080,
-        caption: 'Hero Campaign Shot'
-      },
-      {
-        url: 'https://images.unsplash.com/photo-1512374382149-233c42b6a83b?w=1920&q=80',
-        alt: 'Campaign Results',
-        width: 1920,
-        height: 1080,
-        caption: 'Campaign Impact'
-      }
-    ],
+    // gallery was duplicated, removed the first instance here. The correct one is under // Visual Content
     
     // Client Info
     client: 'Adidas',
@@ -166,12 +95,12 @@ export const featuredProjects: Project[] = [
         url: 'https://adidas.com/originals-campaign',
         label: 'Live Campaign',
         type: 'website'
-      },
-      {
-        url: 'https://behance.net/adidas-case',
-        label: 'Case Study',
-        type: 'behance'
       }
+      // { // Removed Case Study link
+      //   url: 'https://behance.net/adidas-case',
+      //   label: 'Case Study',
+      //   type: 'behance'
+      // }
     ],
     downloads: [
       {
@@ -196,9 +125,9 @@ export const featuredProjects: Project[] = [
     },
     
     // SEO & Meta
-    seoTitle: 'Adidas Originals Digital Campaign Case Study | Creative Studio',
-    seoDescription: 'Discover how we helped Adidas Originals connect with Gen Z through an innovative digital campaign that drove 250% increase in engagement.',
-    seoKeywords: ['adidas', 'digital campaign', 'brand strategy', 'social media', 'gen z marketing']
+    seoTitle: 'Adidas Originals Digital Campaign | Creative Studio', // Removed "Case Study"
+    seoDescription: 'Discover how we helped Adidas Originals connect with Gen Z through an innovative digital campaign that drove 250% increase in engagement.', // Kept description as it's relevant
+    seoKeywords: ['adidas', 'digital campaign', 'brand strategy', 'social media', 'gen z marketing'] // Keywords seem fine
   },
   {
     title: 'NIKE ACG',

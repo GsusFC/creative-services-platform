@@ -1,4 +1,4 @@
-import { CaseStudy, MediaItem } from '@/types/case-study';
+import { CaseStudy, MediaItem, CaseStudyStatus } from '@/types/case-study';
 import type {
   PageObjectResponse,
   SelectPropertyItemObjectResponse,
@@ -25,28 +25,18 @@ import type {
   RichTextItemResponse
 } from '@notionhq/client/build/src/api-endpoints';
 
-import probe from 'probe-image-size';
-
-/**
- * Obtiene las dimensiones de una imagen
- */
-async function getImageDimensions(url: string): Promise<{ width: number; height: number }> {
-  try {
-    const result = await probe(url);
-    return { width: result.width, height: result.height };
-  } catch (error) {
-    console.error(`Error al obtener dimensiones de imagen ${url}:`, error);
-    return { width: 0, height: 0 }; // Valores por defecto en caso de error
-  }
-}
-
 /**
  * Extrae el ID de Vimeo de una URL
  */
 function extractVimeoId(url: string | null | undefined): string | null {
   if (!url) return null;
-  const match = url.match(/vimeo\.com\/([0-9]+)/);
-  return (match && match[1]) || null;
+  try {
+    const match = url.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)([0-9]+)/);
+    return match?.[1] ?? null;
+  } catch (error) {
+    console.error('Error extracting Vimeo ID:', error);
+    return null;
+  }
 }
 
 /**
@@ -72,16 +62,16 @@ async function getVimeoThumbnail(vimeoId: string | null): Promise<string | null>
 type NotionFileBase = {
   name: string;
   caption?: RichTextItemResponse[];
-  type: 'file' | 'external';
+  type?: 'file' | 'external'; // Hacer type opcional para coincidir con la API de Notion
 };
 
 type ExternalFileWithCaption = NotionFileBase & {
-  type: 'external';
+  type?: 'external';
   external: { url: string };
 };
 
 type InternalFileWithCaption = NotionFileBase & {
-  type: 'file';
+  type?: 'file';
   file: { url: string; expiry_time: string };
 };
 
@@ -316,24 +306,77 @@ function extractMultipleValues(property: PropertyItemObjectResponse | undefined)
  * Convierte los archivos de Notion a nuestro formato MediaItem
  */
 async function transformMediaItems(files: NotionFile[] = [], propertyName: string): Promise<MediaItem[]> {
+  if (!Array.isArray(files)) {
+    console.warn('Expected files array but got:', files);
+    return [];
+  }
+
   const items = await Promise.all(
     files.map(async (file, index) => {
+      if (!file) return null;
+      
       let url: string | null = null;
-      
-      if (file.type === 'external' && file.external) {
-        url = file.external.url;
-      } else if (file.type === 'file' && file.file) {
-        url = file.file.url;
+      try {
+        if (file.type === 'external' && file.external) {
+          url = file.external.url;
+        } else if (file.type === 'file' && file.file) {
+          url = file.file.url;
+        }
+        
+        if (!url || url === '') return null;
+      } catch (error) {
+        console.error('Error processing file URL:', error);
+        return null;
       }
-      
-      if (!url || url === '') return null;
 
       const type = determineMediaType(url);
+      
+      // Solo procesar imágenes y videos
+      if (type !== 'image' && type !== 'video') return null;
+
       let caption = '';
-      if (Array.isArray(file.caption) && file.caption.length > 0 && file.caption[0] && typeof file.caption[0].plain_text === 'string') {
+      if (Array.isArray(file.caption) && file.caption.length > 0 && file.caption[0]?.plain_text) {
         caption = file.caption[0].plain_text;
       }
         
+      // Determinar el role basado en el nombre de la propiedad
+      const propNameLower = propertyName.toLowerCase();
+      let role: 'cover' | 'hero' | 'avatar' | 'gallery' | 'detail' | undefined;
+
+      // Roles especiales
+      if (propNameLower === 'avatar') {
+        role = 'avatar';
+      } else if (propNameLower === 'cover') {
+        role = 'cover';
+      } else if (propNameLower === 'hero') {
+        role = 'hero';
+      } else if (propNameLower.includes('detail')) {
+        role = 'detail';
+      }
+      // Solo incluir en gallery si explícitamente es una imagen para mostrar
+      else if (propNameLower.includes('gallery') || 
+              (propNameLower.includes('image') && !propNameLower.includes('source')) ||
+              (propNameLower.includes('img') && !propNameLower.includes('raw')) ||
+              propNameLower.includes('screenshot')) {
+        role = 'gallery';
+      }
+
+      // Excluir archivos que no son para visualización
+      if (propNameLower.includes('source') || 
+          propNameLower.includes('raw') ||
+          propNameLower.includes('backup') ||
+          propNameLower.includes('asset') ||
+          propNameLower.includes('file')) {
+        return null;
+      }
+
+      // Si no tiene role asignado y es imagen, no incluirla
+      if (type === 'image' && !role) {
+        return null;
+      }
+
+      console.log(`Procesando mediaItem: ${url} con role ${role}`);
+
       const item: MediaItem = {
         type,
         url,
@@ -341,7 +384,8 @@ async function transformMediaItems(files: NotionFile[] = [], propertyName: strin
         width: 0,
         height: 0,
         order: index,
-        displayMode: 'single'
+        displayMode: 'single',
+        role
       };
 
       if (type === 'image') {
@@ -363,19 +407,23 @@ async function transformMediaItems(files: NotionFile[] = [], propertyName: strin
         item.thumbnailUrl = '';
         
         // Procesar URL de Vimeo si es necesario
-        if (videoType === 'vimeo') {
-          item.url = processVimeoUrl(url);
-          // Intentar obtener el thumbnail de Vimeo
-          try {
-            const vimeoId = extractVimeoId(url);
-            if (vimeoId) {
-              const thumbnailUrl = await getVimeoThumbnail(vimeoId);
-              if (thumbnailUrl) {
-                item.thumbnailUrl = thumbnailUrl;
+        if (videoType === 'vimeo' || videoType === 'youtube') {
+          item.url = processVideoUrl(url, videoType);
+          // Obtener thumbnail de Vimeo
+          const vimeoId = extractVimeoId(url);
+          if (vimeoId) {
+            // Usar thumbnail por defecto de Vimeo si falla la API
+            item.thumbnailUrl = `https://i.vimeocdn.com/video/${vimeoId}_640x360.jpg`;
+            
+            // Intentar obtener thumbnail de mejor calidad desde la API
+            try {
+              const apiThumbnail = await getVimeoThumbnail(vimeoId);
+              if (apiThumbnail) {
+                item.thumbnailUrl = apiThumbnail;
               }
+            } catch (error) {
+              console.error(`Error al obtener thumbnail de Vimeo para ${url}:`, error);
             }
-          } catch (error) {
-            console.error(`Error al obtener thumbnail de Vimeo para ${url}:`, error);
           }
         }
       }
@@ -405,25 +453,37 @@ function determineMediaType(url: string | null): 'image' | 'video' {
 /**
  * Determina el tipo de video
  */
-function determineVideoType(url: string | null): 'vimeo' | 'local' {
+function determineVideoType(url: string | null): 'vimeo' | 'youtube' | 'local' {
   if (!url) return 'local'; // fallback por defecto
   if (url.includes('vimeo.com')) {
     return 'vimeo';
   }
+  if (url.includes('youtube.com') || url.includes('youtu.be')) {
+    return 'youtube';
+  }
   return 'local';
 }
 
-function processVimeoUrl(url: string | null): string {
+function processVideoUrl(url: string | null, videoType: 'vimeo' | 'youtube' | 'local'): string {
   if (!url) return ''; // fallback por defecto
-  // Si ya es un embed, devolverlo tal cual
-  if (url.includes('player.vimeo.com')) {
-    return url;
-  }
   
-  // Convertir URL normal de Vimeo a URL de embed
-  const vimeoId = url.match(/vimeo\.com\/([0-9]+)/);
-  if (vimeoId && vimeoId[1]) {
-    return `https://player.vimeo.com/video/${vimeoId[1]}`;
+  if (videoType === 'vimeo') {
+    // Si ya es un embed, devolverlo tal cual
+    if (url.includes('player.vimeo.com')) {
+      return url;
+    }
+    
+    // Convertir URL normal de Vimeo a URL de embed
+    const vimeoId = url.match(/vimeo\.com\/([0-9]+)/);
+    if (vimeoId && vimeoId[1]) {
+      return `https://player.vimeo.com/video/${vimeoId[1]}?autoplay=1&loop=1&title=0&byline=0&portrait=0`;
+    }
+  } else if (videoType === 'youtube') {
+    // Extraer ID de YouTube
+    const youtubeId = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+    if (youtubeId && youtubeId[1]) {
+      return `https://www.youtube.com/embed/${youtubeId[1]}?autoplay=1&loop=1&modestbranding=1&rel=0`;
+    }
   }
   
   return url;
@@ -497,32 +557,49 @@ export async function transformNotionToCaseStudy(page: NotionPage): Promise<Case
 
 
   
-  // Obtener las URLs de videos
+  // Obtener las URLs de videos (ahora solo Vimeo)
   const video1Property = getPropertyItem('Video 1');
   const video2Property = getPropertyItem('Video 2');
+  const vimeoProperty = getPropertyItem('Vimeo');
   
+  // Procesar videos (solo Vimeo)
+  const processVideo = (videoUrl: string | null, alt: string) => {
+    if (!videoUrl) return null;
+    
+    const videoType = determineVideoType(videoUrl);
+    if (videoType !== 'vimeo') return null;
+
+    const vimeoId = extractVimeoId(videoUrl);
+    if (!vimeoId) return null;
+
+    return {
+      type: 'video' as const,
+      url: processVideoUrl(videoUrl, 'vimeo'),
+      thumbnailUrl: `https://i.vimeocdn.com/video/${vimeoId}_1920x1080.jpg`,
+      videoType: 'vimeo' as const,
+      alt,
+      width: 0,
+      height: 0,
+      order: mediaItems.length,
+      role: 'gallery' as const
+    };
+  };
+
+  // Procesar videos principales
   if (video1Property && isUrlProperty(video1Property) && video1Property.url) {
-    mediaItems.push({
-      type: 'video',
-      url: video1Property.url,
-      videoType: determineVideoType(video1Property.url),
-      alt: 'Video principal',
-      width: 0,
-      height: 0,
-      order: mediaItems.length
-    });
+    const videoItem = processVideo(video1Property.url, 'Video principal');
+    if (videoItem) mediaItems.push(videoItem);
   }
-  
+
   if (video2Property && isUrlProperty(video2Property) && video2Property.url) {
-    mediaItems.push({
-      type: 'video',
-      url: video2Property.url,
-      videoType: determineVideoType(video2Property.url),
-      alt: 'Video secundario',
-      width: 0,
-      height: 0,
-      order: mediaItems.length
-    });
+    const videoItem = processVideo(video2Property.url, 'Video secundario');
+    if (videoItem) mediaItems.push(videoItem);
+  }
+
+  // Procesar propiedad Vimeo específica
+  if (vimeoProperty && isUrlProperty(vimeoProperty) && vimeoProperty.url) {
+    const videoItem = processVideo(vimeoProperty.url, 'Video Vimeo');
+    if (videoItem) mediaItems.push(videoItem);
   }
   
   // Obtener propiedades de texto
@@ -534,13 +611,13 @@ export async function transformNotionToCaseStudy(page: NotionPage): Promise<Case
   const websiteProperty = getPropertyItem('Website');
   
   // Obtener el estado desde Notion
-  const statusProperty = getPropertyItem('Status') as PropertyItemObjectResponse;
-  const notionStatus = isSelectProperty(statusProperty) && statusProperty.select?.name
-    ? statusProperty.select.name
-    : 'Sin empezar';
+  const statusProperty = getPropertyItem('Status');
+  let status: CaseStudyStatus = 'draft';
   
-  // Solo publicar los que estén "Listo"
-  const status = notionStatus === 'Listo' ? 'published' : 'draft';
+  if (statusProperty && isSelectProperty(statusProperty)) {
+    const notionStatus = statusProperty.select?.name ?? 'Sin empezar';
+    status = notionStatus === 'Listo' ? 'published' : 'draft';
+  }
   // Solo marcar como sincronizado si está publicado
   const synced = status === 'published';
 
@@ -574,10 +651,20 @@ export async function transformNotionToCaseStudy(page: NotionPage): Promise<Case
 }
 
 function generateSlug(title: string): string {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
+  if (!title) return '';
+  
+  try {
+    return title
+      .toLowerCase()
+      .normalize('NFD') // Normalizar caracteres acentuados
+      .replace(/[\u0300-\u036f]/g, '') // Eliminar diacríticos
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '')
+      .substring(0, 100); // Limitar longitud
+  } catch (error) {
+    console.error('Error generating slug:', error);
+    return '';
+  }
 }
 
 /**

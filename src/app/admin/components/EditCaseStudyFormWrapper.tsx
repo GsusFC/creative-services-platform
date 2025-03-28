@@ -4,7 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { CaseStudy } from '@/types/case-study';
 import EditCaseStudyForm from './EditCaseStudyForm';
-import { updateCaseStudy } from '@/app/admin/case-studies/actions';
+// Comentamos la importación de la función que ya no se exporta
+// import { updateCaseStudy } from '@/app/admin/case-studies/actions';
 import { toast } from 'sonner';
 
 interface EditCaseStudyFormWrapperProps {
@@ -20,19 +21,35 @@ export default function EditCaseStudyFormWrapper({ caseStudy }: EditCaseStudyFor
     setIsSaving(true);
     setErrorMessage(null);
     
+    // Comentamos la lógica que usaba updateCaseStudy para evitar errores
+    /*
     try {
-      // Intentamos actualizar el caso de estudio
-      await updateCaseStudy(updatedStudy);
+      // // Intentamos actualizar el caso de estudio
+      // await updateCaseStudy(updatedStudy);
       
-      // Guardamos también en localStorage como respaldo
-      saveToLocalStorage(updatedStudy);
+      // // Guardamos también en localStorage como respaldo
+      // saveToLocalStorage(updatedStudy);
       
-      // Mostramos mensaje de éxito
-      toast.success('Caso de estudio guardado correctamente');
+      // // Mostramos mensaje de éxito
+      // toast.success('Caso de estudio guardado correctamente');
       
-      // Redirigimos a la lista de casos de estudio
-      router.push('/admin/case-studies');
+      // // Redirigimos a la lista de casos de estudio
+      // router.push('/admin/case-studies');
+
+      // Placeholder temporal: Simula un guardado local y muestra advertencia
+      console.warn("La funcionalidad de guardar/sincronizar está deshabilitada temporalmente.");
+      saveToLocalStorage(updatedStudy); // Guardar localmente
+      const errorMsg = "La sincronización con Notion está deshabilitada temporalmente.";
+      setErrorMessage(errorMsg);
+      toast.warning(
+        'Se guardaron los cambios localmente, pero la sincronización con Notion está deshabilitada. ' +
+        'Los cambios estarán disponibles en tu navegador.'
+      );
+      // No redirigimos para que el usuario vea el mensaje
+
     } catch (error) {
+      // Este bloque catch probablemente no se ejecutará con la lógica comentada,
+      // pero lo dejamos por si se descomenta en el futuro.
       console.error('Error al guardar el caso de estudio:', error);
       
       // Guardamos en localStorage como respaldo
@@ -43,12 +60,23 @@ export default function EditCaseStudyFormWrapper({ caseStudy }: EditCaseStudyFor
       setErrorMessage(errorMsg);
       
       toast.warning(
-        'Se guardaron los cambios localmente, pero hubo un error al sincronizar con Notion. ' +
+        'Se guardaron los cambios localmente, pero hubo un error. ' +
         'Los cambios estarán disponibles en tu navegador.'
       );
     } finally {
       setIsSaving(false);
     }
+    */
+    // Código ejecutado al estar la funcionalidad comentada:
+    console.warn("La funcionalidad de guardar/sincronizar está deshabilitada temporalmente.");
+    saveToLocalStorage(updatedStudy); // Guardar localmente de todas formas
+    const errorMsg = "La sincronización con Notion está deshabilitada temporalmente.";
+    setErrorMessage(errorMsg);
+    toast.warning(
+      'Se guardaron los cambios localmente, pero la sincronización con Notion está deshabilitada. ' +
+      'Los cambios estarán disponibles en tu navegador.'
+    );
+    setIsSaving(false); // Asegurarse de que el estado de guardado se desactive
   };
 
   const saveToLocalStorage = (study: CaseStudy) => {

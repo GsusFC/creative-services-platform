@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useCaseStudiesData } from '@/hooks/useCaseStudiesData';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../components/ui/tabs';
 import { Card, CardContent } from '../../../../components/ui/card';
 import { Button } from '../../../../components/ui/button';
@@ -13,6 +14,7 @@ import { CaseStudySettings } from '@/app/admin/case-studies/components/CaseStudy
 
 export function CaseStudyDashboard() {
   const [activeTab, setActiveTab] = useState('list');
+  const { studies, reloadStudies } = useCaseStudiesData();
 
   return (
     <div className="space-y-8">
@@ -32,6 +34,7 @@ export function CaseStudyDashboard() {
             <Button 
               variant="outline" 
               className="flex-1 border-2 border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/20 hover:text-white"
+              onClick={reloadStudies}
             >
               <RefreshCwIcon className="h-4 w-4" />
             </Button>
@@ -52,7 +55,7 @@ export function CaseStudyDashboard() {
         </TabsList>
 
         <TabsContent value="list" className="mt-6">
-          <CaseStudyList />
+          <CaseStudyList studies={studies} />
         </TabsContent>
 
         <TabsContent value="featured" className="mt-6">

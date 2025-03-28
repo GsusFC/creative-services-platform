@@ -1,8 +1,9 @@
 'use client'
 
-import React, { useRef, useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import React, { useRef, useState, useEffect } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 
+// Define phases data outside the component for better performance and readability
 const phases = [
   {
     title: 'DISCOVER',
@@ -11,7 +12,7 @@ const phases = [
       { name: 'Kickoff meeting', icon: '🏁' },
       { name: 'Brand & Digital audit', icon: '🏆' },
       { name: 'Co-Design Workshop', icon: '▶️' },
-      { name: 'Análisis de tendencias y competencia', icon: '🔎' }
+      { name: 'Trend & Competitor Analysis', icon: '🔎' }
     ],
     image: '/images/process/discover.jpg'
   },
@@ -21,7 +22,7 @@ const phases = [
     milestones: [
       { name: 'Moodboards', icon: '📋' },
       { name: 'Brand Strategy', icon: '👤' },
-      { name: 'Conceptualización', icon: '💥' }
+      { name: 'Conceptualization', icon: '💥' }
     ],
     image: '/images/process/focus.jpg'
   },
@@ -32,7 +33,7 @@ const phases = [
       { name: 'Brand Identity', icon: '🖤' },
       { name: 'Wireframing', icon: '✏️' },
       { name: 'UI Design', icon: '🎨' },
-      { name: 'Prototipado', icon: '👥' }
+      { name: 'Prototyping', icon: '👥' }
     ],
     image: '/images/process/build.jpg'
   },
@@ -43,39 +44,49 @@ const phases = [
       { name: 'Brand Center', icon: '🎯' }
     ],
     image: '/images/process/sync.jpg'
-  }
+  },
 ]
 
 export function Process() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const timelineRef = useRef<HTMLDivElement>(null)
-  const [lineHeight, setLineHeight] = useState("100%")
-  const [lineTop, setLineTop] = useState("0")
-  
-  // Usar un efecto para calcular la altura y posición de la línea
+  const [lineTop, setLineTop] = useState("0px")
+  const [lineHeight, setLineHeight] = useState("0px")
+
+  // Calcular la posición y altura exactas de la línea después del montaje
   useEffect(() => {
     if (containerRef.current) {
       const timelineContainer = containerRef.current
-      const firstNode = timelineContainer.querySelector('.timeline-nodes:first-child') as HTMLElement | null
-      const lastNode = timelineContainer.querySelector('.timeline-nodes:last-child') as HTMLElement | null
-      
+      // Asegurarse de que los nodos existen antes de calcular
+      // NOTE: This calculation relies on querySelector, which can be brittle if HTML structure changes.
+      // Consider using refs for each node if more robustness is needed, though it adds complexity.
+      const firstNode = timelineContainer.querySelector('.timeline-nodes:first-child .timeline-node-element') as HTMLElement | null
+      const lastNode = timelineContainer.querySelector('.timeline-nodes:last-child .timeline-node-element') as HTMLElement | null
+
       if (firstNode && lastNode) {
-        const containerTop = timelineContainer.getBoundingClientRect().top
-        const firstNodeCenter = firstNode.getBoundingClientRect().top + (firstNode.getBoundingClientRect().height / 2)
-        const lastNodeCenter = lastNode.getBoundingClientRect().top + (lastNode.getBoundingClientRect().height / 2)
-        
-        // Calcular la posición top para la línea (relativa al contenedor)
-        const lineTop = firstNodeCenter - containerTop
-        
-        // Calcular la altura de la línea desde el primer al último nodo
-        const lineHeight = lastNodeCenter - firstNodeCenter
-        
-        // Establecer los valores
-        setLineTop(`${lineTop}px`)
-        setLineHeight(`${lineHeight}px`)
+        const containerRect = timelineContainer.getBoundingClientRect()
+        const firstNodeRect = firstNode.getBoundingClientRect()
+        const lastNodeRect = lastNode.getBoundingClientRect()
+
+        // Calcular el centro vertical de los nodos relativo al contenedor
+        const firstNodeCenterY = (firstNodeRect.top - containerRect.top) + (firstNodeRect.height / 2)
+        const lastNodeCenterY = (lastNodeRect.top - containerRect.top) + (lastNodeRect.height / 2)
+
+        // Establecer la posición top y la altura de la línea
+        setLineTop(`${firstNodeCenterY}px`)
+        setLineHeight(`${lastNodeCenterY - firstNodeCenterY}px`)
       }
     }
+    // Dependencia vacía para ejecutar solo una vez después del montaje inicial
   }, [])
+
+  // Hook useScroll para seguir el progreso del scroll dentro del contenedor
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start center", "end end"] // Inicia cuando el top del contenedor llega al centro, termina cuando el bottom llega al final
+  })
+
+  // Hook useTransform para mapear el progreso del scroll (0 a 1) a la escala Y de la línea (0 a 1)
+  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1])
 
   return (
     <div className="min-h-screen">
@@ -103,18 +114,14 @@ export function Process() {
 
       {/* Timeline */}
       <div ref={containerRef} className="relative container mx-auto px-4 py-24">
-        {/* Central Line */}
+        {/* Central Line - Posicionada y dimensionada, animada con scroll */}
         <motion.div 
-          ref={timelineRef}
           className="absolute left-1/2 w-px bg-gradient-to-b from-red-500 via-green-500 to-blue-500 origin-top"
           style={{ 
-            top: lineTop,
-            height: lineHeight
+            top: lineTop,      // Posición inicial calculada
+            height: lineHeight, // Altura total calculada
+            scaleY             // Escala animada por scroll
           }}
-          initial={{ scaleY: 0 }}
-          whileInView={{ scaleY: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
         />
 
         {/* Process Phases */}
@@ -169,17 +176,17 @@ export function Process() {
                     </div>
                   </motion.div>
                 </div>
-
-                {/* Timeline Node */}
-                <div 
-                  className="w-6 h-6 rounded-full bg-white absolute left-1/2 -translate-x-1/2"
-                  style={{
-                    background: index === 0 ? '#ef4444' : 
-                             index === 1 ? '#22c55e' :
-                             index === 2 ? '#3b82f6' :
-                             '#ffffff'
-                  }}
-                />
+ 
+                 {/* Timeline Node - Use a dedicated class for easier selection in useEffect */}
+                 <div
+                   aria-hidden="true"
+                   className={`timeline-node-element w-6 h-6 rounded-full absolute left-1/2 -translate-x-1/2 ${
+                     index === 0 ? 'bg-red-500' : 
+                     index === 1 ? 'bg-green-500' : 
+                     index === 2 ? 'bg-blue-500' : 
+                     'bg-white' // Default or last phase color
+                   }`}
+                 />
               </motion.div>
             )
           })}

@@ -9,44 +9,10 @@ import BudgetPanel from './budget/BudgetPanel';
 import FilterPanel from './FilterPanel';
 import { DiyProvider } from '@/contexts/DiyContext';
 import { useDiy } from '@/contexts/DiyContext';
+// Importar componentes de estado estándar
+import LoadingState from './states/LoadingState';
+import ErrorState from './states/ErrorState';
 
-// Componente para mostrar estados de carga y error
-const LoadingErrorState = () => {
-  const { estaCargando, error } = useDiy();
-
-  if (estaCargando) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px] bg-black bg-opacity-50 backdrop-blur-sm rounded-md">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-t-2 border-blue-500 border-solid rounded-full animate-spin"></div>
-          <p className="text-white text-lg font-medium">Cargando servicios...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px] bg-black bg-opacity-50 backdrop-blur-sm rounded-md p-6">
-        <div className="flex flex-col items-center gap-4 max-w-md text-center">
-          <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center">
-            <span className="text-white text-2xl">!</span>
-          </div>
-          <h3 className="text-white text-xl font-bold">Error al cargar datos</h3>
-          <p className="text-white/80">{error}</p>
-          <button 
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
-            onClick={() => window.location.reload()}
-          >
-            Reintentar
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return null;
-};
 
 // Componente contenedor que utiliza el contexto DIY
 const DoItYourselfAppContent = () => {
@@ -62,8 +28,9 @@ const DoItYourselfAppContent = () => {
       {/* Panel de Filtros - Usa el contexto directamente */}
       <FilterPanel />
 
-      {/* Mostrar estado de carga o error cuando corresponda */}
-      {(estaCargando || error) && <LoadingErrorState />}
+      {/* Mostrar estado de carga o error usando componentes estándar */}
+      {estaCargando && <LoadingState />}
+      {error && <ErrorState message={error} />}
 
       {/* Contenido principal - Solo se muestra si no hay errores ni está cargando */}
       {!estaCargando && !error && (

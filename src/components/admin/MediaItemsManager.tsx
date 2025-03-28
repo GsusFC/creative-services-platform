@@ -1,8 +1,10 @@
 'use client'
 
 import React, { useState } from 'react';
-import { MediaItem } from '@/types/case-study';
+import { MediaItem } from '@/types/media'; // Importar desde la nueva ubicación
 import { PlusCircleIcon, TrashIcon, ArrowUpIcon, ArrowDownIcon } from 'lucide-react';
+
+// Eliminar definición local
 
 interface MediaItemsManagerProps {
   mediaItems: MediaItem[];
@@ -26,11 +28,11 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
   const handleNewItemChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     let parsedValue: string | number = value;
-    
+
     if (name === 'width' || name === 'height' || name === 'order') {
       parsedValue = parseInt(value, 10) || 0;
     }
-    
+
     setNewItem(prev => ({ ...prev, [name]: parsedValue }));
   };
 
@@ -39,13 +41,14 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
       alert('La URL es obligatoria');
       return;
     }
-    
+
     if (!newItem.alt) {
       alert('El texto alternativo es obligatorio');
       return;
     }
 
     const newMediaItem: MediaItem = {
+      // id se genera en el hook useMediaItems si es necesario, o se puede añadir aquí con uuid
       type: newItem.type as 'image' | 'video',
       url: newItem.url as string,
       videoType: newItem.type === 'video' ? (newItem.videoType as 'vimeo' | 'local' || 'vimeo') : undefined,
@@ -53,13 +56,13 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
       alt: newItem.alt as string,
       width: newItem.width || 1920,
       height: newItem.height || 1080,
-      order: newItem.order || mediaItems.length,
+      order: newItem.order ?? mediaItems.length, // Usar ?? para default
       displayMode: newItem.displayMode as 'single' | 'dual' | 'dual_left' | 'dual_right' || 'single'
     };
-    
+
     const updatedItems: MediaItem[] = [...mediaItems, newMediaItem].sort((a, b) => a.order - b.order);
     onChange(updatedItems);
-    
+
     setNewItem({
       type: 'image',
       url: '',
@@ -83,23 +86,23 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
 
   const moveItemUp = (index: number) => {
     if (index === 0) return;
-    
+
     const updatedItems: MediaItem[] = [...mediaItems];
     const temp = updatedItems[index - 1].order;
     updatedItems[index - 1].order = updatedItems[index].order;
     updatedItems[index].order = temp;
-    
+
     onChange(updatedItems.sort((a, b) => a.order - b.order));
   };
 
   const moveItemDown = (index: number) => {
     if (index === mediaItems.length - 1) return;
-    
+
     const updatedItems: MediaItem[] = [...mediaItems];
     const temp = updatedItems[index + 1].order;
     updatedItems[index + 1].order = updatedItems[index].order;
     updatedItems[index].order = temp;
-    
+
     onChange(updatedItems.sort((a, b) => a.order - b.order));
   };
 
@@ -109,12 +112,12 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
       {mediaItems.length > 0 ? (
         <div className="space-y-4">
           {mediaItems.map((item, index) => (
-            <div key={index} className="flex flex-col md:flex-row items-start gap-4 p-4 bg-black/50 rounded-md border border-gray-800">
+            <div key={item.id || index} className="flex flex-col md:flex-row items-start gap-4 p-4 bg-black/50 rounded-md border border-gray-800"> {/* Usar item.id si existe */}
               <div className="w-full md:w-1/4 aspect-video bg-gray-900 flex items-center justify-center rounded">
                 {item.type === 'image' ? (
-                  <img 
-                    src={item.url} 
-                    alt={item.alt} 
+                  <img
+                    src={item.url}
+                    alt={item.alt}
                     className="w-full h-full object-cover rounded"
                   />
                 ) : (
@@ -126,51 +129,51 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
                   </div>
                 )}
               </div>
-              
+
               <div className="flex-1">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm font-medium text-gray-300">URL</p>
                     <p className="text-xs text-gray-500 truncate">{item.url}</p>
                   </div>
-                  
+
                   <div>
                     <p className="text-sm font-medium text-gray-300">Texto Alt</p>
                     <p className="text-xs text-gray-500">{item.alt}</p>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3">
                   <div>
                     <p className="text-sm font-medium text-gray-300">Tipo</p>
                     <p className="text-xs text-gray-500">{item.type === 'image' ? 'Imagen' : 'Video'}</p>
                   </div>
-                  
+
                   <div>
                     <p className="text-sm font-medium text-gray-300">Dimensiones</p>
                     <p className="text-xs text-gray-500">{item.width} x {item.height}</p>
                   </div>
-                  
+
                   <div>
                     <p className="text-sm font-medium text-gray-300">Orden</p>
                     <p className="text-xs text-gray-500">{item.order}</p>
                   </div>
-                  
+
                   <div>
                     <p className="text-sm font-medium text-gray-300">Modo de visualización</p>
                     <p className="text-xs text-gray-500">
-                      {item.displayMode === 'single' 
-                        ? 'Individual' 
-                        : item.displayMode === 'dual' 
-                          ? 'Par' 
-                          : item.displayMode === 'dual_left' 
+                      {item.displayMode === 'single'
+                        ? 'Individual'
+                        : item.displayMode === 'dual'
+                          ? 'Par'
+                          : item.displayMode === 'dual_left'
                             ? 'Par (izquierda)'
                             : 'Par (derecha)'}
                     </p>
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex md:flex-col space-x-2 md:space-x-0 md:space-y-2">
                 <button
                   type="button"
@@ -180,7 +183,7 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
                 >
                   <ArrowUpIcon className="h-5 w-5" />
                 </button>
-                
+
                 <button
                   type="button"
                   onClick={() => moveItemDown(index)}
@@ -189,7 +192,7 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
                 >
                   <ArrowDownIcon className="h-5 w-5" />
                 </button>
-                
+
                 <button
                   type="button"
                   onClick={() => removeMediaItem(index)}
@@ -207,11 +210,11 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
           <p className="text-sm text-gray-500">Agrega imágenes o videos usando el formulario de abajo</p>
         </div>
       )}
-      
+
       {/* Formulario para agregar nuevo elemento */}
       <div className="bg-black/50 p-6 rounded-md border border-gray-800">
         <h4 className="text-md font-medium mb-4 text-white">Agregar nuevo elemento</h4>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">
@@ -227,7 +230,7 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
               <option value="video">Video</option>
             </select>
           </div>
-          
+
           {newItem.type === 'video' && (
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1">
@@ -245,7 +248,7 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
             </div>
           )}
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">
@@ -260,7 +263,7 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
               className="w-full p-2 border border-gray-700 rounded-md bg-black/50 text-white"
             />
           </div>
-          
+
           {newItem.type === 'video' && (
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1">
@@ -277,7 +280,7 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
             </div>
           )}
         </div>
-        
+
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-300 mb-1">
             Texto Alternativo *
@@ -291,7 +294,7 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
             className="w-full p-2 border border-gray-700 rounded-md bg-black/50 text-white"
           />
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">
@@ -305,7 +308,7 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
               className="w-full p-2 border border-gray-700 rounded-md bg-black/50 text-white"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">
               Alto (px)
@@ -318,7 +321,7 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
               className="w-full p-2 border border-gray-700 rounded-md bg-black/50 text-white"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">
               Orden
@@ -332,7 +335,7 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
             />
           </div>
         </div>
-        
+
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-300 mb-1">
             Modo de visualización
@@ -349,7 +352,7 @@ const MediaItemsManager: React.FC<MediaItemsManagerProps> = ({
             <option value="dual_right">Par - Derecha</option>
           </select>
         </div>
-        
+
         <button
           type="button"
           onClick={addMediaItem}

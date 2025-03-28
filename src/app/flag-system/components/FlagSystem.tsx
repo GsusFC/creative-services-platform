@@ -4,8 +4,8 @@ import { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import { NauticalFlags } from './NauticalFlags';
 import { ExportOptions } from './ExportOptions';
 
-// Definir los tipos de esquemas de color disponibles
-type ColorScheme = 'original' | 'random' | string;
+// El tipo ColorScheme ya no es necesario ya que está fijo
+// type ColorScheme = 'original' | 'random' | string;
 
 // Definición de tipos simplificada
 
@@ -30,9 +30,9 @@ export const FlagSystem = () => {
   const [word, setWord] = useState('');
   const [error, setError] = useState('');
   // Esquema de color fijo en 'original'
-  const colorScheme: ColorScheme = 'original';
+  const colorScheme = 'original'; // Ya no necesita tipo explícito
   // Estado para el color de fondo
-  const [backgroundColor, setBackgroundColor] = useState('#000000');
+  const [backgroundColor, setBackgroundColor] = useState('#000000'); // Mantenemos string por ahora para flexibilidad
   // Historial de palabras generadas
   const [wordHistory, setWordHistory] = useState<string[]>([]);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -93,8 +93,6 @@ export const FlagSystem = () => {
     }
   }, [word, addToHistory]);
 
-  // Se ha eliminado el sistema de cambio de esquema de color
-
   // Calculate flag size based on word length - memoizado con useMemo
   const calculateFlagSize = useMemo(() => {
     return (wordLength: number): number => {
@@ -116,25 +114,15 @@ export const FlagSystem = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <h1 className="text-3xl font-druk flag-title text-white text-center mb-8">NAUTICAL FLAG SYSTEM</h1>
+      {/* Aplicar font-druk directamente aquí */}
+      <h1 className="text-3xl font-druk font-black tracking-wide uppercase text-white text-center mb-8">NAUTICAL FLAG SYSTEM</h1>
       
       {/* Layout principal de dos columnas usando CSS Grid */}
-      <div 
-        className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-8"
-        style={{
-          '--grid-gap': 'var(--spacing-md)',
-          '--grid-gap-md': 'var(--spacing-lg)'
-        } as React.CSSProperties}
-      >
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-8">
         {/* Columna izquierda (2/3): Canvas principal */}
         <div className="md:col-span-2 flex flex-col items-center">
           {/* SVG Canvas con proporción 1:1 */}
-          <div 
-            className="w-full aspect-square max-w-[1000px]"
-            style={{ 
-              backgroundColor: 'transparent'
-            }}
-          >
+          <div className="w-full aspect-square max-w-[1000px] bg-transparent">
             <svg
               ref={svgRef}
               width="1000"
@@ -168,13 +156,8 @@ export const FlagSystem = () => {
         </div>
         
         {/* Columna derecha (1/3): Panel de controles */}
-        <div 
-          className="flex flex-col gap-6 p-6 shadow-md backdrop-blur-sm"
-          style={{ 
-            backgroundColor: '#000000', 
-            gap: 'var(--spacing-md)'
-          }}
-        >
+        {/* Se usa gap-6 de Tailwind, se elimina style inline */}
+        <div className="flex flex-col gap-6 p-6 shadow-md backdrop-blur-sm bg-black">
           {/* Se ha eliminado el selector de esquema de color */}
           
           {/* Campo de texto */}
@@ -185,7 +168,8 @@ export const FlagSystem = () => {
               value={word}
               onChange={handleInputChange}
               placeholder="Enter a word"
-              className="w-full px-4 py-2 bg-black text-white border border-gray-800 focus:outline-none focus:ring-2 focus:ring-opacity-50 font-mono" style={{ borderColor: '#00FF00' }}
+              // Usar clases de Tailwind para borde y fuente
+              className="w-full px-4 py-2 bg-black text-white border border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 font-mono"
               aria-label="Enter a word to convert into nautical flags"
             />
           </div>
@@ -197,7 +181,8 @@ export const FlagSystem = () => {
                 const randomWord = generateRandomWord();
                 setWord(randomWord);
               }}
-              className="flex-1 whitespace-nowrap px-3 py-2 text-black transition-colors hover:text-white font-mono" style={{ backgroundColor: '#00FF00', borderColor: '#00FF00' }}
+              // Usar clases de Tailwind para fondo, borde y fuente
+              className="flex-1 whitespace-nowrap px-3 py-2 bg-green-500 border border-green-500 text-black transition-colors hover:bg-green-600 hover:border-green-600 font-mono"
               title="Generate random word"
             >
               RANDOM
@@ -205,7 +190,8 @@ export const FlagSystem = () => {
             
             <button
               onClick={handleRandomBackground}
-              className="flex-1 whitespace-nowrap px-3 py-2 text-white transition-colors bg-black hover:bg-gray-900 border font-mono" style={{ borderColor: '#00FF00' }}
+              // Usar clases de Tailwind para borde y fuente
+              className="flex-1 whitespace-nowrap px-3 py-2 text-white transition-colors bg-black hover:bg-gray-900 border border-green-500 font-mono"
               title="Change background color randomly"
             >
               RANDOM BG
@@ -215,7 +201,8 @@ export const FlagSystem = () => {
           {/* Opciones de exportación */}
           {word && !error && (
             <div className="mt-4">
-              <ExportOptions svgRef={svgRef} word={word} />
+              {/* Pasar backgroundColor a ExportOptions */}
+              <ExportOptions svgRef={svgRef} word={word} backgroundColor={backgroundColor} />
             </div>
           )}
           {error && (
@@ -245,7 +232,6 @@ export const FlagSystem = () => {
         </div>
       </div>
 
-      {/* Se ha eliminado el panel de referencias de banderas */}
     </div>
   );
 };

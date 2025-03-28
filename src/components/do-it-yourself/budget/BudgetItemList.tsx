@@ -104,12 +104,12 @@ const BudgetItemList: React.FC<BudgetItemListProps> = ({
           aria-label={`Lista de ${titulo.toLowerCase()}`}
         >
           {items.map((item) => {
-            // Encontrar el índice global en la lista de elementos
-            const indexGlobal = elementos.findIndex(e => e.id === item.id && e.tipo === item.tipo);
+            // Usar el indiceGlobal directamente del item
+            const indiceGlobal = item.indiceGlobal; 
             
             return (
               <motion.div 
-                key={`${item.id}-${item.tipo}`} 
+                key={item.indiceGlobal} // Usar indiceGlobal como key
                 variants={itemVariants}
                 className="flex justify-between items-center bg-black/20 rounded-md px-3 py-2 text-sm"
                 role="listitem"
@@ -126,7 +126,7 @@ const BudgetItemList: React.FC<BudgetItemListProps> = ({
                   {onActualizarCantidad && (
                     <div className="flex items-center">
                       <button
-                        onClick={() => handleCantidadChange(indexGlobal, item.cantidad - 1)}
+                        onClick={() => handleCantidadChange(indiceGlobal, item.cantidad - 1)} // Usar indiceGlobal
                         disabled={item.cantidad <= 1}
                         className="text-white/50 hover:text-white/90 disabled:text-white/30 transition-colors p-1"
                         aria-label={`Reducir cantidad de ${item.nombre}`}
@@ -137,7 +137,7 @@ const BudgetItemList: React.FC<BudgetItemListProps> = ({
                       </button>
                       <span className="text-white/70 w-6 text-center">{item.cantidad}</span>
                       <button
-                        onClick={() => handleCantidadChange(indexGlobal, item.cantidad + 1)}
+                        onClick={() => handleCantidadChange(indiceGlobal, item.cantidad + 1)} // Usar indiceGlobal
                         className="text-white/50 hover:text-white/90 transition-colors p-1"
                         aria-label={`Aumentar cantidad de ${item.nombre}`}
                       >
@@ -151,8 +151,8 @@ const BudgetItemList: React.FC<BudgetItemListProps> = ({
                     {(item.precio * item.cantidad).toLocaleString('es-ES')} €
                   </span>
                   <button
-                    onClick={() => handleEliminar(indexGlobal)}
-                    onKeyDown={(e) => handleKeyDown(e, indexGlobal)}
+                    onClick={() => handleEliminar(indiceGlobal)} // Usar indiceGlobal
+                    onKeyDown={(e) => handleKeyDown(e, indiceGlobal)} // Usar indiceGlobal
                     tabIndex={0}
                     aria-label={`Eliminar ${item.nombre} del presupuesto`}
                     className="text-white/40 hover:text-white/90 transition-colors p-1"

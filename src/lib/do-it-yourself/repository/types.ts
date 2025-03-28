@@ -5,6 +5,9 @@ import {
   BudgetService 
 } from '@/types/services-supabase';
 
+// Re-exportar los tipos importados para que estén disponibles
+export type { ServiceCategory, Service, Budget, BudgetService };
+
 /**
  * Datos para crear un nuevo presupuesto
  */

@@ -73,34 +73,9 @@ export class MCPNotionService {
     return this.callTool('notion_query_database', args);
   }
 
-  /**
-   * Obtiene todos los case studies con estado "Listo"
-   */
-  async getReadyCaseStudies() {
-    return this.queryDatabase({
-      property: 'Status',
-      select: {
-        equals: 'Listo'
-      }
-    }, [
-      {
-        property: 'Brand Name',
-        direction: 'ascending'
-      }
-    ]);
-  }
+  // Eliminado método getReadyCaseStudies
 
-  /**
-   * Obtiene todos los case studies
-   */
-  async getAllCaseStudies() {
-    return this.queryDatabase(undefined, [
-      {
-        property: 'Brand Name',
-        direction: 'ascending'
-      }
-    ]);
-  }
+  // Eliminado método getAllCaseStudies
 
   /**
    * Obtiene información detallada de una página

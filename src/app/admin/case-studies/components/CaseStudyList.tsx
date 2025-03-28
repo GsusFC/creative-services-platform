@@ -1,33 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent } from '../../../../components/ui/card';
 import { Button } from '../../../../components/ui/button';
 import { Badge } from '../../../../components/ui/badge';
 import { Input } from '../../../../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select';
-import { getAllCaseStudies } from '../../../../lib/storage/case-studies';
-import type { CaseStudy } from '../../../../types/case-study';
+// Importamos CaseStudyIndex desde su ubicación correcta
+import type { CaseStudyIndex } from '@/lib/storage/case-studies';
 import { EditIcon, EyeIcon, TrashIcon } from 'lucide-react';
 import Link from 'next/link';
 
-export function CaseStudyList() {
-  const [studies, setStudies] = useState<CaseStudy[]>([]);
+interface CaseStudyListProps {
+  // Cambiamos el tipo esperado a CaseStudyIndex[]
+  studies: CaseStudyIndex[];
+}
+
+export function CaseStudyList({ studies }: CaseStudyListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
-  useEffect(() => {
-    const loadStudies = async () => {
-      try {
-        const allStudies = await getAllCaseStudies();
-        setStudies(allStudies);
-      } catch (error) {
-        console.error('Error al cargar casos de estudio:', error);
-      }
-    };
-
-    loadStudies();
-  }, []);
 
   const filteredStudies = studies.filter(study => {
     const matchesSearch = study.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

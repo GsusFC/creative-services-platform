@@ -1,184 +1,278 @@
 #!/usr/bin/env node
 import { Client } from '@notionhq/client';
 import * as dotenv from 'dotenv';
+import chalk from 'chalk';
 
-type NotionPage = {
-  properties: Record<string, NotionProperty>;
-};
+interface NotionFile {
+  type: 'file' | 'external';
+  name?: string;
+  file?: { 
+    url: string; 
+    expiry_time?: string 
+  };
+  external?: { 
+    url: string 
+  };
+}
 
-type NotionProperty = {
+interface NotionProperty {
   id: string;
   type: string;
-  files?: Array<{
-    type: 'file' | 'external';
-    name?: string;
-    file?: { url: string; expiry_time?: string };
-    external?: { url: string };
-  }>;
-};
+  files?: NotionFile[];
+  url?: string;
+}
+
+interface NotionPage {
+  id: string;
+  properties: Record<string, NotionProperty>;
+}
+
+interface ImageAnalysisResult {
+  propertyName: string;
+  files: NotionFile[];
+  status: 'ok' | 'empty' | 'duplicate' | 'unexpected' | 'invalid';
+  invalidFormats?: NotionFile[];
+}
+
+interface VideoAnalysisResult {
+  propertyName: string;
+  url: string | null;
+  status: 'ok' | 'missing';
+}
+
+// Configuración
+const EXPECTED_IMAGE_PROPERTIES = [
+  'Avatar',
+  'Cover', 
+  'Hero Image',
+  ...Array.from({length: 12}, (_, i) => `Image [${i + 1}]`)
+];
+
+const EXPECTED_VIDEO_PROPERTIES = [
+  'Video 1',
+  'Video 2'
+];
 
 // Cargar variables de entorno
 dotenv.config({ path: '.env.local' });
 
-async function main() {
-  console.log('Iniciando script...');
-  try {
-    console.log('🔄 Conectando con Notion...');
-    const apiKey = process.env['NEXT_PUBLIC_NOTION_API_KEY'];
-    if (!apiKey) throw new Error('API Key no encontrada');
-    
-    const notion = new Client({ auth: apiKey });
-    
-    console.log('🔍 Consultando la página de Build en Notion...');
-    const page = await notion.pages.retrieve({
-      page_id: '137a44dc-3505-8037-a0aa-f3ce17af874d'
-    }) as unknown as NotionPage;
-    
-    if (!('properties' in page)) {
-      throw new Error('No se encontraron propiedades en la página');
-    }
-    
-    // Mostrar resumen de propiedades de imagen
-    console.log('\n📊 Resumen de propiedades de imagen:\n');
-    const imageProperties = Object.entries(page.properties)
-      .filter((entry): entry is [string, NotionProperty] => {
-        const [_, value] = entry;
-        return value && typeof value === 'object' && 'type' in value && value.type === 'files';
-      })
-      .map(([key, value]) => ({ key, value }))
-      .sort((a, b) => {
-        // Ordenar primero las imágenes especiales (Cover, Hero, Avatar)
-        const specialImages = ['Cover', 'Hero Image', 'Avatar'];
-        const aIsSpecial = specialImages.includes(a.key);
-        const bIsSpecial = specialImages.includes(b.key);
-        if (aIsSpecial && !bIsSpecial) return -1;
-        if (!aIsSpecial && bIsSpecial) return 1;
-        
-        // Luego ordenar por número si son Image [N]
-        const aMatch = a.key.match(/Image \[(\d+)\]/);
-        const bMatch = b.key.match(/Image \[(\d+)\]/);
-        const aNum = aMatch?.[1] ? parseInt(aMatch[1], 10) : null;
-        const bNum = bMatch?.[1] ? parseInt(bMatch[1], 10) : null;
-        if (aNum !== null && bNum !== null) {
-          return aNum - bNum;
-        }
-        return a.key.localeCompare(b.key);
-      });
+/**
+ * Valida y obtiene la API key de Notion
+ * @throws Error si la API key no está configurada
+ */
+function getNotionApiKey(): string {
+  const apiKey = process.env.NEXT_PUBLIC_NOTION_API_KEY;
+  if (!apiKey) {
+    throw new Error('NEXT_PUBLIC_NOTION_API_KEY no está configurada en .env.local');
+  }
+  return apiKey;
+}
 
-    // Mostrar las propiedades ordenadas
-    for (const { key, value } of imageProperties) {
-      console.log(`  - ${key}:`);
-      if (!value.files || value.files.length === 0) {
-        console.log('    ❌ Sin archivos');
+/**
+ * Obtiene una página de Notion
+ * @param notionClient Cliente de Notion
+ * @param pageId ID de la página
+ * @returns Promise<NotionPage>
+ * @throws Error si falla la consulta o la página no tiene propiedades
+ */
+async function getNotionPage(notionClient: Client, pageId: string): Promise<NotionPage> {
+  const page = await notionClient.pages.retrieve({ page_id: pageId }) as unknown as NotionPage;
+  
+  if (!page?.properties) {
+    throw new Error(`La página ${pageId} no tiene propiedades válidas`);
+  }
+  
+  return page;
+}
+
+async function main() {
+  console.log('🚀 Iniciando análisis de imágenes en Notion...');
+  
+  try {
+    // 1. Configuración inicial
+    const apiKey = getNotionApiKey();
+    const notion = new Client({ auth: apiKey });
+    const pageId = '137a44dc-3505-8037-a0aa-f3ce17af874d';
+    
+    // 2. Obtener página
+    console.log('🔍 Obteniendo página de Notion...');
+    const page = await getNotionPage(notion, pageId);
+
+    // 3. Analizar propiedades de imagen
+    console.log('\n📊 Analizando propiedades de imagen...');
+    const imageResults = analyzeImageProperties(page.properties);
+    
+    // Mostrar resultados
+    console.log('\n📝 Resultados del análisis:');
+    imageResults.forEach(result => {
+      const statusIcon = result.status === 'ok' ? chalk.green('✅') : 
+                        result.status === 'empty' ? chalk.yellow('⚠️') : 
+                        result.status === 'duplicate' ? chalk.blue('🔄') :
+                        result.status === 'invalid' ? chalk.red('❌') : '❓';
+      
+      console.log(chalk.bold(`\n${statusIcon} ${result.propertyName}:`));
+      
+      if (result.files.length === 0) {
+        console.log(chalk.dim('   Sin archivos'));
       } else {
-        value.files.forEach((file) => {
-          let name = 'Sin nombre';
-          if (file.type === 'file' && file.file?.url) {
-            const urlParts = file.file.url.split('/');
-            name = urlParts[urlParts.length - 1] || 'Sin nombre';
-          } else if (file.type === 'external' && file.external?.url) {
-            const urlParts = file.external.url.split('/');
-            name = urlParts[urlParts.length - 1] || 'Sin nombre';
+        result.files.forEach(file => {
+          const fileName = getFileNameFromUrl(file);
+          const isInvalid = result.invalidFormats?.includes(file);
+          
+          if (isInvalid) {
+            const ext = file.type === 'file' 
+              ? file.file?.url.split('.').pop()?.toUpperCase()
+              : file.external?.url.split('.').pop()?.toUpperCase();
+            console.log(chalk.red(`   - ${fileName} (Formato no soportado: ${ext})`));
+          } else {
+            console.log(`   - ${fileName}`);
           }
-          console.log(`    ✅ ${name}`);
+
+          if (file.type === 'file' && file.file?.expiry_time) {
+            console.log(chalk.dim(`     ⏳ Expira: ${file.file.expiry_time}`));
+          }
         });
       }
+    });
+
+    // 4. Analizar propiedades de video
+    console.log('\n🎥 Analizando propiedades de video...');
+    const videoResults = analyzeVideoProperties(page.properties);
+    
+    videoResults.forEach(result => {
+      const statusIcon = result.status === 'ok' ? '✅' : '⚠️';
+      console.log(`\n${statusIcon} ${result.propertyName}:`);
+      console.log(`   ${result.url || 'No configurado'}`);
+    });
+
+    // 5. Resumen final
+    console.log('\n📌 Resumen:');
+    const totalImages = imageResults.reduce((sum, r) => sum + r.files.length, 0);
+    const missingImages = imageResults.filter(r => r.status === 'empty').length;
+    const duplicateImages = imageResults.filter(r => r.status === 'duplicate').length;
+    
+    const invalidImages = imageResults.filter(r => r.status === 'invalid').length;
+    
+    console.log(chalk.bold('\n📊 Estadísticas finales:'));
+    console.log(`- ${chalk.green(totalImages)} imágenes encontradas`);
+    console.log(`- ${chalk.yellow(missingImages)} propiedades vacías`);
+    console.log(`- ${chalk.blue(duplicateImages)} propiedades duplicadas`);
+    console.log(`- ${chalk.red(invalidImages)} formatos no soportados`);
+
+    // Mostrar URLs problemáticas
+    const invalidFiles = imageResults.flatMap(r => r.invalidFormats || []);
+    if (invalidFiles.length > 0) {
+      console.log(chalk.bold('\n⚠️ Archivos con formatos no soportados:'));
+      invalidFiles.forEach(file => {
+        const url = file.type === 'file' ? file.file?.url : file.external?.url;
+        const ext = url?.split('.').pop()?.toUpperCase();
+        console.log(chalk.red(`- ${url} (${ext})`));
+      });
     }
 
-    // Analizar propiedades de imagen
-    console.log('\n📝 Análisis de propiedades de imagen:');
-    
-    // Propiedades esperadas
-    const expectedProperties = [
-      'Avatar',
-      'Cover',
-      'Hero Image',
-      ...Array.from({length: 12}, (_, i) => `Image [${i + 1}]`)
-    ];
+  } catch (error) {
+    console.error('\n❌ Error en el análisis:');
+    if (error instanceof Error) {
+      console.error(`- Mensaje: ${error.message}`);
+      if (error.stack) {
+        console.error(`- Stack: ${error.stack.split('\n')[1]?.trim()}`);
+      }
+    } else {
+      console.error('- Error desconocido:', error);
+    }
+    process.exit(1);
+  }
+}
 
-    // Encontrar todas las propiedades de tipo 'files'
-    const fileEntries = Object.entries(page.properties)
-      .filter(([_, value]) => value.type === 'files' && Array.isArray(value.files));
+/**
+ * Analiza las propiedades de imagen de una página de Notion
+ */
+function analyzeImageProperties(properties: Record<string, NotionProperty>): ImageAnalysisResult[] {
+  // Obtener todas las propiedades de tipo 'files'
+  const fileEntries = Object.entries(properties)
+    .filter(([_, value]) => value.type === 'files' && Array.isArray(value.files))
+    .map(([key, value]) => ({ key, value }));
 
-    // Agrupar propiedades por nombre base (sin espacios)
-    const propertyGroups = fileEntries.reduce<Record<string, Array<{key: string; value: NotionProperty}>>>((groups, [key, value]) => {
+  // Agrupar por nombre base (sin espacios)
+  const propertyGroups = fileEntries.reduce<Record<string, Array<{key: string; value: NotionProperty}>>>(
+    (groups, {key, value}) => {
       const baseKey = key.trim();
       if (!groups[baseKey]) groups[baseKey] = [];
       groups[baseKey].push({ key, value });
       return groups;
-    }, {} as Record<string, { key: string, value: any }[]>);
+    }, {});
 
-    // Encontrar propiedades duplicadas
-    const duplicateProperties = Object.entries(propertyGroups)
-      .filter(([_, group]) => group.length > 1);
+  return Object.entries(propertyGroups).map(([baseKey, group]) => {
+    const isExpected = EXPECTED_IMAGE_PROPERTIES.includes(baseKey);
+    const isDuplicate = group.length > 1;
+    const isEmpty = group.every(({ value }) => !value.files || value.files.length === 0);
+    const files = group.flatMap(({ value }) => value.files || []);
 
-    if (duplicateProperties.length > 0) {
-      console.log('\n🔄 Propiedades duplicadas:');
-      duplicateProperties.forEach(([baseKey, group]) => {
-        console.log(`  ${baseKey}:`);
-        group.forEach(({ key }) => {
-          console.log(`    - "${key}" (${key === baseKey ? 'sin espacios' : 'con espacios'})`);
-        });
-      });
-    }
-
-    // Encontrar propiedades inesperadas
-    const unexpectedProperties = Object.keys(propertyGroups)
-      .filter(key => 
-        !expectedProperties.includes(key) && 
-        key.toLowerCase().includes('image')
-      );
-
-    if (unexpectedProperties.length > 0) {
-      console.log('\n⚠️ Propiedades de imagen inesperadas:');
-      unexpectedProperties.forEach(prop => {
-        console.log(`  - ${prop}`);
-      });
-    }
-
-    // Verificar propiedades faltantes
-    const missingProperties = expectedProperties.filter(prop => 
-      !Object.keys(propertyGroups).includes(prop)
-    );
-
-    if (missingProperties.length > 0) {
-      console.log('\n❌ Propiedades de imagen faltantes:');
-      missingProperties.forEach(prop => {
-        console.log(`  - ${prop}`);
-      });
-    }
-
-    // Verificar propiedades vacías
-    const emptyProperties = Object.entries(propertyGroups)
-      .filter(([key, group]) => 
-        group.every(({ value }) => !value.files || value.files.length === 0) && 
-        expectedProperties.includes(key)
-      )
-      .map(([key]) => key);
-
-    if (emptyProperties.length > 0) {
-      console.log('\n⚠️ Propiedades de imagen vacías:');
-      emptyProperties.forEach(prop => {
-        console.log(`  - ${prop}`);
-      });
-    }
-
-    // También revisar las propiedades de video
-    const videoProperties = ['Video 1', 'Video 2'].map(key => {
-      const prop = page.properties[key] as { type: string; url?: string } | undefined;
-      return prop?.type === 'url' && prop.url ? prop.url : null;
+    // Validar formatos de imagen
+    const invalidFormats = files.filter(file => {
+      const url = file.type === 'file' ? file.file?.url : file.external?.url;
+      if (!url) return false;
+      const ext = url.split('.').pop()?.toLowerCase();
+      return ext && !['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext);
     });
 
-    console.log('\n🎥 Videos:');
-    videoProperties.forEach((url, index) => {
-      if (url) {
-        console.log(`  - Video ${index + 1}: ${url}`);
-      }
-    });
+    const status: 'duplicate' | 'empty' | 'unexpected' | 'ok' | 'invalid' = 
+      invalidFormats.length > 0 ? 'invalid' :
+      isDuplicate ? 'duplicate' : 
+      isEmpty && isExpected ? 'empty' :
+      !isExpected ? 'unexpected' : 'ok';
 
-  } catch (error) {
-    console.error('❌ Error:', error);
-  }
+    return {
+      propertyName: baseKey,
+      files,
+      status,
+      invalidFormats
+    };
+  }).sort((a, b) => {
+    // Ordenar: especiales -> numéricas -> otras
+    const special = ['Avatar', 'Cover', 'Hero Image'];
+    const aIsSpecial = special.includes(a.propertyName);
+    const bIsSpecial = special.includes(b.propertyName);
+    
+    if (aIsSpecial && !bIsSpecial) return -1;
+    if (!aIsSpecial && bIsSpecial) return 1;
+    
+    const aNum = a.propertyName.match(/Image \[(\d+)\]/)?.[1];
+    const bNum = b.propertyName.match(/Image \[(\d+)\]/)?.[1];
+    
+    if (aNum && bNum) return parseInt(aNum) - parseInt(bNum);
+    if (aNum) return -1;
+    if (bNum) return 1;
+    
+    return a.propertyName.localeCompare(b.propertyName);
+  });
+}
+
+/**
+ * Analiza las propiedades de video de una página de Notion
+ */
+function analyzeVideoProperties(properties: Record<string, NotionProperty>): VideoAnalysisResult[] {
+  return EXPECTED_VIDEO_PROPERTIES.map(propName => {
+    const prop = properties[propName];
+    const url = prop?.type === 'url' ? prop.url ?? null : null;
+    
+    return {
+      propertyName: propName,
+      url,
+      status: url ? 'ok' : 'missing' as const
+    };
+  });
+}
+
+/**
+ * Obtiene el nombre del archivo desde una URL
+ */
+function getFileNameFromUrl(file: NotionFile): string {
+  const url = file.type === 'file' ? file.file?.url : file.external?.url;
+  if (!url) return 'Sin nombre';
+  
+  const fileName = url.split('/').pop() || 'Sin nombre';
+  return fileName.split('?')[0]; // Eliminar query params
 }
 
 main();

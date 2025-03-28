@@ -3,24 +3,7 @@
 import React from 'react';
 import { useDiy } from '@/contexts/DiyContext';
 
-/**
- * Componente que muestra el estado de carga del presupuesto
- */
-export const BudgetLoadingState: React.FC = () => {
-  return (
-    <div className="flex items-center justify-center h-full">
-      <div className="flex flex-col items-center">
-        <div className="w-6 h-6 border-t-2 border-[#00ff00] border-solid rounded-full animate-spin mb-2"></div>
-        <p 
-          className="text-white/50 text-xs"
-          style={{ fontFamily: 'var(--font-geist-mono)' }}
-        >
-          Cargando...
-        </p>
-      </div>
-    </div>
-  );
-};
+// BudgetLoadingState eliminado ya que no se utiliza y la carga se maneja globalmente
 
 /**
  * Componente que muestra el estado de error del presupuesto
@@ -91,7 +74,7 @@ export const BudgetEmptyState: React.FC = () => {
 
 // Exportamos todos los componentes bajo un namespace para facilitar su uso
 export const BudgetStates = {
-  Loading: BudgetLoadingState,
+  // Loading: BudgetLoadingState, // Eliminado
   Error: BudgetErrorState,
   Empty: BudgetEmptyState
 };

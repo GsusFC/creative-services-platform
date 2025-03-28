@@ -39,8 +39,10 @@ export function Hero({
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem] md:bg-[size:6rem_6rem] opacity-30" />
 
       {/* Main Content */}
-      <div className="flex-1 w-full bg-black px-6 md:px-24 flex items-center" style={{ marginTop: '120px' }}>
-        <div className="text-left max-w-[90%] md:max-w-[80%]">
+      {/* Removed px-6 md:px-24 */}
+      <div className="flex-1 w-full bg-black flex items-center" style={{ marginTop: '120px' }}>
+        {/* Removed max-w-[90%] md:max-w-[80%] */}
+        <div className="text-left w-full"> {/* Added w-full to ensure it takes available space */}
           {/* Mobile Layout */}
           <div className={isMobile ? "block" : "hidden"}>
             <motion.div
@@ -80,9 +82,8 @@ export function Hero({
                 STRATEGIC DESIGN STUDIO
               </p>
               <h1 
-                className="text-white font-bold leading-[0.9] tracking-[0.02em] uppercase whitespace-nowrap" 
+                className="text-white font-bold leading-[0.9] tracking-[0.02em] uppercase text-[7vw]" 
                 style={{ 
-                  fontSize: 'clamp(4rem, 7vw, 8rem)',
                   fontFamily: 'var(--font-druk-text-wide)'
                 }}
               >

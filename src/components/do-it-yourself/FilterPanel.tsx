@@ -2,8 +2,10 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { TipoElemento } from '@/types/do-it-yourself';
-import { departamentos } from '@/mocks/do-it-yourself';
+// TipoElemento ya no se usa para filtrar
+// import { TipoElemento } from '@/types/do-it-yourself';
+// Departamentos se obtienen del contexto
+// import { departamentos } from '@/mocks/do-it-yourself';
 import { useDiy } from '@/contexts/DiyContext';
 
 // Ya no necesitamos una interfaz de props ya que usamos el contexto
@@ -12,22 +14,30 @@ const FilterPanel = () => {
   // Obtener datos y funciones del contexto DIY
   const diyContext = useDiy();
   
-  // Extraer filtros del contexto
-  const departamentoSeleccionado = diyContext.filtros.departamentoId;
-  const tipoSeleccionado = diyContext.filtros.tipoElemento;
+  // Obtener datos y funciones del contexto DIY
+  const { 
+    filtros, 
+    setDepartamentoSeleccionado, 
+    opcionesPresupuesto, 
+    setDescuentoGlobal, 
+    setModoSprint,
+    allCategories // Obtener las categorías (mapeadas a Departamentos)
+  } = useDiy();
   
-  // Extraer setters y opciones
-  const { setDepartamentoSeleccionado, setTipoSeleccionado } = diyContext;
-  const { descuentoGlobal, modoSprint } = diyContext.opcionesPresupuesto;
-  const { setDescuentoGlobal, setModoSprint } = diyContext;
-  // Estado local para el término de búsqueda
+  // Extraer filtros del contexto
+  const departamentoSeleccionado = filtros.departamentoId;
+  // tipoSeleccionado eliminado
+  
+  // Extraer opciones
+  const { descuentoGlobal, modoSprint } = opcionesPresupuesto;
+  
+  // Estado local para el término de búsqueda (sin cambios)
   const [terminoBusqueda, setTerminoBusqueda] = useState<string>('');
 
-  // Manejador para cambios en el campo de búsqueda
+  // Manejador para cambios en el campo de búsqueda (sin cambios)
   const handleBusquedaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTerminoBusqueda(e.target.value);
-    // Aquí podríamos añadir lógica para filtrar por término de búsqueda
-    // si se implementa esta funcionalidad en el contexto
+    // Lógica de búsqueda no implementada en el hook por ahora
   };
 
   return (
@@ -83,13 +93,17 @@ const FilterPanel = () => {
             <div className="relative">
               <select
                 id="departamento-select"
-                value={departamentoSeleccionado || ''}
-                onChange={(e) => setDepartamentoSeleccionado(e.target.value ? parseInt(e.target.value) : null)}
+                value={departamentoSeleccionado === null ? '' : departamentoSeleccionado}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setDepartamentoSeleccionado(value ? parseInt(value, 10) : null);
+                }}
                 className="appearance-none bg-black/60 text-white rounded-sm px-4 py-2 text-sm w-56 focus:ring-1 focus:ring-[#00ff00]/30 focus:outline-none transition-all border-b border-white/10 pr-8"
                 style={{ fontFamily: 'var(--font-geist-mono)' }}
               >
                 <option value="">Todos los departamentos</option>
-                {departamentos.map((depto) => (
+                {/* Usar allCategories del contexto */}
+                {allCategories.map((depto) => (
                   <option key={depto.id} value={depto.id} className="py-1">{depto.nombre}</option>
                 ))}
               </select>
@@ -102,62 +116,11 @@ const FilterPanel = () => {
           </div>
         </div>
 
-        {/* Sección Central - Selector de Tipo */}
-        <div className="flex flex-col items-center px-8 relative after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:h-10 after:w-px after:bg-gradient-to-b after:from-transparent after:via-white/10 after:to-transparent">
-          <span 
-            className="text-xs uppercase text-white/70 block mb-1 self-start"
-            style={{ fontFamily: 'var(--font-geist-mono)' }}
-          >
-            Tipo
-          </span>
-          <div className="flex bg-gradient-to-r from-black/40 to-black/60 rounded-md p-1 shadow-inner">
-            <button
-              onClick={() => setTipoSeleccionado(TipoElemento.PRODUCTO)}
-              className={`px-4 py-1.5 rounded text-xs transition-colors flex items-center space-x-1 ${
-                tipoSeleccionado === TipoElemento.PRODUCTO
-                  ? 'bg-[#00ff00] text-black'
-                  : 'text-white hover:bg-white/10'
-              }`}
-              style={{ fontFamily: 'var(--font-geist-mono)' }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
-              <span>Productos</span>
-            </button>
-            <button
-              onClick={() => setTipoSeleccionado(TipoElemento.SERVICIO)}
-              className={`px-4 py-1.5 rounded text-xs transition-colors flex items-center space-x-1 ${
-                tipoSeleccionado === TipoElemento.SERVICIO
-                  ? 'bg-[#00ff00] text-black'
-                  : 'text-white hover:bg-white/10'
-              }`}
-              style={{ fontFamily: 'var(--font-geist-mono)' }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>Servicios</span>
-            </button>
-            <button
-              onClick={() => setTipoSeleccionado(TipoElemento.PAQUETE)}
-              className={`px-4 py-1.5 rounded text-xs transition-colors flex items-center space-x-1 ${
-                tipoSeleccionado === TipoElemento.PAQUETE
-                  ? 'bg-[#00ff00] text-black'
-                  : 'text-white hover:bg-white/10'
-              }`}
-              style={{ fontFamily: 'var(--font-geist-mono)' }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-              </svg>
-              <span>Paquetes</span>
-            </button>
-          </div>
-        </div>
-
+        {/* Sección Central - Selector de Tipo ELIMINADO */}
+        
         {/* Sección Derecha - Opciones de Presupuesto */}
-        <div className="flex items-center space-x-8 pl-8">
+        {/* Ajustar padding si es necesario tras eliminar selector de tipo */}
+        <div className="flex items-center space-x-8 pl-8"> 
           {/* Descuento Global */}
           <div className="w-48">
             <label 
@@ -172,13 +135,12 @@ const FilterPanel = () => {
                 id="descuento"
                 type="number"
                 min="0"
-                max="50"
+                max="100" // Permitir hasta 100%
                 value={descuentoGlobal}
                 onChange={(e) => {
-                  const value = parseInt(e.target.value);
-                  if (!isNaN(value) && value >= 0 && value <= 50) {
-                    setDescuentoGlobal(value);
-                  }
+                  const value = parseInt(e.target.value, 10);
+                  // La validación 0-100 se hace en el hook
+                  setDescuentoGlobal(isNaN(value) ? 0 : value); 
                 }}
                 className="w-20 h-8 bg-black/60 text-white rounded-sm px-2 py-1 text-sm focus:ring-1 focus:ring-[#00ff00]/30 focus:outline-none transition-all border-b border-white/10"
                 style={{ fontFamily: 'var(--font-geist-mono)' }}
@@ -209,7 +171,7 @@ const FilterPanel = () => {
                   />
                 </button>
                 <div className="min-w-[32px] text-xs text-white" style={{ fontFamily: 'var(--font-geist-mono)' }}>
-                  <span className="inline-block w-[20px]">{modoSprint ? 'ON' : 'OFF'}</span> <span className="text-[#00ff00]">x1.5</span>
+                  <span className="inline-block w-[20px]">{modoSprint ? 'ON' : 'OFF'}</span> <span className="text-[#00ff00]">x1.3</span> {/* Ajustar si factor cambió */}
                 </div>
               </div>
             </div>
@@ -223,7 +185,7 @@ const FilterPanel = () => {
             <button
               onClick={() => {
                 setDepartamentoSeleccionado(null);
-                setTipoSeleccionado(TipoElemento.PRODUCTO);
+                // setTipoSeleccionado eliminado
                 setDescuentoGlobal(0);
                 setModoSprint(false);
               }}

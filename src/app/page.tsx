@@ -1,6 +1,6 @@
 import HeroContainer from '@/components/home/HeroContainer'
 import ServicesContainer from '@/components/home/ServicesContainer'
-import CaseStudiesContainer from '@/components/home/CaseStudiesContainer'
+// import CaseStudiesContainer from '@/components/home/CaseStudiesContainer' // Eliminado
 import PricingContainer from '@/components/pricing/PricingContainer'
 import LogoSliderContainer from '@/components/home/LogoSliderContainer'
 import { Metadata } from 'next'
@@ -17,7 +17,7 @@ export default function Home() {
       <HeroContainer />
       <LogoSliderContainer />
       <ServicesContainer />
-      <CaseStudiesContainer />
+      {/* <CaseStudiesContainer /> // Eliminado */}
       <PricingContainer />
     </main>
   )

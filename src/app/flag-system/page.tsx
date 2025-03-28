@@ -1,7 +1,5 @@
 import { FlagSystem } from './components/FlagSystem';
-import './styles/typography.css';
-import './styles/components.css';
-import './styles/reset.css';
+// Se eliminan las importaciones de CSS personalizadas
 
 export default function FlagSystemPage() {
   return (

@@ -6,7 +6,7 @@ export const mainNavLinks: NavLink[] = [
   // Lado izquierdo
   { href: '/services', label: 'SERVICES' },
   { href: '/process', label: 'PROCESS' },
-  { href: '/cases', label: 'CASES' },
+  // { href: '/cases', label: 'CASES' }, // Eliminado enlace a Cases
   { href: '/pricing', label: 'PRICING' },
   
   // Lado derecho (se posicionará con CSS)
@@ -30,7 +30,7 @@ export const navbarGradient = 'linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(255, 
 export const keyboardShortcuts = [
   { key: 'ESC', description: 'Cerrar menús/modals' },
   { key: 'S', description: 'Ir a servicios' },
-  { key: 'C', description: 'Ir a casos' },
+  // { key: 'C', description: 'Ir a casos' }, // Eliminado atajo a Cases
   { key: 'P', description: 'Ir a procesos' },
   { key: 'A', description: 'Ir a admin' },
   { key: 'F', description: 'Ir a sistema de banderas' },

@@ -135,28 +135,6 @@ const ServiceCard = memo<ServiceCardProps>(({
 
 ServiceCard.displayName = 'ServiceCard';
 
-// Insertamos la animación de keyframes directamente y el estilo para activar el borde en hover
-const styleTag = typeof document !== 'undefined' ? document.createElement('style') : null;
-if (styleTag) {
-  styleTag.innerHTML = `
-    @keyframes gradient-move {
-      0% { background-position: 0% 0%; }
-      25% { background-position: 100% 0%; }
-      50% { background-position: 100% 100%; }
-      75% { background-position: 0% 100%; }
-      100% { background-position: 0% 0%; }
-    }
-    
-    .group:hover .pseudo-border { opacity: 1 !important; }
-    
-    /* Estilos de hover para navegadores que no soporten hover */
-    @media (hover: hover) {
-      .group:hover {
-        transform: translateY(-5px);
-      }
-    }
-  `;
-  document.head.appendChild(styleTag);
-}
+// La animación y los estilos de hover ahora se cargan desde animations.css
 
 export default ServiceCard;

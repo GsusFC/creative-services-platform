@@ -11,31 +11,30 @@ import {
   DiyContextState,
   ElementoPresupuestoExtendido,
   RespuestaCompartir,
-  RespuestaDescarga
-} from '@/types/do-it-yourself';
+  RespuestaDescarga,
+  // Importar tipos UI necesarios
+  Servicio, 
+  Departamento 
+} from '@/types/do-it-yourself'; 
 import { diyUIConfig } from '@/config/do-it-yourself';
 import { 
   getServiceCategoryRepository, 
-  getServiceRepository
+  getServiceRepository,
+  // Importar tipos del repositorio
+  Service as RepoService, 
+  ServiceCategory as RepoServiceCategory 
 } from '@/lib/do-it-yourself/repository';
-import {
-  servicios,
-  productos, 
-  paquetes,
-  getServiciosDeDepartamento
-} from '@/mocks/do-it-yourself';
+// Mocks eliminados
 
 /**
  * Hook principal para gestionar el estado global del módulo Do-It-Yourself
- * Usa los repositorios implementados en lugar de los datos mock
- * Incorpora todas las características avanzadas de la versión mejorada
+ * Usa los repositorios implementados
  */
 export const useDiyState = (): DiyContextState => {
-  // Estado para filtros
+  // Estado para filtros - Volver a departamentoId (number | null)
   const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState<number | null>(null);
-  const [tipoSeleccionado, setTipoSeleccionado] = useState<TipoElemento>(TipoElemento.PRODUCTO);
   
-  // Estado para presupuesto - ahora usando el tipo extendido
+  // Estado para presupuesto - Mantenemos ElementoPresupuestoExtendido
   const [elementosSeleccionados, setElementosSeleccionados] = useState<ElementoPresupuestoExtendido[]>([]);
   
   // Estado para opciones globales del presupuesto
@@ -43,11 +42,13 @@ export const useDiyState = (): DiyContextState => {
     descuentoGlobal: 0,
     modoSprint: false,
     incluyeIVA: true,
-    moneda: 'EUR',
+    moneda: 'EUR', 
     notasAdicionales: ''
   });
   
-  // Estados para datos del servidor
+  // Estados para datos del servidor - Almacenar datos mapeados (Tipos UI)
+  const [allServices, setAllServices] = useState<Servicio[]>([]); // Tipo UI
+  const [allCategories, setAllCategories] = useState<Departamento[]>([]); // Tipo UI
   const [estaCargando, setEstaCargando] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -55,81 +56,60 @@ export const useDiyState = (): DiyContextState => {
   const [paginaActual, setPaginaActual] = useState<number>(1);
   const elementosPorPagina = diyUIConfig.itemsPerPage;
   
-  // Importar datos mock
-  // Importamos de forma dinámica para evitar problemas con SSR
+  // Cargar datos desde la capa de servicio al montar
   useEffect(() => {
     const cargarDatos = async () => {
       setEstaCargando(true);
       setError(null);
       
       try {
-        // Inicializar los repositorios para uso futuro
-        getServiceCategoryRepository();
-        getServiceRepository();
+        // Importar funciones de servicio (asegúrate que la ruta es correcta)
+        const { getDepartamentos, getServicios } = await import('@/lib/do-it-yourself/services'); 
         
-        // Simular una pequeña carga para mostrar el estado de carga
-        await new Promise(resolve => setTimeout(resolve, 800));
+        // Cargar departamentos (mapeados de categorías) y servicios en paralelo
+        const [deptResult, servResult] = await Promise.all([
+          getDepartamentos(),
+          getServicios() 
+        ]);
         
-        // En una implementación real, cargaríamos los datos desde los repositorios
-        // Por ahora, solo inicializamos los repositorios y usamos datos mock
+        // Manejar errores
+        if (deptResult.error) throw new Error(`Error cargando departamentos: ${deptResult.error}`);
+        if (servResult.error) throw new Error(`Error cargando servicios: ${servResult.error}`);
+        
+        // Actualizar estado con los datos cargados (Tipos UI)
+        setAllCategories(deptResult.departamentos || []); // Guardar Departamentos
+        setAllServices(servResult.servicios || []); // Guardar Servicios
+        
       } catch (err) {
-        console.error('Error cargando datos:', err);
-        setError(err instanceof Error ? err.message : 'Error desconocido');
+        console.error('Error cargando datos iniciales:', err);
+        setError(err instanceof Error ? err.message : 'Error desconocido al cargar datos');
       } finally {
         setEstaCargando(false);
       }
     };
     
     cargarDatos();
-  }, []);
+  }, []); // Ejecutar solo al montar
 
-  // Función auxiliar para determinar el tipo de elemento
-  const getElementType = (element: ElementoPresupuesto): TipoElemento => {
-    if ('es_independiente' in element) return TipoElemento.SERVICIO;
-    if ('servicios' in element) return TipoElemento.PRODUCTO;
-    return TipoElemento.PAQUETE;
+  // Función auxiliar para determinar el tipo de elemento - Simplificada
+  const getElementType = (_element: ElementoPresupuesto | RepoService): TipoElemento => {
+    // Ahora siempre será SERVICIO ya que solo cargamos servicios (mapeados a tipo Servicio UI)
+    return TipoElemento.SERVICIO;
   };
 
   // Función memoizada para obtener elementos filtrados según selecciones
+  // Filtra sobre allServices (tipo Servicio UI) usando departamentoSeleccionado (number | null)
   const getElementosFiltrados = useCallback(() => {
-      let elementos: ElementoPresupuesto[] = [];
-    
-    // Filtrar por tipo de elemento
-    switch (tipoSeleccionado) {
-      case TipoElemento.SERVICIO:
-        elementos = [...servicios];
-        break;
-      case TipoElemento.PRODUCTO:
-        elementos = [...productos];
-        break;
-      case TipoElemento.PAQUETE:
-        elementos = [...paquetes];
-        break;
-      default:
-        elementos = [...productos];
+    if (departamentoSeleccionado === null) {
+      return allServices; // Si no hay departamento, mostrar todos los servicios
     }
-    
-    // Si hay un departamento seleccionado, filtramos por departamento
-    if (departamentoSeleccionado) {
-      // Para servicios, usamos la función getServiciosDeDepartamento
-      if (tipoSeleccionado === TipoElemento.SERVICIO) {
-        elementos = getServiciosDeDepartamento(departamentoSeleccionado);
-      }
-      // Para productos, filtramos por departamento usando la propiedad departamentos
-      else if (tipoSeleccionado === TipoElemento.PRODUCTO) {
-        elementos = elementos.filter((elemento) => 
-          // Verificamos si el elemento tiene la estructura esperada antes de acceder a departamentos
-          'departamentos' in elemento && Array.isArray(elemento.departamentos) && 
-          elemento.departamentos.includes(departamentoSeleccionado)
-        );
-      }
-    }
-    
-    return elementos;
-  }, [tipoSeleccionado, departamentoSeleccionado]);
+    // Filtrar servicios por departamentoId (ahora incluido en el tipo Servicio UI gracias al mapeo)
+    return allServices.filter(service => service.departamentoId === departamentoSeleccionado);
+
+  }, [allServices, departamentoSeleccionado]);
   
   // Elementos filtrados - useMemo para evitar recálculos innecesarios
-  const elementosFiltrados = useMemo(() => getElementosFiltrados(), [getElementosFiltrados]);
+  const elementosFiltrados = useMemo(getElementosFiltrados, [getElementosFiltrados]);
   
   // Elementos paginados - useMemo para derivar del estado de filtros y paginación
   const elementosPaginados = useMemo(() => {
@@ -148,45 +128,52 @@ export const useDiyState = (): DiyContextState => {
     setPaginaActual(pagina);
   }, []);
   
-  // Convertir ElementoPresupuesto a ElementoPresupuestoExtendido
-  const convertirAElementoExtendido = useCallback((elemento: ElementoPresupuesto, cantidad: number = 1): ElementoPresupuestoExtendido => {
+  // Convertir Servicio (Tipo UI) a ElementoPresupuestoExtendido
+  const convertirAElementoExtendido = useCallback((servicio: Servicio, cantidad: number = 1): ElementoPresupuestoExtendido => {
     return {
-      ...elemento,
+      ...servicio, // id (number), nombre, descripcion, precio, tiempo_estimado, es_independiente
       cantidad,
-      tipo: getElementType(elemento),
-      indiceGlobal: Date.now() // Usamos timestamp como índice temporal
+      tipo: TipoElemento.SERVICIO, // Siempre será SERVICIO
+      indiceGlobal: Date.now() + Math.random(), // Índice único temporal
     };
   }, []);
 
-  // Definir función para actualizar la cantidad de un elemento
-  const actualizarCantidadElemento = useCallback((index: number, cantidad: number) => {
-    if (cantidad <= 0) return;
+  // Función para actualizar la cantidad de un elemento por indiceGlobal
+  const actualizarCantidadElemento = useCallback((indiceGlobal: number, cantidad: number) => {
+    if (cantidad <= 0) return; // No permitir cantidad cero o negativa
     
-    setElementosSeleccionados(prev => {
-      const nuevaLista = [...prev];
-      if (nuevaLista[index]) {
-        nuevaLista[index] = {
-          ...nuevaLista[index],
-          cantidad
-        };
-      }
-      return nuevaLista;
-    });
+    setElementosSeleccionados(prev => 
+      prev.map(el => 
+        el.indiceGlobal === indiceGlobal ? { ...el, cantidad } : el
+      )
+    );
   }, []);
   
-  // Agregar elemento al presupuesto
-  const agregarElementoPresupuesto = useCallback((elemento: ElementoPresupuesto, cantidad: number = 1) => {
-    const elementoExtendido = convertirAElementoExtendido(elemento, cantidad);
-    setElementosSeleccionados(prev => [...prev, elementoExtendido]);
-  }, [convertirAElementoExtendido]);
-  
-  // Eliminar elemento del presupuesto
-  const quitarElementoPresupuesto = useCallback((index: number) => {
+  // Agregar elemento (Servicio UI) al presupuesto, incrementando cantidad si ya existe
+  const agregarElementoPresupuesto = useCallback((servicio: Servicio, cantidadInicial: number = 1) => {
     setElementosSeleccionados(prev => {
-      const nuevosElementos = [...prev];
-      nuevosElementos.splice(index, 1);
-      return nuevosElementos;
+      const existenteIndex = prev.findIndex(el => el.id === servicio.id && el.tipo === TipoElemento.SERVICIO);
+      
+      if (existenteIndex > -1) {
+        // Si existe, incrementar cantidad
+        const newState = [...prev];
+        const itemExistente = newState[existenteIndex];
+        newState[existenteIndex] = { 
+          ...itemExistente, 
+          cantidad: itemExistente.cantidad + cantidadInicial 
+        };
+        return newState;
+      } else {
+        // Si no existe, añadir nuevo
+        const elementoExtendido = convertirAElementoExtendido(servicio, cantidadInicial);
+        return [...prev, elementoExtendido];
+      }
     });
+  }, [convertirAElementoExtendido]); // convertirAElementoExtendido no cambia, así que la dependencia está bien
+  
+  // Eliminar elemento del presupuesto por su índice global
+  const quitarElementoPresupuesto = useCallback((indiceGlobal: number) => {
+    setElementosSeleccionados(prev => prev.filter(el => el.indiceGlobal !== indiceGlobal));
   }, []);
   
   // Calcular total del presupuesto - memoizado para evitar recálculos
@@ -194,14 +181,17 @@ export const useDiyState = (): DiyContextState => {
     const subtotal = elementosSeleccionados.reduce(
       (total, elemento) => total + (elemento.precio * elemento.cantidad), 0
     );
+    
     const descuento = subtotal * (opcionesPresupuesto.descuentoGlobal / 100);
     const totalConDescuento = subtotal - descuento;
-    const factorSprint = opcionesPresupuesto.modoSprint ? diyUIConfig.sprintModeFactor : 1;
-    const totalAntesIVA = totalConDescuento * factorSprint;
-    const recargoSprint = opcionesPresupuesto.modoSprint ? (totalConDescuento * factorSprint) - totalConDescuento : 0;
     
-    // Calculamos IVA si corresponde
-    const iva = opcionesPresupuesto.incluyeIVA ? totalAntesIVA * 0.21 : 0;
+    // Aplicar factor sprint si está activo
+    const factorSprint = opcionesPresupuesto.modoSprint ? (diyUIConfig.sprintModeFactor || 1.3) : 1; 
+    const totalConSprint = totalConDescuento * factorSprint;
+    const recargoSprint = totalConSprint - totalConDescuento;
+    
+    // Calcular IVA sobre el total con sprint (si aplica) - Usar valor fijo
+    const iva = opcionesPresupuesto.incluyeIVA ? totalConSprint * 0.21 : 0; 
     
     return {
       subtotal,
@@ -209,102 +199,87 @@ export const useDiyState = (): DiyContextState => {
       totalConDescuento,
       recargoSprint,
       iva,
-      total: totalAntesIVA + iva
+      total: totalConSprint + iva
     };
   }, [elementosSeleccionados, opcionesPresupuesto]);
   
   // Calcular totales solo cuando sea necesario - memoizado
-  const totalesPresupuesto = useMemo(() => calcularTotales(), [calcularTotales]);
+  const totalesPresupuesto = useMemo(calcularTotales, [calcularTotales]);
   
-  // Estructura de datos para filtros aplicados
+  // Estructura de datos para filtros aplicados - CORREGIDO
   const filtros: FiltrosAplicados = useMemo(() => ({
-    departamentoId: departamentoSeleccionado,
-    tipoElemento: tipoSeleccionado
-  }), [departamentoSeleccionado, tipoSeleccionado]);
+    departamentoId: departamentoSeleccionado, // Usar departamentoId (number | null)
+  }), [departamentoSeleccionado]);
   
   // Estructura de datos para paginación
   const paginacion: ConfiguracionPaginacion = useMemo(() => ({
     paginaActual,
     elementosPorPagina,
-    totalElementos: elementosFiltrados.length,
+    totalElementos: elementosFiltrados.length, // Basado en servicios filtrados
     totalPaginas
   }), [paginaActual, elementosPorPagina, elementosFiltrados.length, totalPaginas]);
   
-  // Funciones para actualizar opciones de presupuesto
+  // Funciones para actualizar opciones de presupuesto (sin cambios en lógica, solo validación)
   const setDescuentoGlobal = useCallback((descuento: number) => {
-    setOpcionesPresupuesto(prev => ({
-      ...prev,
-      descuentoGlobal: descuento
-    }));
+    setOpcionesPresupuesto(prev => ({ ...prev, descuentoGlobal: Math.max(0, Math.min(100, descuento)) })); // Validar rango 0-100
   }, []);
   
   const setModoSprint = useCallback((activo: boolean) => {
-    setOpcionesPresupuesto(prev => ({
-      ...prev,
-      modoSprint: activo
-    }));
+    setOpcionesPresupuesto(prev => ({ ...prev, modoSprint: activo }));
   }, []);
   
   const actualizarOpcionesPresupuesto = useCallback((opciones: Partial<OpcionesPresupuesto>) => {
-    setOpcionesPresupuesto(prev => ({
-      ...prev,
-      ...opciones
-    }));
+    setOpcionesPresupuesto(prev => ({ ...prev, ...opciones }));
   }, []);
   
-  // Funciones auxiliares para obtener detalles de productos y paquetes
-  const getServiciosDeProducto = useCallback((_productoId: number): ElementoPresupuestoExtendido[] => {
-    return [];
-  }, []);
+  // Funciones auxiliares eliminadas (getServiciosDeProducto, getProductosDePaquete)
   
-  const getProductosDePaquete = useCallback((_paqueteId: number): ElementoPresupuestoExtendido[] => {
-    return [];
-  }, []);
-  
-  // Implementar funciones para compartir y descargar presupuesto
+  // Implementar funciones para compartir y descargar presupuesto (sin cambios, lógica simulada)
   const compartirPresupuesto = useCallback(async (): Promise<RespuestaCompartir> => {
+    // Lógica simulada - Debería usar el repositorio de presupuestos si se implementa
+    console.log("Compartiendo presupuesto:", { elementosSeleccionados, opcionesPresupuesto, totalesPresupuesto });
     try {
-      // Aquí iría la lógica para compartir el presupuesto con un servicio externo
-      const urlCompartir = `https://creative-services.example.com/presupuesto/${Date.now()}`;
-      return {
-        success: true,
-        url: urlCompartir,
-        shareUrl: urlCompartir // Mantenemos compatibilidad con ambos campos
-      };
+      // Simular llamada a API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const urlCompartir = `https://example.com/budget/${Date.now()}`;
+      return { success: true, url: urlCompartir, shareUrl: urlCompartir };
     } catch (error) {
+      console.error("Error al compartir:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Error desconocido al compartir'
       };
     }
-  }, []);
+  }, [elementosSeleccionados, opcionesPresupuesto, totalesPresupuesto]); // Dependencias para la simulación
   
   const descargarPresupuesto = useCallback(async (): Promise<RespuestaDescarga> => {
+    // Lógica simulada - Debería usar el repositorio o una función de generación de PDF
+    console.log("Descargando presupuesto:", { elementosSeleccionados, opcionesPresupuesto, totalesPresupuesto });
     try {
-      // Aquí iría la lógica para generar y descargar el PDF
-      const pathArchivo = `/temp/presupuesto-${Date.now()}.pdf`;
-      return {
-        success: true,
-        filePath: pathArchivo,
-        mensaje: 'Presupuesto descargado correctamente'
-      };
+      // Simular generación de archivo
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const pathArchivo = `/downloads/presupuesto-${Date.now()}.pdf`;
+      return { success: true, filePath: pathArchivo, mensaje: 'PDF generado (simulado)' };
     } catch (error) {
+      console.error("Error al descargar:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Error desconocido al descargar'
       };
     }
-  }, []);
+  }, [elementosSeleccionados, opcionesPresupuesto, totalesPresupuesto]); // Dependencias para la simulación
   
-  // Retornamos todo lo necesario para que los componentes funcionen
+  // Retornamos todo lo necesario para que los componentes funcionen - CORREGIDO
   return {
-    // Filtros y navegación
+    // Filtros y navegación - CORREGIDO
     filtros,
-    setDepartamentoSeleccionado,
-    setTipoSeleccionado,
+    setDepartamentoSeleccionado, // Usar el setter correcto
     
+    // Datos del catálogo
+    allCategories, // Mantenido (son Departamentos mapeados)
+
     // Elementos seleccionados
-    elementosSeleccionados,
+    elementosSeleccionados, // Mismo tipo, pero ahora solo contendrá Servicios
     agregarElementoPresupuesto,
     quitarElementoPresupuesto,
     actualizarCantidadElemento,
@@ -320,10 +295,10 @@ export const useDiyState = (): DiyContextState => {
     cambiarPagina,
     
     // Datos calculados
-    elementosFiltrados,
-    elementosPaginados,
+    elementosFiltrados, // Ahora son Servicio[] (UI)
+    elementosPaginados, // Ahora son Servicio[] (UI)
     totalesPresupuesto,
-    calcularTotales,
+    calcularTotales, 
     
     // Acciones de presupuesto
     compartirPresupuesto,
@@ -332,11 +307,10 @@ export const useDiyState = (): DiyContextState => {
     // Estado
     estaCargando,
     error,
-    
-    // Funciones auxiliares
-    getServiciosDeProducto,
-    getProductosDePaquete
+    // Funciones auxiliares eliminadas
   };
 };
 
 export default useDiyState;
+
+// TODO: Revisar lógica de filtrado en getElementosFiltrados para usar IDs numéricos o ajustar mapeo.

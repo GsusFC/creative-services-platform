@@ -7,9 +7,10 @@ interface MediaItemProps {
   alt: string;
   type: string;
   videoType?: string | undefined;
+  role?: string;
 }
 
-export function MediaItem({ url, alt, type, videoType }: MediaItemProps) {
+export function MediaItem({ url, alt, type, videoType, role }: MediaItemProps) {
   const [error, setError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState<boolean>(false);
 
@@ -81,7 +82,7 @@ export function MediaItem({ url, alt, type, videoType }: MediaItemProps) {
     );
   };
 
-  if (type === 'image') {
+  if (type === 'image' && role !== 'avatar') {
     return renderImage();
   } else if (type === 'video') {
     return renderVideo();

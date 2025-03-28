@@ -1,3 +1,5 @@
 {
-    "CodeGPT.apiKey": "LM Studio"
+    "CodeGPT.apiKey": "LM Studio",
+    "cline.preferredLanguage": "Spanish - Español",
+    "cline.modelSettings.o3Mini.reasoningEffort": "high"
 }

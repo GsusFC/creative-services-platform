@@ -1,7 +1,9 @@
 import { useState, useCallback } from 'react';
-import { MediaItem } from '@/types/case-study';
+import { MediaItem } from '@/types/media'; // Importar desde la nueva ubicación
 import { v4 as uuidv4 } from 'uuid';
 import * as mediaItemsService from '@/api/mediaItemsService';
+
+// Eliminar definición local
 
 interface MediaItemsState {
   mediaItems: MediaItem[];

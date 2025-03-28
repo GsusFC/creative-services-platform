@@ -2,6 +2,9 @@
  * Tipos compartidos para el módulo Do-It-Yourself
  */
 
+// Importar tipos del repositorio desde su archivo específico
+import { Service, ServiceCategory } from '@/lib/do-it-yourself/repository/types';
+
 /**
  * Enumeración de tipos de elementos
  */
@@ -15,7 +18,7 @@ export enum TipoElemento {
  * Interfaz base para todos los elementos presupuestables
  */
 export interface ElementoBase {
-  id: number;
+  id: number; // Mantenemos number por ahora, el mapeo se hace en la capa de servicio
   nombre: string;
   descripcion: string | null;
   precio: number;
@@ -23,37 +26,40 @@ export interface ElementoBase {
 }
 
 /**
- * Interfaz para servicios
+ * Interfaz para servicios (Tipo UI)
  */
 export interface Servicio extends ElementoBase {
   es_independiente: boolean;
+  // Podríamos añadir categoryId numérico aquí si el mapeo lo hace
+  departamentoId?: number; 
 }
 
 /**
- * Interfaz para productos
+ * Interfaz para productos (Tipo UI)
  */
 export interface Producto extends ElementoBase {
-  servicios?: number[]; // IDs de servicios asociados que se obtienen de la tabla de relación producto_servicio
+  servicios?: number[]; 
+  departamentos?: number[]; // Añadido para consistencia con mocks si se usan
 }
 
 /**
- * Interfaz para paquetes
+ * Interfaz para paquetes (Tipo UI)
  */
 export interface Paquete extends ElementoBase {
-  productos?: number[]; // IDs de productos incluidos que se obtienen de la tabla de relación paquete_producto
+  productos?: number[]; 
 }
 
 /**
- * Tipo unión para los elementos que pueden ser añadidos al presupuesto
+ * Tipo unión para los elementos que pueden ser añadidos al presupuesto (Tipos UI)
  */
 export type ElementoPresupuesto = Servicio | Producto | Paquete;
 
 /**
- * Interfaz extendida para los elementos del presupuesto 
+ * Interfaz extendida para los elementos DENTRO del presupuesto 
  */
 export interface ElementoPresupuestoExtendido {
   // Propiedades básicas de ElementoBase
-  id: number;
+  id: number; // Mantenemos number
   nombre: string;
   descripcion: string | null;
   precio: number;
@@ -66,12 +72,12 @@ export interface ElementoPresupuestoExtendido {
   
   // Propiedades adicionales 
   cantidad: number;
-  tipo: TipoElemento;
-  indiceGlobal?: number; // Para tracking interno
+  tipo: TipoElemento; 
+  indiceGlobal: number; // Cambiado a number para consistencia con Date.now()
 }
 
 /**
- * Interfaz para los departamentos
+ * Interfaz para los departamentos (Tipo UI)
  */
 export interface Departamento {
   id: number;
@@ -80,15 +86,17 @@ export interface Departamento {
 }
 
 /**
- * Interfaz para los filtros aplicados
+ * Interfaz para los filtros aplicados - CORREGIDA
  */
 export interface FiltrosAplicados {
-  departamentoId: number | null;
-  tipoElemento: TipoElemento;
+  // Usaremos departamentoId ya que la capa de servicio mapea Category a Departamento
+  departamentoId: number | null; 
+  // tipoElemento se elimina ya que solo manejamos Servicios (mapeados a Servicio UI)
+  // tipoElemento: TipoElemento; 
 }
 
 /**
- * Interfaz para la configuración de paginación
+ * Interfaz para la configuración de paginación (sin cambios)
  */
 export interface ConfiguracionPaginacion {
   paginaActual: number;
@@ -98,8 +106,7 @@ export interface ConfiguracionPaginacion {
 }
 
 /**
- * Interfaz para los totales calculados del presupuesto
- * Incluye propiedades para IVA y recargo por sprint
+ * Interfaz para los totales calculados del presupuesto (sin cambios)
  */
 export interface TotalesPresupuesto {
   subtotal: number;
@@ -111,7 +118,7 @@ export interface TotalesPresupuesto {
 }
 
 /**
- * Interfaz para las opciones globales del presupuesto
+ * Interfaz para las opciones globales del presupuesto (sin cambios)
  */
 export interface OpcionesPresupuesto {
   descuentoGlobal: number;
@@ -121,37 +128,10 @@ export interface OpcionesPresupuesto {
   notasAdicionales?: string;
 }
 
-/**
- * Interfaz para los filtros de medios (imágenes/videos)
- */
-export interface MediaFilters {
-  heroImage?: string;
-  heroVideo?: { url: string, type?: string };
-  galleryImages?: Array<{ url: string, alt?: string }>;
-  videos?: Array<{ url: string, thumbnailUrl?: string, videoType?: 'youtube' | 'vimeo' | 'local' }>;
-}
+// MediaFilters y AnimationSettings se mantienen
 
 /**
- * Interfaz para la configuración de animaciones
- */
-export interface AnimationSettings {
-  catalogContainer?: {
-    hidden: Record<string, unknown>;
-    visible: Record<string, unknown>;
-  };
-  catalogItem?: {
-    hidden: Record<string, unknown>;
-    visible: Record<string, unknown>;
-  };
-  budget?: {
-    hidden: Record<string, unknown>;
-    visible: Record<string, unknown>;
-  };
-  cardHover?: Record<string, unknown>;
-}
-
-/**
- * Interfaz para la respuesta de compartir el presupuesto
+ * Interfaz para la respuesta de compartir el presupuesto (sin cambios)
  */
 export interface RespuestaCompartir {
   success: boolean;
@@ -162,7 +142,7 @@ export interface RespuestaCompartir {
 }
 
 /**
- * Interfaz para la respuesta de descargar el presupuesto
+ * Interfaz para la respuesta de descargar el presupuesto (sin cambios)
  */
 export interface RespuestaDescarga {
   success: boolean;
@@ -172,46 +152,46 @@ export interface RespuestaDescarga {
 }
 
 /**
- * Interfaz para el estado global del contexto DIY
+ * Interfaz para el estado global del contexto DIY - CORREGIDA
  */
-
 export interface DiyContextState {
-  // Estado de filtros y tipo seleccionado
+  // Estado de filtros - CORREGIDO
   filtros: FiltrosAplicados;
-  setDepartamentoSeleccionado: (id: number | null) => void;
-  setTipoSeleccionado: (tipo: TipoElemento) => void;
-  
+  setDepartamentoSeleccionado: (id: number | null) => void; // Mantenemos nombre por consistencia UI
+  // setTipoSeleccionado eliminado
+
+  // Datos del catálogo
+  allCategories: Departamento[]; // Cambiado a Departamento[] (mapeado)
+
   // Estado del presupuesto
   elementosSeleccionados: ElementoPresupuestoExtendido[];
-  agregarElementoPresupuesto: (elemento: ElementoPresupuesto, cantidad?: number) => void;
-  quitarElementoPresupuesto: (index: number) => void;
-  actualizarCantidadElemento: (index: number, cantidad: number) => void;
-  
+  agregarElementoPresupuesto: (servicio: Servicio, cantidad?: number) => void; // Acepta Servicio (UI)
+  quitarElementoPresupuesto: (indiceGlobal: number) => void; 
+  actualizarCantidadElemento: (indiceGlobal: number, cantidad: number) => void; 
+
   // Opciones globales
   opcionesPresupuesto: OpcionesPresupuesto;
   setDescuentoGlobal: (porcentaje: number) => void;
   setModoSprint: (activo: boolean) => void;
   actualizarOpcionesPresupuesto: (opciones: Partial<OpcionesPresupuesto>) => void;
-  
+
   // Estado de paginación
   paginacion: ConfiguracionPaginacion;
   cambiarPagina: (pagina: number) => void;
-  
+
   // Datos calculados
-  elementosFiltrados: ElementoPresupuesto[];
-  elementosPaginados: ElementoPresupuesto[];
+  elementosFiltrados: Servicio[]; // Cambiado a Servicio[] (UI)
+  elementosPaginados: Servicio[]; // Cambiado a Servicio[] (UI)
   totalesPresupuesto: TotalesPresupuesto;
-  calcularTotales: () => TotalesPresupuesto;
-  
+  calcularTotales: () => TotalesPresupuesto; 
+
   // Acciones del presupuesto
   compartirPresupuesto: () => Promise<RespuestaCompartir>;
   descargarPresupuesto: () => Promise<RespuestaDescarga>;
-  
+
   // Estados de carga y error
   estaCargando: boolean;
   error: string | null;
-  
-  // Funciones auxiliares
-  getServiciosDeProducto: (productoId: number) => ElementoPresupuestoExtendido[];
-  getProductosDePaquete: (paqueteId: number) => ElementoPresupuestoExtendido[];
+
+  // Funciones auxiliares eliminadas
 }

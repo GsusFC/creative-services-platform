@@ -1,5 +1,6 @@
 'use client'
 
+import { CaseStudyStatus } from '@/types/case-study'
 import { useCaseStudyManager } from '@/hooks/useCaseStudyManager'
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/admin/components/ui/card'
 import { Button } from '@/app/admin/components/ui/button'
@@ -20,7 +21,7 @@ export default function CaseStudiesList() {
     await toggleFeatured(id)
   }
 
-  const handleTogglePublished = async (id: string, currentStatus: 'draft' | 'published') => {
+  const handleTogglePublished = async (id: string, currentStatus: CaseStudyStatus) => {
     if (currentStatus === 'draft') {
       await publishStudy(id)
     } else {

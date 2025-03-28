@@ -1,13 +1,9 @@
 /** @type {import('next').NextConfig} */
 const config = {
   experimental: {
-    serverActions: {
-      allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002', 'localhost:3003']
-    },
+    serverActions: true,
     turbo: {
-      rules: {
-        // Configuración de Turbopack
-      }
+      rules: {}
     }
   },
   eslint: {
@@ -15,19 +11,23 @@ const config = {
     dirs: ['src'],
   },
   typescript: {
-    ignoreBuildErrors: true, // Temporary fix while we resolve type issues
+    ignoreBuildErrors: false,
   },
   images: {
     domains: [
       'images.unsplash.com',
-      'prod-files-secure.s3.us-west-2.amazonaws.com'
+      'prod-files-secure.s3.us-west-2.amazonaws.com',
+      'i.vimeocdn.com',
+      'player.vimeo.com'
     ],
-    dangerouslyAllowSVG: true,
-    contentDispositionType: 'attachment',
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**'
+        hostname: '**.vimeocdn.com'
+      },
+      {
+        protocol: 'https',
+        hostname: '**.vimeo.com'
       }
     ]
   },

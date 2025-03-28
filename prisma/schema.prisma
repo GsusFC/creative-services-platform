@@ -11,20 +11,30 @@ datasource db {
 }
 
 model CaseStudy {
-  id          String   @id @default(cuid())
-  notionId    String   @unique
+  id          String     @id @default(cuid())
+  notionId    String     @unique
   client      String
   description String?
-  status      String   @default("DRAFT")
+  status      String     @default("DRAFT")
   language    String[]
   services    String[]
   slug        String?
-  highlighted Boolean  @default(false)
-  cover       String?
-  avatar      String?
+  highlighted Boolean    @default(false)
   website     String?
-  video1      String?
-  video2      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  mediaItems  MediaItem[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model MediaItem {
+  id          String    @id @default(cuid())
+  url         String
+  alt         String?
+  type        String    // 'image' | 'video'
+  role        String?   // 'hero' | 'cover' | 'avatar' | 'gallery'
+  videoType   String?   // 'vimeo' | 'youtube' | 'other'
+  caseStudy   CaseStudy @relation(fields: [caseStudyId], references: [id])
+  caseStudyId String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
