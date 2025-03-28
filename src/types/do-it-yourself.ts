@@ -60,12 +60,12 @@ export type ElementoPresupuesto = Servicio | Producto | Paquete;
 export interface ElementoPresupuestoExtendido {
   // Propiedades básicas de ElementoBase
   id: number; // Mantenemos number
-  nombre: string;
-  descripcion: string | null;
-  precio: number;
-  tiempo_estimado: string | null;
-  
-  // Propiedades específicas según el tipo
+   nombre: string;
+   descripcion: string | null;
+   precio: number;
+   tiempo_estimado?: string | null; // Hecho opcional para alinear con ElementoBase
+   
+   // Propiedades específicas según el tipo
   es_independiente?: boolean; // Para servicios
   servicios?: number[]; // Para productos
   productos?: number[]; // Para paquetes
