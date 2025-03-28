@@ -2,12 +2,10 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/admin/components/ui/card"
 import Link from "next/link"
-import { DatabaseIcon, ArrowRightIcon, Settings2Icon, LayoutDashboardIcon, ImageIcon, BookOpenIcon, BarChart3Icon, Gamepad2Icon, FileTextIcon, WrenchIcon } from "lucide-react"
+// Eliminados iconos no usados: DatabaseIcon, BookOpenIcon
+import { ArrowRightIcon, Settings2Icon, LayoutDashboardIcon, ImageIcon, BarChart3Icon, FileTextIcon, WrenchIcon } from "lucide-react" 
 import { motion } from "framer-motion"
-import SystemTools from "./components/SystemTools"
-import { ImportFromNotion } from "./components/ImportFromNotion"
-import { Button } from "./components/ui/button"
-import { NotionMCPCard } from "./components/NotionMCPCard"
+// Eliminadas importaciones de componentes relacionados con Notion/Case Studies
 
 export default function AdminPage(): React.ReactNode {
   // Animación para los elementos que aparecen en la página
@@ -64,8 +62,7 @@ export default function AdminPage(): React.ReactNode {
             Panel de Administración
           </h1>
           <p className="text-gray-400 text-lg max-w-3xl">
-            Bienvenido al sistema de administración de contenidos. Gestiona estudios de caso, 
-            configuración del sitio y herramientas avanzadas.
+            Bienvenido al sistema de administración de contenidos. Gestiona la configuración del sitio y herramientas avanzadas.
           </p>
         </motion.div>
         
@@ -75,24 +72,9 @@ export default function AdminPage(): React.ReactNode {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12" // Ajustado a 3 columnas ya que se eliminó una tarjeta
         >
-          <Card className="bg-gradient-to-br from-blue-900/40 to-blue-950/40 border border-blue-800/30 shadow-xl">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm mb-1">Estudios de caso</p>
-                  <p className="text-3xl font-bold text-white">12</p>
-                </div>
-                <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
-                  <DatabaseIcon className="h-6 w-6 text-blue-400" />
-                </div>
-              </div>
-              <div className="mt-4 flex items-center text-sm text-green-400">
-                <span>+3 este mes</span>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Tarjeta de Estudios de Caso eliminada */}
           
           <Card className="bg-gradient-to-br from-purple-900/40 to-purple-950/40 border border-purple-800/30 shadow-xl">
             <CardContent className="p-6">
@@ -153,52 +135,9 @@ export default function AdminPage(): React.ReactNode {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8" // Ajustado a 2 columnas
         >
-          {/* Case Studies */}
-          <motion.div variants={itemVariants}>
-            <Link href="/admin/case-studies" className="block group">
-              <Card className="bg-gradient-to-br from-gray-900/90 to-gray-950/95 border border-white/10 hover:border-blue-500/50 hover:bg-gray-900/80 transition-all duration-300 shadow-xl h-full">
-                <CardHeader className="pb-4 border-b border-white/5 bg-black/20">
-                  <CardTitle className="flex items-center gap-3 text-xl text-white group-hover:text-blue-400 transition-colors">
-                    <div className="p-2 bg-blue-500/20 rounded-lg">
-                      <BookOpenIcon className="h-5 w-5 text-blue-400" />
-                    </div>
-                    Casos de Estudio
-                  </CardTitle>
-                  <CardDescription className="text-gray-400">
-                    Gestiona la biblioteca completa de casos
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <ul className="text-gray-300 space-y-3 mb-8">
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                      Añadir y editar casos de estudio
-                    </li>
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                      Categorización y etiquetado
-                    </li>
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                      Gestión de imágenes y recursos
-                    </li>
-                    <li className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                      Estadísticas de visualización
-                    </li>
-                  </ul>
-                  <div className="flex justify-end">
-                    <div className="flex items-center gap-2 text-blue-400 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-0 group-hover:translate-x-1">
-                      <span className="text-sm font-medium">Acceder</span>
-                      <ArrowRightIcon className="h-4 w-4" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          </motion.div>
+          {/* Tarjeta de Case Studies eliminada */}
           
           {/* Settings */}
           <motion.div variants={itemVariants}>
@@ -291,15 +230,7 @@ export default function AdminPage(): React.ReactNode {
             </Link>
           </motion.div>
           
-          {/* Integración MCP con Notion */}
-          <motion.div variants={itemVariants}>
-            <NotionMCPCard />
-          </motion.div>
-          
-          {/* Importar desde Notion */}
-          <motion.div variants={itemVariants} className="md:col-span-2 mt-8">
-            <ImportFromNotion />
-          </motion.div>
+          {/* Tarjetas de Notion eliminadas */}
 
         </motion.div>
       </div>

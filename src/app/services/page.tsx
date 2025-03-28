@@ -145,7 +145,7 @@ export default function ServicesPage() {
                 <div className="relative h-48 w-full overflow-hidden flex items-center justify-center bg-white/5">
                   {service.icon && <service.icon 
                     className="w-full h-full" 
-                    color={service.color}
+                    // color={service.color} // Prop eliminada, el icono maneja su color internamente
                     isHovered={hoveredService === service.title}
                   />}
                 </div>

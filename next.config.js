@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const config = {
-  experimental: {
-    serverActions: true,
-    turbo: {
+experimental: {
+  serverActions: {},
+  turbo: {
       rules: {}
     }
   },
@@ -16,7 +16,7 @@ const config = {
   images: {
     domains: [
       'images.unsplash.com',
-      'prod-files-secure.s3.us-west-2.amazonaws.com',
+      // 'prod-files-secure.s3.us-west-2.amazonaws.com', // Eliminado - Relacionado con Notion
       'i.vimeocdn.com',
       'player.vimeo.com'
     ],
