@@ -6,8 +6,8 @@ import {
 
 import {
   getInMemoryServiceCategoryRepository,
-  getInMemoryServiceRepository,
-  getInMemoryBudgetRepository
+  getInMemoryServiceRepository
+  // getInMemoryBudgetRepository // Comentado: No se exporta desde in-memory.ts
 } from './in-memory';
 
 /**
@@ -24,12 +24,15 @@ export function getServiceRepository(): IServiceRepository {
   return getInMemoryServiceRepository();
 }
 
-/**
- * Obtiene la implementación del repositorio de presupuestos
- */
-export function getBudgetRepository(): IBudgetRepository {
-  return getInMemoryBudgetRepository();
-}
+// /**
+//  * Obtiene la implementación del repositorio de presupuestos - COMENTADO
+//  * Depende de getInMemoryBudgetRepository que fue comentado.
+//  */
+// export function getBudgetRepository(): IBudgetRepository {
+//   // return getInMemoryBudgetRepository();
+//   // Debería lanzar un error o devolver una implementación nula/mock si se llama
+//   throw new Error("Budget repository functionality is currently disabled."); 
+// }
 
 // Exportar tipos
 export * from './types';
