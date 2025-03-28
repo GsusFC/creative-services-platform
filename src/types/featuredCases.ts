@@ -1,4 +1,4 @@
-import { MediaItem } from './case-study';
+import { MediaItem } from './media'; // Corregida la ruta de importación
 
 export interface FeaturedCase {
   id: string;
